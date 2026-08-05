@@ -1,0 +1,234 @@
+import { Pencil } from 'lucide-react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { formatCurrency } from '../../formatters';
+import { getProgressFillColor, recurringStateAutoContributionLabels } from './constants';
+import { HomeGoalsCardProps } from './types';
+
+export default function HomeGoalsCard({
+  selectedView,
+  visibleGoals,
+  getDisplayedGoalProgress,
+  onEditActual,
+}: HomeGoalsCardProps) {
+  const formatBadgeLabel = (value: string) =>
+    value
+      .split(' ')
+      .map((word) =>
+        word
+          .split('-')
+          .map((part) => (part ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+          .join('-')
+      )
+      .join(' ');
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Goals</Text>
+      {visibleGoals.length === 0 ? (
+        <Text style={styles.emptyText}>
+          {selectedView === 'one-time'
+            ? 'No one-time goals for this view.'
+            : `No ${selectedView} goals for this view.`}
+        </Text>
+      ) : (
+        visibleGoals.map((goal) => {
+          const progress = getDisplayedGoalProgress(goal);
+          const displayName = goal.nickname || goal.name;
+          const origin = goal.origin ? formatBadgeLabel(goal.origin) : null;
+          const accountTypeLabel = goal.accountType ? formatBadgeLabel(goal.accountType) : null;
+          const categoryLabel = goal.category ? formatBadgeLabel(goal.category) : null;
+          const tagLabels = [origin, accountTypeLabel, categoryLabel]
+            .filter(Boolean)
+            .slice(0, 2) as string[];
+
+          const progressRatio =
+            goal.targetAmount > 0 ? Math.max(0, Math.min(progress / goal.targetAmount, 1)) : 0;
+          const rawProgressPercent =
+            goal.targetAmount > 0
+              ? Math.max(0, Math.round((progress / goal.targetAmount) * 100))
+              : 0;
+          const progressPercent = Math.min(rawProgressPercent, 999);
+          const progressStatus =
+            progressPercent >= 100 ? 'Complete' : `${progressPercent}% complete`;
+          const cadenceLabel = goal.isRecurring
+            ? recurringStateAutoContributionLabels[goal.recurringState].replace('/', '').trim()
+            : 'one-time';
+
+          return (
+            <View key={goal.id} style={styles.goalRow}>
+              <View style={styles.goalHeader}>
+                <View style={styles.goalHeaderText}>
+                  <Text style={styles.goalName}>{displayName}</Text>
+                  {tagLabels.length > 0 ? (
+                    <View style={styles.badgeRow}>
+                      {tagLabels.map((tagLabel) => (
+                        <View key={`${goal.id}-${tagLabel}`} style={styles.badge}>
+                          <Text style={styles.badgeText}>{tagLabel}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+
+              <View style={styles.goalAmountRow}>
+                <Text style={styles.goalProgress}>{formatCurrency(progress)}</Text>
+                <Text style={styles.goalTarget}>of {formatCurrency(goal.targetAmount)}</Text>
+              </View>
+
+              <View style={styles.progressTrack}>
+                <View
+                  style={[
+                    styles.progressFill,
+                    {
+                      width: `${Math.min(progressPercent, 100)}%`,
+                      backgroundColor: getProgressFillColor(progressRatio),
+                    },
+                  ]}
+                />
+              </View>
+
+              <View style={styles.goalMetaRow}>
+                <Text style={styles.goalMetaText}>{progressStatus}</Text>
+                {goal.autoContributionAmount ? (
+                  <Text numberOfLines={1} style={styles.goalMetaText}>
+                    {formatCurrency(goal.autoContributionAmount)}{' '}
+                    {recurringStateAutoContributionLabels[goal.recurringState]} auto
+                  </Text>
+                ) : (
+                  <Text style={styles.goalMetaText}>{cadenceLabel}</Text>
+                )}
+              </View>
+
+              <View style={styles.actionsRow}>
+                <Pressable
+                  onPress={() => onEditActual(goal)}
+                  style={styles.editButton}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Edit actual amount for ${displayName}`}
+                >
+                  <Pencil color="#475569" size={14} />
+                </Pressable>
+              </View>
+            </View>
+          );
+        })
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 16,
+    gap: 12,
+  },
+  cardTitle: {
+    fontWeight: '700',
+    color: '#0f172a',
+    fontSize: 16,
+    letterSpacing: 0.2,
+  },
+  emptyText: {
+    color: '#475569',
+  },
+  goalRow: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    gap: 9,
+    backgroundColor: '#ffffff',
+    shadowColor: '#0f172a',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  goalHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  goalHeaderText: {
+    flex: 1,
+    gap: 4,
+  },
+  goalName: {
+    fontWeight: '700',
+    color: '#0f172a',
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  badge: {
+    borderRadius: 999,
+    paddingVertical: 3,
+    paddingHorizontal: 9,
+    backgroundColor: '#f1f5f9',
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  goalAmountRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  goalProgress: {
+    color: '#0369a1',
+    fontWeight: '700',
+    fontSize: 20,
+  },
+  goalTarget: {
+    color: '#475569',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  progressTrack: {
+    height: 8,
+    borderRadius: 999,
+    backgroundColor: '#e2e8f0',
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: '#0ea5e9',
+  },
+  goalMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  goalMetaText: {
+    color: '#64748b',
+    fontSize: 12,
+    fontWeight: '600',
+    lineHeight: 16,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 4,
+  },
+  editButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 999,
+    backgroundColor: '#f8fafc',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

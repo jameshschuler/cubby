@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+
+# Local repair/backups
+git-backups/
+cubby-inner-history*.bundle

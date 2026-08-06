@@ -2,6 +2,7 @@ import { PiggyBank } from 'lucide-react-native';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { formatCurrency, formatPercent } from '../../formatters';
+import { theme } from '../../theme';
 import { HomeSummaryCardProps } from './types';
 
 export default function HomeSummaryCard({
@@ -20,7 +21,7 @@ export default function HomeSummaryCard({
   return (
     <View style={styles.card}>
       <View style={styles.cardTitleRow}>
-        <PiggyBank color="#0c4a6e" size={18} />
+        <PiggyBank color={theme.accent} size={18} />
         <Text style={styles.cardTitle}>
           {selectedView === 'one-time' ? 'One-time Summary' : 'Summary'}
         </Text>
@@ -75,12 +76,12 @@ export default function HomeSummaryCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.surface,
     borderRadius: 14,
     padding: 14,
     gap: 10,
     borderWidth: 1,
-    borderColor: '#d5e7f3',
+    borderColor: theme.border,
   },
   cardTitleRow: {
     flexDirection: 'row',
@@ -107,8 +108,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   badge: {
-    backgroundColor: '#eef7ff',
-    borderColor: '#bfdbfe',
+    backgroundColor: theme.accentSoft,
+    borderColor: theme.border,
     borderWidth: 1,
     borderRadius: 999,
     paddingVertical: 6,
@@ -134,9 +135,9 @@ const styles = StyleSheet.create({
     color: '#b45309',
   },
   metricDivider: {
-    color: '#64748b',
+    color: theme.textMuted,
   },
   metricTarget: {
-    color: '#1e3a8a',
+    color: theme.accentDeep,
   },
 });

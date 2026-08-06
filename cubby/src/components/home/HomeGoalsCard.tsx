@@ -2,6 +2,7 @@ import { Pencil } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatCurrency } from '../../formatters';
+import { theme } from '../../theme';
 import { getProgressFillColor, recurringStateAutoContributionLabels } from './constants';
 import { HomeGoalsCardProps } from './types';
 
@@ -108,7 +109,7 @@ export default function HomeGoalsCard({
                   accessibilityRole="button"
                   accessibilityLabel={`Edit actual amount for ${displayName}`}
                 >
-                  <Pencil color="#475569" size={14} />
+                  <Pencil color={theme.textMuted} size={14} />
                 </Pressable>
               </View>
             </View>
@@ -138,8 +139,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 14,
     gap: 9,
-    backgroundColor: '#ffffff',
-    shadowColor: '#0f172a',
+    backgroundColor: theme.surface,
+    shadowColor: theme.shadow,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingVertical: 3,
     paddingHorizontal: 9,
-    backgroundColor: '#f1f5f9',
+    backgroundColor: theme.backgroundAlt,
   },
   badgeText: {
     fontSize: 10,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   goalProgress: {
-    color: '#0369a1',
+    color: theme.accent,
     fontWeight: '700',
     fontSize: 20,
   },
@@ -196,13 +197,13 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 8,
     borderRadius: 999,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: theme.border,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
     borderRadius: 999,
-    backgroundColor: '#0ea5e9',
+    backgroundColor: theme.accentHighlight,
   },
   goalMetaRow: {
     flexDirection: 'row',
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   goalMetaText: {
-    color: '#64748b',
+    color: theme.textMuted,
     fontSize: 12,
     fontWeight: '600',
     lineHeight: 16,
@@ -225,9 +226,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 999,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.surfaceMuted,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: theme.border,
     alignItems: 'center',
     justifyContent: 'center',
   },

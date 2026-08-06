@@ -1,5 +1,6 @@
 import { Plus } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../../theme';
 import { GoalsHeaderProps } from './types';
 
 export default function GoalsHeader({ onAddGoal }: GoalsHeaderProps) {
@@ -13,7 +14,7 @@ export default function GoalsHeader({ onAddGoal }: GoalsHeaderProps) {
           accessibilityRole="button"
           accessibilityLabel="Add goal"
         >
-          <Plus color="#0369a1" size={18} />
+          <Plus color={theme.accent} size={18} />
         </Pressable>
       </View>
       <Text style={styles.subtitle}>Track every goal and edit contributions from one place.</Text>
@@ -23,7 +24,7 @@ export default function GoalsHeader({ onAddGoal }: GoalsHeaderProps) {
 
 const styles = StyleSheet.create({
   heroCard: {
-    backgroundColor: '#082f49',
+    backgroundColor: theme.accentDeep,
     borderRadius: 18,
     padding: 18,
     gap: 8,
@@ -37,17 +38,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '700',
-    color: '#fff',
+    color: theme.textOnAccent,
   },
   subtitle: {
-    color: '#dbeafe',
+    color: theme.accentSoft,
     fontSize: 14,
   },
   iconButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#fff',
+    backgroundColor: theme.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },

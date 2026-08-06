@@ -21,6 +21,7 @@ import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingC
 import PeriodNavigator from '../components/home/PeriodNavigator';
 import ViewFilterTabs from '../components/home/ViewFilterTabs';
 import { shouldShowOnboarding } from '../onboarding';
+import { theme } from '../theme';
 
 export default function HomeScreen() {
   const { data, replaceGoalProgress, setDefaultView } = useAppData();
@@ -197,7 +198,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#eef7fb',
+    backgroundColor: theme.background,
   },
   content: {
     padding: 16,

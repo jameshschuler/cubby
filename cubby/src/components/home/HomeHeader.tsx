@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { theme } from '../../theme';
 import { HomeHeaderProps } from './types';
 
 export default function HomeHeader({ subtitle }: HomeHeaderProps) {
@@ -22,11 +23,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '700',
-    color: '#082f49',
+    color: theme.accentDeep,
   },
   subtitle: {
     marginTop: 4,
-    color: '#0c4a6e',
+    color: theme.accent,
     fontSize: 14,
   },
 });

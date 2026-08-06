@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { formatCurrency } from '../../formatters';
+import { theme } from '../../theme';
+import { getChartWidth } from './chartLayout';
 import { styles } from './styles';
 import { StatsMonthlyChartCardProps } from './types';
 import { formatMonthKeyLabel, getMonthName } from './utils';
@@ -13,6 +15,7 @@ export default function StatsMonthlyStatsCard({
   monthlyStats,
 }: StatsMonthlyChartCardProps) {
   const [activeTab, setActiveTab] = useState<'trend' | 'breakdown'>('trend');
+  const { width } = useWindowDimensions();
 
   const monthlyChartData = useMemo(() => {
     const monthValues = Array.from({ length: 12 }, (_, monthIndex) => {
@@ -58,7 +61,7 @@ export default function StatsMonthlyStatsCard({
     });
   }, [filteredEvents]);
 
-  const chartWidth = Math.max(220, Math.min(280, Dimensions.get('window').width - 68));
+  const chartWidth = useMemo(() => getChartWidth(width), [width]);
 
   return (
     <View style={styles.card}>
@@ -122,31 +125,33 @@ export default function StatsMonthlyStatsCard({
         </View>
 
         {activeTab === 'trend' ? (
-          <LineChart
-            data={monthlyChartData}
-            width={chartWidth}
-            height={180}
-            spacing={18}
-            initialSpacing={8}
-            noOfSections={4}
-            maxValue={chartMaxValue}
-            xAxisLabelTextStyle={{ color: '#64748b', fontSize: 10 }}
-            yAxisTextStyle={{ color: '#64748b', fontSize: 10 }}
-            yAxisLabelTexts={yAxisLabelTexts}
-            yAxisLabelWidth={56}
-            xAxisColor="#cbd5e1"
-            yAxisColor="#cbd5e1"
-            color="#0369a1"
-            thickness={3}
-            curved
-            areaChart
-            startFillColor="#38bdf8"
-            endFillColor="#f8fbff"
-            startOpacity={0.18}
-            endOpacity={0.04}
-            dataPointsColor="#0369a1"
-            dataPointsRadius={4}
-          />
+          <View style={styles.chartCanvas}>
+            <LineChart
+              data={monthlyChartData}
+              width={chartWidth}
+              height={180}
+              spacing={24}
+              initialSpacing={12}
+              noOfSections={4}
+              maxValue={chartMaxValue}
+              xAxisLabelTextStyle={{ color: theme.textMuted, fontSize: 10 }}
+              yAxisTextStyle={{ color: theme.textMuted, fontSize: 10 }}
+              yAxisLabelTexts={yAxisLabelTexts}
+              yAxisLabelWidth={56}
+              xAxisColor={theme.border}
+              yAxisColor={theme.border}
+              color={theme.accent}
+              thickness={3}
+              curved
+              areaChart
+              startFillColor={theme.accentHighlight}
+              endFillColor={theme.surfaceMuted}
+              startOpacity={0.18}
+              endOpacity={0.04}
+              dataPointsColor={theme.accent}
+              dataPointsRadius={4}
+            />
+          </View>
         ) : (
           <View style={styles.breakdownList}>
             {monthlyBreakdownData.map((item) => (

@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../../theme';
 import { filterLabel, goalFilters } from './constants';
 import { ViewFilterTabsProps } from './types';
 
@@ -28,7 +29,7 @@ export default function ViewFilterTabs({ selectedView, onSelect }: ViewFilterTab
 const styles = StyleSheet.create({
   periodRow: {
     flexDirection: 'row',
-    backgroundColor: '#d9edf8',
+    backgroundColor: theme.accentSoft,
     borderRadius: 14,
     padding: 4,
     gap: 6,
@@ -40,15 +41,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   periodButtonActive: {
-    backgroundColor: '#0369a1',
+    backgroundColor: theme.accent,
   },
   periodButtonText: {
     textTransform: 'capitalize',
-    color: '#075985',
+    color: theme.accentDeep,
     fontWeight: '600',
     fontSize: 12,
   },
   periodButtonTextActive: {
-    color: '#fff',
+    color: theme.textOnAccent,
   },
 });

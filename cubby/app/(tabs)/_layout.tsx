@@ -1,13 +1,15 @@
 import { Tabs } from 'expo-router';
 import { ChartColumn, House, Settings2, Target } from 'lucide-react-native';
 
+import { theme } from '../../src/theme';
+
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#0369a1',
-        tabBarInactiveTintColor: '#64748b',
+        tabBarActiveTintColor: theme.accent,
+        tabBarInactiveTintColor: theme.textMuted,
         tabBarStyle: {
           height: 68,
           paddingBottom: 10,

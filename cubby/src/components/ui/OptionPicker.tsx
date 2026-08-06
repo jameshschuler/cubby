@@ -1,6 +1,7 @@
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../../theme';
 import { OptionPickerProps } from './types';
 
 export default function OptionPicker({
@@ -147,12 +148,12 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(15, 23, 42, 0.35)',
+    backgroundColor: 'rgba(79, 46, 32, 0.45)',
   },
   modalCard: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: '#fff',
+    backgroundColor: theme.surface,
     borderRadius: 12,
     padding: 12,
     maxHeight: 320,
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0f172a',
+    color: theme.text,
     marginBottom: 8,
   },
   dualPickerRow: {
@@ -172,14 +173,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pickerLabel: {
-    color: '#0c4a6e',
+    color: theme.accent,
     fontSize: 12,
     fontWeight: '700',
     marginBottom: 6,
   },
   nativePicker: {
     height: 170,
-    color: '#0f172a',
+    color: theme.text,
   },
   pickerItem: {
     fontSize: 15,
@@ -195,20 +196,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: '#f1f5f9',
+    backgroundColor: theme.backgroundAlt,
   },
   cancelButtonText: {
-    color: '#0f172a',
+    color: theme.text,
     fontWeight: '600',
   },
   doneButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: '#0369a1',
+    backgroundColor: theme.accent,
   },
   doneButtonText: {
-    color: '#fff',
+    color: theme.textOnAccent,
     fontWeight: '600',
   },
 });

@@ -1,4 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { theme } from '../../theme';
 import KeyboardDoneBar, { KEYBOARD_DONE_BAR_ID } from '../ui/KeyboardDoneBar';
 import { ActualAmountModalProps } from './types';
 
@@ -40,7 +41,7 @@ export default function ActualAmountModal({
 const styles = StyleSheet.create({
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(8, 47, 73, 0.45)',
+    backgroundColor: 'rgba(79, 46, 32, 0.5)',
     justifyContent: 'center',
     padding: 20,
   },
@@ -53,11 +54,11 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#082f49',
+    color: theme.accentDeep,
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: theme.border,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -70,23 +71,23 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   modalSecondaryButton: {
-    backgroundColor: '#e2e8f0',
+    backgroundColor: theme.accentSoft,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 14,
   },
   modalSecondaryButtonText: {
-    color: '#0f172a',
+    color: theme.text,
     fontWeight: '700',
   },
   modalPrimaryButton: {
-    backgroundColor: '#0369a1',
+    backgroundColor: theme.accent,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 14,
   },
   modalPrimaryButtonText: {
-    color: '#fff',
+    color: theme.textOnAccent,
     fontWeight: '700',
   },
 });

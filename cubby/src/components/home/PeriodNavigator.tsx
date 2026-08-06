@@ -1,18 +1,19 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../../theme';
 import { PeriodNavigatorProps } from './types';
 
 export default function PeriodNavigator({ label, onPrevious, onNext }: PeriodNavigatorProps) {
   return (
     <View style={styles.navigatorRow}>
       <Pressable style={styles.navigatorButton} onPress={onPrevious}>
-        <ChevronLeft color="#0c4a6e" size={18} />
+        <ChevronLeft color={theme.accent} size={18} />
         <Text style={styles.navigatorButtonText}>Previous</Text>
       </Pressable>
       <Text style={styles.navigatorLabel}>{label}</Text>
       <Pressable style={styles.navigatorButton} onPress={onNext}>
         <Text style={styles.navigatorButtonText}>Next</Text>
-        <ChevronRight color="#0c4a6e" size={18} />
+        <ChevronRight color={theme.accent} size={18} />
       </Pressable>
     </View>
   );
@@ -29,19 +30,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#d6eef9',
+    backgroundColor: theme.accentSoft,
     borderRadius: 12,
     paddingVertical: 8,
     paddingHorizontal: 10,
   },
   navigatorButtonText: {
-    color: '#0c4a6e',
+    color: theme.accent,
     fontWeight: '600',
   },
   navigatorLabel: {
     flex: 1,
     textAlign: 'center',
-    color: '#0f172a',
+    color: theme.text,
     fontWeight: '700',
   },
 });

@@ -1,19 +1,13 @@
-import { X } from 'lucide-react-native';
 import { useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { useAppData } from '../app-data-context';
 import KeyboardDoneBar, { KEYBOARD_DONE_BAR_ID } from '../components/ui/KeyboardDoneBar';
+import GoalFormHeader from '../components/goals/GoalFormHeader';
+import GoalFormStepper from '../components/goals/GoalFormStepper';
 import OptionPicker from '../components/ui/OptionPicker';
+import { goalFormStyles } from '../components/goals/goalFormStyles';
 import {
   getDefaultAutoContributionAnchor,
   parseAutoContributionAnchor,
@@ -24,7 +18,6 @@ import {
   accountTypes,
   categories,
   categoryLabels,
-  goalFormStepNames,
   recurringStateContributionErrorLabels,
   recurringStateContributionLabels,
   recurringStateContributionPlaceholders,
@@ -40,7 +33,6 @@ export default function AddGoalModal() {
   const router = useRouter();
   const { addGoal } = useAppData();
   const totalSteps = totalGoalFormSteps;
-  const stepNames = goalFormStepNames;
 
   const [name, setName] = useState('');
   const [origin, setOrigin] = useState('');
@@ -194,65 +186,13 @@ export default function AddGoalModal() {
       <Stack.Screen options={{ title: 'Add Goal' }} />
       <KeyboardDoneBar />
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.headerRow}>
-          <View style={styles.headerTextWrap}>
-            <Text style={styles.title}>New Account Goal</Text>
-          </View>
-          <Pressable
-            onPress={() => router.back()}
-            style={styles.dismissButton}
-            accessibilityRole="button"
-            accessibilityLabel="Close add goal modal"
-            hitSlop={10}
-          >
-            <X color="#0f172a" size={18} />
-          </Pressable>
-        </View>
+        <GoalFormHeader
+          title="New Account Goal"
+          onDismiss={() => router.back()}
+          accessibilityLabel="Close add goal modal"
+        />
 
-        <View style={styles.stepperRow}>
-          {[1, 2, 3].map((step) => {
-            const isActive = step === currentStep;
-            const isCompleted = step < currentStep;
-
-            return (
-              <View key={step} style={styles.stepperItem}>
-                <View style={styles.stepperTopRow}>
-                  <View
-                    style={[
-                      styles.stepperCircle,
-                      (isActive || isCompleted) && styles.stepperCircleActive,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.stepperCircleText,
-                        (isActive || isCompleted) && styles.stepperCircleTextActive,
-                      ]}
-                    >
-                      {step}
-                    </Text>
-                  </View>
-                  {step < totalSteps ? (
-                    <View
-                      style={[
-                        styles.stepperConnector,
-                        step < currentStep && styles.stepperConnectorActive,
-                      ]}
-                    />
-                  ) : null}
-                </View>
-                <Text
-                  style={[
-                    styles.stepperLabel,
-                    (isActive || isCompleted) && styles.stepperLabelActive,
-                  ]}
-                >
-                  {stepNames[step - 1]}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
+        <GoalFormStepper currentStep={currentStep} />
 
         {currentStep === 1 ? (
           <>
@@ -547,268 +487,4 @@ export default function AddGoalModal() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#eef7fb',
-  },
-  content: {
-    padding: 16,
-    paddingTop: 24,
-    paddingBottom: 40,
-    gap: 20,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  headerTextWrap: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#082f49',
-  },
-  checkboxControlRow: {
-    marginTop: 8,
-    marginBottom: 4,
-  },
-  stepperRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: -4,
-    marginBottom: 6,
-  },
-  stepperItem: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 6,
-  },
-  stepperTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  stepperLabel: {
-    color: '#64748b',
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  stepperLabelActive: {
-    color: '#0f172a',
-  },
-  stepperCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 1,
-    borderColor: '#94a3b8',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepperCircleActive: {
-    borderColor: '#0369a1',
-    backgroundColor: '#0369a1',
-  },
-  stepperCircleText: {
-    color: '#475569',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  stepperCircleTextActive: {
-    color: '#fff',
-  },
-  stepperConnector: {
-    flex: 1,
-    height: 2,
-    backgroundColor: '#cbd5e1',
-    marginHorizontal: 8,
-  },
-  stepperConnectorActive: {
-    backgroundColor: '#0369a1',
-  },
-  dismissButton: {
-    borderRadius: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
-    alignSelf: 'flex-start',
-  },
-  dismissButtonText: {
-    color: '#0f172a',
-    fontWeight: '700',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: '#fff',
-    marginTop: 6,
-  },
-  errorText: {
-    color: '#dc2626',
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 2,
-  },
-  fieldLabelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  fieldLabel: {
-    color: '#0c4a6e',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  requiredMark: {
-    fontSize: 11,
-    color: '#dc2626',
-    fontWeight: '700',
-  },
-  pillWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 6,
-  },
-  pill: {
-    borderWidth: 1,
-    borderColor: '#bae6fd',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 999,
-    backgroundColor: '#f0f9ff',
-  },
-  pillActive: {
-    backgroundColor: '#0369a1',
-    borderColor: '#0369a1',
-  },
-  pillText: {
-    color: '#0c4a6e',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  pillTextActive: {
-    color: '#fff',
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 6,
-  },
-  subSectionCard: {
-    borderWidth: 1,
-    borderColor: '#d5e7f3',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    gap: 16,
-    marginTop: 2,
-  },
-  subSectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-  subSectionTitle: {
-    color: '#0f172a',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  subSectionHelper: {
-    color: '#475569',
-    fontSize: 12,
-  },
-  checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    flex: 1,
-    paddingVertical: 2,
-  },
-  checkboxBox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#94a3b8',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkboxBoxChecked: {
-    borderColor: '#0369a1',
-    backgroundColor: '#0369a1',
-  },
-  checkboxIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 2,
-    backgroundColor: '#fff',
-  },
-  checkboxLabel: {
-    color: '#0f172a',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  optionalSection: {
-    gap: 20,
-    paddingTop: 6,
-  },
-  sectionDivider: {
-    height: 1,
-    backgroundColor: '#dbe7f0',
-    marginVertical: 2,
-  },
-  primaryButton: {
-    backgroundColor: '#0369a1',
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontWeight: '700',
-  },
-  navigationRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 10,
-  },
-  navigationButton: {
-    flex: 1,
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderColor: '#94a3b8',
-    backgroundColor: '#f8fafc',
-  },
-  secondaryButtonText: {
-    color: '#0f172a',
-    fontWeight: '700',
-  },
-  pickerWrap: {
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  },
-  pickerText: {
-    color: '#0f172a',
-    fontSize: 14,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-  },
-});
+const styles = goalFormStyles;

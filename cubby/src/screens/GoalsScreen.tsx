@@ -11,6 +11,7 @@ import GoalsHeader from '../components/goals/GoalsHeader';
 import GoalsTemplatesCard from '../components/goals/GoalsTemplatesCard';
 import { GoalDetailsInput } from '../components/goals/types';
 import { shouldShowOnboarding } from '../onboarding';
+import { theme } from '../theme';
 
 export default function GoalsScreen() {
   const { data, updateGoal, deleteGoal } = useAppData();
@@ -77,7 +78,7 @@ export default function GoalsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#eef7fb',
+    backgroundColor: theme.background,
   },
   content: {
     padding: 16,

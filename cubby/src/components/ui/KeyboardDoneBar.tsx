@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { theme } from '../../theme';
 import { KEYBOARD_DONE_BAR_ID } from './constants';
 
 export { KEYBOARD_DONE_BAR_ID } from './constants';
@@ -31,9 +32,9 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    backgroundColor: '#f1f5f9',
+    backgroundColor: theme.backgroundAlt,
     borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    borderTopColor: theme.border,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   doneText: {
-    color: '#0369a1',
+    color: theme.accent,
     fontWeight: '700',
     fontSize: 15,
   },

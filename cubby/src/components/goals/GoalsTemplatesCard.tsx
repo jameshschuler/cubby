@@ -2,6 +2,7 @@ import { Pencil, Trash2 } from 'lucide-react-native';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatCurrency } from '../../formatters';
+import { theme } from '../../theme';
 import { Goal } from '../../types';
 import { recurringStateAutoContributionLabels } from './constants';
 import { GoalsTemplatesCardProps } from './types';
@@ -111,7 +112,7 @@ export default function GoalsTemplatesCard({
                   accessibilityRole="button"
                   accessibilityLabel={`Edit ${goal.name}`}
                 >
-                  <Pencil color="#475569" size={14} />
+                  <Pencil color={theme.textMuted} size={14} />
                 </Pressable>
                 <Pressable
                   onPress={() => handleDelete(goal)}
@@ -119,7 +120,7 @@ export default function GoalsTemplatesCard({
                   accessibilityRole="button"
                   accessibilityLabel={`Delete ${goal.name}`}
                 >
-                  <Trash2 color="#b91c1c" size={14} />
+                  <Trash2 color="#b45309" size={14} />
                 </Pressable>
               </View>
             </View>
@@ -143,8 +144,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 14,
     gap: 9,
-    backgroundColor: '#ffffff',
-    shadowColor: '#0f172a',
+    backgroundColor: theme.surface,
+    shadowColor: theme.shadow,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 9,
     paddingVertical: 3,
-    backgroundColor: '#f1f5f9',
+    backgroundColor: theme.backgroundAlt,
   },
   goalPillText: {
     color: '#475569',
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
   },
   goalName: {
     fontWeight: '700',
-    color: '#0f172a',
+    color: theme.text,
     fontSize: 15,
     lineHeight: 20,
   },
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   goalProgress: {
-    color: '#0369a1',
+    color: theme.accent,
     fontWeight: '700',
     fontSize: 20,
   },
@@ -201,11 +202,11 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 8,
     borderRadius: 999,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: theme.border,
     overflow: 'hidden',
   },
   goalMetaText: {
-    color: '#64748b',
+    color: theme.textMuted,
     fontSize: 12,
     fontWeight: '600',
     lineHeight: 16,
@@ -231,9 +232,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 999,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.surfaceMuted,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: theme.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -241,9 +242,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 999,
-    backgroundColor: '#fef2f2',
+    backgroundColor: theme.surfaceMuted,
     borderWidth: 1,
-    borderColor: '#fecaca',
+    borderColor: theme.border,
     alignItems: 'center',
     justifyContent: 'center',
   },

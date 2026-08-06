@@ -16,12 +16,12 @@ export const filterLabel: Record<'week' | 'month' | 'year', string> = {
 
 export const getProgressFillColor = (ratio: number) => {
   if (ratio >= 1) {
-    return '#16a34a';
+    return '#6f8f54';
   }
 
   if (ratio >= 0.6) {
-    return '#0284c7';
+    return '#b87a4a';
   }
 
-  return '#38bdf8';
+  return '#7c4b2f';
 };

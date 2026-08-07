@@ -32,6 +32,7 @@ export interface GoalsTemplatesCardProps {
   progressEvents: ProgressEvent[];
   onEditGoal: (goal: Goal) => void;
   onDeleteGoal: (goalId: string, removeAssociatedData: boolean) => void;
+  onCreateGoal: () => void;
 }
 
 export interface GoalsHeaderProps {

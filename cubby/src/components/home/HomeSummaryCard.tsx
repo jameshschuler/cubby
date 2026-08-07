@@ -1,4 +1,4 @@
-import { PiggyBank } from 'lucide-react-native';
+import { TrendingUp } from 'lucide-react-native';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { formatCurrency, formatPercent } from '../../formatters';
@@ -21,7 +21,7 @@ export default function HomeSummaryCard({
   return (
     <View style={styles.card}>
       <View style={styles.cardTitleRow}>
-        <PiggyBank color={theme.accent} size={18} />
+        <TrendingUp color={theme.accent} size={18} />
         <Text style={styles.cardTitle}>
           {selectedView === 'one-time' ? 'One-time Summary' : 'Summary'}
         </Text>

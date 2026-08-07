@@ -7,6 +7,16 @@ import {
 import { createGoal, createProgressEvent } from './deleteGoalState';
 import { AppData } from './types';
 
+const baseSettings: AppData['settings'] = {
+  defaultView: 'month',
+  targetSavingsRate: 0.15,
+  savingsTargetMode: 'rate',
+  yearlySavingsGoalAmount: 0,
+  incomeAmount: 0,
+  incomeFrequency: 'monthly',
+  hasCompletedOnboarding: false,
+};
+
 describe('syncAutomaticContributionEvents', () => {
   it('defaults weekly contributions to Friday', () => {
     expect(getDefaultAutoContributionAnchor('week')).toBe('5');
@@ -33,17 +43,7 @@ describe('syncAutomaticContributionEvents', () => {
           createdAt: '2024-03-18T12:00:00.000Z',
         }),
       ],
-      settings: {
-        defaultView: 'month',
-        targetSavingsRate: 0.15,
-        savingsTargetMode: 'rate',
-        yearlySavingsGoalAmount: 0,
-        incomeAmount: 0,
-        incomeFrequency: 'monthly',
-        incomeIsGross: true,
-        hasCompletedOnboarding: false,
-        useSeededDemoData: false,
-      },
+      settings: baseSettings,
     };
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-03-20T12:00:00.000Z'));
@@ -74,17 +74,7 @@ describe('syncAutomaticContributionEvents', () => {
         }),
       ],
       progressEvents: [],
-      settings: {
-        defaultView: 'month',
-        targetSavingsRate: 0.15,
-        savingsTargetMode: 'rate',
-        yearlySavingsGoalAmount: 0,
-        incomeAmount: 0,
-        incomeFrequency: 'monthly',
-        incomeIsGross: true,
-        hasCompletedOnboarding: false,
-        useSeededDemoData: false,
-      },
+      settings: baseSettings,
     };
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-01-20T12:00:00.000Z'));
@@ -108,22 +98,58 @@ describe('syncAutomaticContributionEvents', () => {
         }),
       ],
       progressEvents: [],
-      settings: {
-        defaultView: 'month',
-        targetSavingsRate: 0.15,
-        savingsTargetMode: 'rate',
-        yearlySavingsGoalAmount: 0,
-        incomeAmount: 0,
-        incomeFrequency: 'monthly',
-        incomeIsGross: true,
-        hasCompletedOnboarding: false,
-        useSeededDemoData: false,
-      },
+      settings: baseSettings,
     };
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-06-20T12:00:00.000Z'));
 
     expect(next.progressEvents[0]?.eventDate).toBe(new Date(2024, 5, 15, 12).toISOString());
+  });
+
+  it('clamps monthly anchors that exceed the number of days in the month', () => {
+    const data: AppData = {
+      goals: [
+        createGoal({
+          id: 'goal-month-end',
+          isRecurring: true,
+          recurringState: 'month',
+          autoContributionAmount: 150,
+          autoContributionAnchor: '31',
+          createdAt: '2024-02-01T12:00:00.000Z',
+          updatedAt: '2024-02-01T12:00:00.000Z',
+        }),
+      ],
+      progressEvents: [],
+      settings: baseSettings,
+    };
+
+    const next = syncAutomaticContributionEvents(data, new Date('2024-02-20T12:00:00.000Z'));
+
+    expect(next.progressEvents[0]?.eventDate).toBe(new Date(2024, 1, 29, 12).toISOString());
+  });
+
+  it('falls back to the default anchor when an existing weekly anchor is malformed', () => {
+    const data: AppData = {
+      goals: [
+        createGoal({
+          id: 'goal-week-default',
+          isRecurring: true,
+          recurringState: 'week',
+          autoContributionAmount: 60,
+          autoContributionAnchor: 'oops',
+          createdAt: '2024-01-10T12:00:00.000Z',
+          updatedAt: '2024-01-10T12:00:00.000Z',
+        }),
+      ],
+      progressEvents: [],
+      settings: baseSettings,
+    };
+
+    const next = syncAutomaticContributionEvents(data, new Date('2024-01-20T12:00:00.000Z'));
+
+    expect(next.progressEvents[next.progressEvents.length - 1]?.eventDate).toBe(
+      new Date(2024, 0, 19, 12).toISOString()
+    );
   });
 
   it('adds automatic weekly and yearly events based on the goal recurrence', () => {
@@ -147,17 +173,7 @@ describe('syncAutomaticContributionEvents', () => {
         }),
       ],
       progressEvents: [],
-      settings: {
-        defaultView: 'month',
-        targetSavingsRate: 0.15,
-        savingsTargetMode: 'rate',
-        yearlySavingsGoalAmount: 0,
-        incomeAmount: 0,
-        incomeFrequency: 'monthly',
-        incomeIsGross: true,
-        hasCompletedOnboarding: false,
-        useSeededDemoData: false,
-      },
+      settings: baseSettings,
     };
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-01-20T12:00:00.000Z'));
@@ -206,17 +222,7 @@ describe('syncAutomaticContributionEvents', () => {
           source: 'automatic',
         }),
       ],
-      settings: {
-        defaultView: 'month',
-        targetSavingsRate: 0.15,
-        savingsTargetMode: 'rate',
-        yearlySavingsGoalAmount: 0,
-        incomeAmount: 0,
-        incomeFrequency: 'monthly',
-        incomeIsGross: true,
-        hasCompletedOnboarding: false,
-        useSeededDemoData: false,
-      },
+      settings: baseSettings,
     };
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-01-20T12:00:00.000Z'));

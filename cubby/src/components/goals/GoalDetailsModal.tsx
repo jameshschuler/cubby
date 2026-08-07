@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { Modal, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 import { parseAutoContributionAnchor } from '../../automatic-contributions';
-import KeyboardDoneBar from '../ui/KeyboardDoneBar';
 import GoalFormHeader from './GoalFormHeader';
 import GoalFormFields from './GoalFormFields';
 import GoalFormStepper from './GoalFormStepper';
 import { goalFormStyles } from './goalFormStyles';
 import { Goal } from '../../types';
-import { recurringStateContributionErrorLabels, totalGoalFormSteps } from './constants';
+import { totalGoalFormSteps } from './constants';
 import { GoalDetailsInput, GoalDetailsModalProps, ValidationErrors } from './types';
 import { getGoalFormNavigationConfig } from './goalFormNavigation';
+import {
+  validateAutomaticContribution as validateGoalAutomaticContribution,
+  validateGoalBasics,
+} from './validation';
 
 function createInputFromGoal(goal: Goal | null): GoalDetailsInput {
   if (!goal) {
@@ -57,15 +60,10 @@ export default function GoalDetailsModal({
   );
 
   const validateBasics = () => {
-    const nextErrors: ValidationErrors = {};
-
-    if (!input.name.trim()) {
-      nextErrors.name = 'Account name is required.';
-    }
-
-    if (Number.isNaN(input.targetAmount) || input.targetAmount <= 0) {
-      nextErrors.targetAmount = 'Target amount must be greater than 0.';
-    }
+    const nextErrors = validateGoalBasics({
+      name: input.name,
+      targetAmount: input.targetAmount,
+    });
 
     setErrors((current) => ({
       ...current,
@@ -77,6 +75,14 @@ export default function GoalDetailsModal({
   };
 
   const validateAutomaticContribution = () => {
+    const nextErrors = validateGoalAutomaticContribution({
+      isRecurring: input.isRecurring,
+      hasAutomaticContribution,
+      recurringState: input.recurringState,
+      autoContributionAmount: input.autoContributionAmount,
+      autoContributionAnchor: input.autoContributionAnchor,
+    });
+
     if (!input.isRecurring || !hasAutomaticContribution) {
       setErrors((current) => ({
         ...current,
@@ -84,29 +90,6 @@ export default function GoalDetailsModal({
         autoContributionAnchor: undefined,
       }));
       return true;
-    }
-
-    const nextErrors: ValidationErrors = {};
-
-    if (
-      input.autoContributionAmount === undefined ||
-      Number.isNaN(input.autoContributionAmount) ||
-      input.autoContributionAmount <= 0
-    ) {
-      nextErrors.autoContributionAmount = `${recurringStateContributionErrorLabels[input.recurringState]} must be greater than 0.`;
-    }
-
-    const parsedAutoContributionAnchor = parseAutoContributionAnchor(
-      input.recurringState,
-      input.autoContributionAnchor
-    );
-
-    if (
-      input.autoContributionAmount !== undefined &&
-      input.autoContributionAmount > 0 &&
-      (!parsedAutoContributionAnchor.isValid || !parsedAutoContributionAnchor.normalizedValue)
-    ) {
-      nextErrors.autoContributionAnchor = 'Choose a valid contribution timing for this frequency.';
     }
 
     setErrors((current) => ({
@@ -176,7 +159,6 @@ export default function GoalDetailsModal({
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <SafeAreaView style={styles.safeArea}>
-        <KeyboardDoneBar />
         <ScrollView contentContainerStyle={styles.content}>
           <GoalFormHeader title="Edit Account Goal" onDismiss={onClose} />
 

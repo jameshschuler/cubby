@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
-import { Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { useAppData } from '../app-data-context';
-import KeyboardDoneBar, { KEYBOARD_DONE_BAR_ID } from '../components/ui/KeyboardDoneBar';
 import GoalFormHeader from '../components/goals/GoalFormHeader';
 import GoalFormStepper from '../components/goals/GoalFormStepper';
 import OptionPicker from '../components/ui/OptionPicker';
@@ -18,7 +17,6 @@ import {
   accountTypes,
   categories,
   categoryLabels,
-  recurringStateContributionErrorLabels,
   recurringStateContributionLabels,
   recurringStateContributionPlaceholders,
   recurringStateLabels,
@@ -28,6 +26,10 @@ import {
   yearMonthOptions,
 } from '../components/goals/constants';
 import { ValidationErrors } from '../components/goals/types';
+import {
+  validateAutomaticContribution as validateGoalAutomaticContribution,
+  validateGoalBasics,
+} from '../components/goals/validation';
 
 export default function AddGoalModal() {
   const router = useRouter();
@@ -50,16 +52,7 @@ export default function AddGoalModal() {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validateBasics = () => {
-    const nextErrors: ValidationErrors = {};
-    const parsedTarget = Number(targetAmount);
-
-    if (!name.trim()) {
-      nextErrors.name = 'Account name is required.';
-    }
-
-    if (Number.isNaN(parsedTarget) || parsedTarget <= 0) {
-      nextErrors.targetAmount = 'Target amount must be greater than 0.';
-    }
+    const nextErrors = validateGoalBasics({ name, targetAmount });
 
     setErrors((current) => ({
       ...current,
@@ -71,6 +64,14 @@ export default function AddGoalModal() {
   };
 
   const validateAutomaticContribution = () => {
+    const nextErrors = validateGoalAutomaticContribution({
+      isRecurring,
+      hasAutomaticContribution,
+      recurringState,
+      autoContributionAmount,
+      autoContributionAnchor,
+    });
+
     if (!isRecurring || !hasAutomaticContribution) {
       setErrors((current) => ({
         ...current,
@@ -78,29 +79,6 @@ export default function AddGoalModal() {
         autoContributionAnchor: undefined,
       }));
       return true;
-    }
-
-    const nextErrors: ValidationErrors = {};
-    const trimmedAutoContributionAmount = autoContributionAmount.trim();
-    const parsedAutoContributionAmount = trimmedAutoContributionAmount
-      ? Number(trimmedAutoContributionAmount)
-      : undefined;
-    const parsedAutoContributionAnchor = parseAutoContributionAnchor(
-      recurringState,
-      autoContributionAnchor
-    );
-
-    if (
-      !trimmedAutoContributionAmount ||
-      parsedAutoContributionAmount === undefined ||
-      Number.isNaN(parsedAutoContributionAmount) ||
-      parsedAutoContributionAmount <= 0
-    ) {
-      nextErrors.autoContributionAmount = `${recurringStateContributionErrorLabels[recurringState]} must be greater than 0.`;
-    }
-
-    if (!parsedAutoContributionAnchor.isValid || !parsedAutoContributionAnchor.normalizedValue) {
-      nextErrors.autoContributionAnchor = 'Choose a valid contribution timing for this frequency.';
     }
 
     setErrors((current) => ({
@@ -142,7 +120,7 @@ export default function AddGoalModal() {
       return;
     }
 
-    const parsedTarget = Number(targetAmount);
+    const parsedTarget = Number(targetAmount.trim());
     const trimmedAutoContributionAmount = autoContributionAmount.trim();
     const parsedAutoContributionAmount =
       isRecurring && hasAutomaticContribution && trimmedAutoContributionAmount
@@ -184,7 +162,6 @@ export default function AddGoalModal() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Stack.Screen options={{ title: 'Add Goal' }} />
-      <KeyboardDoneBar />
       <ScrollView contentContainerStyle={styles.content}>
         <GoalFormHeader
           title="New Account Goal"
@@ -204,7 +181,8 @@ export default function AddGoalModal() {
                 setErrors((current) => ({ ...current, name: undefined }));
               }}
               placeholder="Account name"
-              inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
+              returnKeyType="done"
+              onSubmitEditing={() => Keyboard.dismiss()}
               style={styles.input}
             />
             {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
@@ -218,7 +196,6 @@ export default function AddGoalModal() {
               }}
               placeholder="Target amount"
               keyboardType="numeric"
-              inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
               style={styles.input}
             />
             {errors.targetAmount ? (
@@ -332,7 +309,6 @@ export default function AddGoalModal() {
                       }}
                       placeholder={recurringStateContributionPlaceholders[recurringState]}
                       keyboardType="numeric"
-                      inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
                       style={styles.input}
                     />
 
@@ -381,7 +357,6 @@ export default function AddGoalModal() {
                         }}
                         placeholder="Day of month"
                         keyboardType="numeric"
-                        inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
                         style={styles.input}
                       />
                     )}
@@ -408,7 +383,6 @@ export default function AddGoalModal() {
               value={origin}
               onChangeText={setOrigin}
               placeholder="Institution (Ally, Fidelity...)"
-              inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
               style={styles.input}
             />
 

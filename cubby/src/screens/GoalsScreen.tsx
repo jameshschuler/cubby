@@ -60,6 +60,7 @@ export default function GoalsScreen() {
             progressEvents={data.progressEvents}
             onEditGoal={openGoalDetailsDialog}
             onDeleteGoal={handleDeleteGoal}
+            onCreateGoal={handleAddGoal}
           />
         )}
       </ScrollView>

@@ -1,6 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { theme } from '../../theme';
-import KeyboardDoneBar, { KEYBOARD_DONE_BAR_ID } from '../ui/KeyboardDoneBar';
 import { ActualAmountModalProps } from './types';
 
 export default function ActualAmountModal({
@@ -15,13 +14,11 @@ export default function ActualAmountModal({
       <View style={styles.modalBackdrop}>
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>Update Contribution</Text>
-          <KeyboardDoneBar />
           <TextInput
             value={amount}
             onChangeText={onAmountChange}
             placeholder="Actual amount"
             keyboardType="numeric"
-            inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
             style={styles.modalInput}
           />
           <View style={styles.modalActions}>

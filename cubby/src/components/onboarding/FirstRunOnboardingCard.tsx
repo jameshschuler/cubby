@@ -1,22 +1,25 @@
-import { ArrowRight, Sparkles } from 'lucide-react-native';
+import { ArrowRight, Goal } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../theme';
 import { FirstRunOnboardingCardProps } from './types';
 
-export default function FirstRunOnboardingCard({ onCreateGoal }: FirstRunOnboardingCardProps) {
+export default function FirstRunOnboardingCard({
+  onCreateGoal,
+  title = 'Welcome to Cubby',
+  body = 'Start with one goal to track your progress, see your momentum, and build a simple plan.',
+  buttonLabel = 'Create first goal',
+}: FirstRunOnboardingCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
-        <Sparkles color={theme.accent} size={20} />
+        <Goal color={theme.accent} size={20} />
       </View>
       <View style={styles.textWrap}>
-        <Text style={styles.title}>Welcome to Cubby</Text>
-        <Text style={styles.body}>
-          Start with one goal to track your progress, see your momentum, and build a simple plan.
-        </Text>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.body}>{body}</Text>
       </View>
       <Pressable style={styles.primaryButton} onPress={onCreateGoal} accessibilityRole="button">
-        <Text style={styles.primaryButtonText}>Create first goal</Text>
+        <Text style={styles.primaryButtonText}>{buttonLabel}</Text>
         <ArrowRight color={theme.textOnAccent} size={16} />
       </Pressable>
     </View>

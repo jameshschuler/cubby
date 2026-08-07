@@ -1,21 +1,6 @@
 # Cubby Project Plan
 
-App working title: Cubby
-
-## Mission
-
-Help users plan and track savings and investing goals with simple cadence-based targets, progress history, and savings-rate insights.
-
-## Platform
-
-- Mobile-first React Native app using Expo + TypeScript
-- Initial focus on iOS
-- Lightweight UI with stylesheets and Lucide icons
-- This is a side project, so the roadmap stays simple and iterative
-
-## MVP Scope (V1)
-
-### Completed
+## MVP Feature List
 
 - [x] Goal creation, editing, and deletion
 - [x] Goal details and progress history
@@ -25,46 +10,24 @@ Help users plan and track savings and investing goals with simple cadence-based 
 - [x] JSON export/share support
 - [x] Basic stats and trend views
 - [x] Core onboarding and empty-state experience
-
-### Remaining for MVP
-
-- [ ] Tighten UI polish and consistency across screens
-- [ ] Improve validation and edge-case handling for goal/input flows
-- [ ] Expand cadence support for more flexible saving patterns
-- [ ] Improve empty states and first-run guidance
-- [ ] Add stronger testing around calculations and data flows
 - [ ] Finalize a clean release-ready experience for iOS
+  - [ ] Confirm cold-launch visuals on device (icon + native splash + no flash)
+  - [ ] Verify export/share JSON flow on a physical iPhone
+  - [ ] Run full manual QA pass: onboarding, add/edit/delete, progress logging, stats, settings, relaunch persistence
+  - [ ] Complete device build + archive in Xcode with successful signing/provisioning
+  - [ ] Upload build to App Store Connect and confirm build visibility in TestFlight/Builds
+  - [ ] Capture final App Store screenshots and verify listing metadata/privacy text
 
-## MVP Screens
+## V2 Planned Features
 
-1. Onboarding / empty state
-2. Dashboard with summaries and trends
-3. Goal details
-4. Add/Edit goal
-5. Log progress
-6. Income and savings-rate settings
-7. Export/share screen
-
-## Data Model (MVP, local)
-
-1. Goal
-2. ProgressEvent
-3. IncomeEvent
-4. UserSettings
-5. Derived calculations for totals, completion ratio, and savings rate
-
-## Architecture (MVP)
-
-- React Native with Expo + TypeScript
-- Local persistence layer
-- Lightweight component-based UI
-- Date/period utilities and calculation helpers
-- JSON export serializer
-
-## V2 Roadmap
-
-### Planned for V2
-
+- [ ] Expand cadence support for more flexible saving patterns
+  - [ ] Add richer cadence types in goal setup: biweekly, semimonthly (1st/15th), weekly by weekday, and every N months
+  - [ ] Add optional schedule boundaries: start date, optional end date, and pause/resume controls
+  - [ ] Extend data model/storage for advanced cadence rules with backward compatibility for existing goals
+  - [ ] Update contribution-generation logic to support the new cadence rules and edge cases (month length, leap year, timezone-safe anchors)
+  - [ ] Update home/stats projections so forecasted progress reflects advanced cadence schedules
+  - [ ] Add migration + regression tests for cadence parsing, recurrence generation, and calculation accuracy
+  - [ ] Add UX guardrails and validation copy for invalid cadence combinations (e.g., impossible day-of-month selections)
 - [ ] Cloud sync and account support
 - [ ] Shared goals or shared spaces
 - [ ] Collaboration and permissions

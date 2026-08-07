@@ -36,4 +36,5 @@ export interface HomeGoalsCardProps {
   visibleGoals: Goal[];
   getDisplayedGoalProgress: (goal: Goal) => number;
   onEditActual: (goal: Goal) => void;
+  onCreateGoal: () => void;
 }

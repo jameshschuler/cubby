@@ -2,7 +2,6 @@ import { X } from 'lucide-react-native';
 import { ReactNode } from 'react';
 import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import KeyboardDoneBar from '../ui/KeyboardDoneBar';
 import { theme } from '../../theme';
 
 interface SettingsModalShellProps {
@@ -26,7 +25,6 @@ export default function SettingsModalShell({
       onRequestClose={onClose}
     >
       <SafeAreaView style={styles.modalSafeArea}>
-        <KeyboardDoneBar />
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>{title}</Text>
           <Pressable

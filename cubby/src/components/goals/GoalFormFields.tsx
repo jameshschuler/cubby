@@ -1,8 +1,7 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { theme } from '../../theme';
 import OptionPicker from '../ui/OptionPicker';
-import { KEYBOARD_DONE_BAR_ID } from '../ui/KeyboardDoneBar';
 import { getDefaultAutoContributionAnchor } from '../../automatic-contributions';
 import {
   accountTypeLabels,
@@ -66,7 +65,8 @@ export default function GoalFormFields({
             onSetErrors((current) => ({ ...current, name: undefined }));
           }}
           placeholder="Account name"
-          inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
+          returnKeyType="done"
+          onSubmitEditing={() => Keyboard.dismiss()}
           style={styles.input}
         />
         {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
@@ -84,7 +84,6 @@ export default function GoalFormFields({
           }}
           placeholder="Target amount"
           keyboardType="numeric"
-          inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
           style={styles.input}
         />
         {errors.targetAmount ? <Text style={styles.errorText}>{errors.targetAmount}</Text> : null}
@@ -216,7 +215,6 @@ export default function GoalFormFields({
                   }}
                   placeholder={recurringStateContributionPlaceholders[input.recurringState]}
                   keyboardType="numeric"
-                  inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
                   style={styles.input}
                 />
 
@@ -265,7 +263,6 @@ export default function GoalFormFields({
                     }}
                     placeholder={input.recurringState === 'month' ? 'Day of month' : 'MM-DD'}
                     keyboardType={input.recurringState === 'month' ? 'numeric' : 'default'}
-                    inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
                     style={styles.input}
                   />
                 )}
@@ -292,7 +289,6 @@ export default function GoalFormFields({
         value={input.origin}
         onChangeText={(value) => updateInput((current) => ({ ...current, origin: value }))}
         placeholder="Institution (Ally, Fidelity...)"
-        inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
         style={styles.input}
       />
 

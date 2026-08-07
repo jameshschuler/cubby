@@ -180,6 +180,7 @@ export default function HomeScreen() {
             visibleGoals={visibleGoals}
             getDisplayedGoalProgress={getDisplayedGoalProgress}
             onEditActual={openActualAmountDialog}
+            onCreateGoal={handleCreateGoal}
           />
         )}
       </ScrollView>

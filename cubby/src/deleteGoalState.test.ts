@@ -20,9 +20,7 @@ describe('deleteGoalState', () => {
         yearlySavingsGoalAmount: 0,
         incomeAmount: 5000,
         incomeFrequency: 'monthly',
-        incomeIsGross: true,
         hasCompletedOnboarding: false,
-        useSeededDemoData: false,
       },
     };
   }

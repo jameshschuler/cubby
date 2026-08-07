@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
+import { router } from 'expo-router';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import {
@@ -17,10 +18,14 @@ import { styles } from '../components/stats/styles';
 import StatsSummaryGrid from '../components/stats/StatsSummaryGrid';
 import useStatsData from '../components/stats/useStatsData';
 import StatsYearListCard from '../components/stats/StatsYearListCard';
+import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingCard';
+import { shouldShowOnboarding } from '../onboarding';
 
 export default function StatsScreen() {
   const { goals, selection, totals, history } = useStatsData();
   const { data } = useAppData();
+  const showOnboarding = shouldShowOnboarding(data);
+  const hasAnyStats = goals.length > 0 || data.progressEvents.length > 0;
 
   const {
     setSelectedGoalId,
@@ -80,6 +85,9 @@ export default function StatsScreen() {
     goals
   );
   const actualSavingsRate = overallYearSavingsRate;
+  const handleCreateGoal = () => {
+    router.push('/add-goal');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -87,15 +95,28 @@ export default function StatsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <StatsHeroCard />
 
-        <StatsSelectionCard
-          goals={goals}
-          showAllGoals={shouldShowAllGoals}
-          effectiveSelectedGoalId={effectiveSelectedGoalId}
-          onSelectGoal={setSelectedGoalId}
-        />
+        {!hasAnyStats ? (
+          <FirstRunOnboardingCard
+            onCreateGoal={handleCreateGoal}
+            title={showOnboarding ? 'Build your first stats view' : 'No stats to review yet'}
+            body={
+              showOnboarding
+                ? 'Create a goal and log progress to unlock yearly totals, monthly trends, and savings-rate insights.'
+                : 'Add a goal or log progress to populate this screen with totals, history, and trend data.'
+            }
+            buttonLabel="Add goal"
+          />
+        ) : null}
 
-        {shouldShowAllGoals || selectedGoal ? (
+        {hasAnyStats ? (
           <>
+            <StatsSelectionCard
+              goals={goals}
+              showAllGoals={shouldShowAllGoals}
+              effectiveSelectedGoalId={effectiveSelectedGoalId}
+              onSelectGoal={setSelectedGoalId}
+            />
+
             <StatsGoalSummaryCard showAllGoals={shouldShowAllGoals} selectedGoal={selectedGoal} />
 
             <StatsSummaryGrid

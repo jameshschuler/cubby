@@ -16,7 +16,6 @@ import { getIncomeAmountForView } from '../calculations';
 import { formatCurrency, formatPercent } from '../formatters';
 import { useAppData } from '../app-data-context';
 import { IncomeFrequency, SavingsTargetMode } from '../types';
-import KeyboardDoneBar, { KEYBOARD_DONE_BAR_ID } from '../components/ui/KeyboardDoneBar';
 import SettingsCard from '../components/settings/SettingsCard';
 import SettingsModalShell from '../components/settings/SettingsModalShell';
 import { theme } from '../theme';
@@ -61,7 +60,6 @@ interface SettingsContentProps {
   exportJson: ReturnType<typeof useAppData>['exportJson'];
   saveIncomeSettings: ReturnType<typeof useAppData>['saveIncomeSettings'];
   saveSavingsTargetSettings: ReturnType<typeof useAppData>['saveSavingsTargetSettings'];
-  setSeededDemoDataEnabled: ReturnType<typeof useAppData>['setSeededDemoDataEnabled'];
 }
 
 function SettingsContent({
@@ -86,7 +84,6 @@ function SettingsContent({
   const [incomeFrequency, setIncomeFrequency] = useState<IncomeFrequency>(
     data.settings.incomeFrequency
   );
-  const [incomeIsGross] = useState(data.settings.incomeIsGross);
 
   const incomePreview = useMemo(() => {
     const amount = Number(incomeAmount);
@@ -126,7 +123,7 @@ function SettingsContent({
       Alert.alert('Invalid income', 'Enter a valid income amount.');
       return;
     }
-    saveIncomeSettings(amount, incomeFrequency, incomeIsGross);
+    saveIncomeSettings(amount, incomeFrequency);
     setIncomeModalVisible(false);
   };
 
@@ -140,7 +137,7 @@ function SettingsContent({
 
   const incomeSummary =
     data.settings.incomeAmount > 0
-      ? `${formatCurrency(data.settings.incomeAmount)} · ${data.settings.incomeIsGross ? 'Gross' : 'Net'} · ${data.settings.incomeFrequency === 'monthly' ? 'Monthly' : 'Yearly'}`
+      ? `${formatCurrency(data.settings.incomeAmount)} · ${data.settings.incomeFrequency === 'monthly' ? 'Monthly' : 'Yearly'}`
       : 'Not set';
 
   const targetSummary = (() => {
@@ -159,7 +156,6 @@ function SettingsContent({
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <KeyboardDoneBar />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.heroCard}>
           <Text style={styles.title}>Settings</Text>
@@ -203,7 +199,6 @@ function SettingsContent({
           onChangeText={setIncomeAmount}
           placeholder="Income amount"
           keyboardType="numeric"
-          inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
           style={styles.input}
         />
         <SegmentedControl
@@ -251,7 +246,6 @@ function SettingsContent({
             onChangeText={setTargetRatePercent}
             placeholder="Target rate %"
             keyboardType="numeric"
-            inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
             style={styles.input}
           />
         ) : (
@@ -260,7 +254,6 @@ function SettingsContent({
             onChangeText={setYearlySavingsGoalAmount}
             placeholder="Yearly savings goal"
             keyboardType="numeric"
-            inputAccessoryViewID={KEYBOARD_DONE_BAR_ID}
             style={styles.input}
           />
         )}
@@ -273,22 +266,14 @@ function SettingsContent({
 }
 
 export default function SettingsScreen() {
-  const {
-    data,
-    exportJson,
-    saveIncomeSettings,
-    saveSavingsTargetSettings,
-    setSeededDemoDataEnabled,
-  } = useAppData();
+  const { data, exportJson, saveIncomeSettings, saveSavingsTargetSettings } = useAppData();
 
   return (
     <SettingsContent
-      key={data.settings.useSeededDemoData ? 'demo' : 'live'}
       data={data}
       exportJson={exportJson}
       saveIncomeSettings={saveIncomeSettings}
       saveSavingsTargetSettings={saveSavingsTargetSettings}
-      setSeededDemoDataEnabled={setSeededDemoDataEnabled}
     />
   );
 }
@@ -346,11 +331,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    backgroundColor: '#fff',
+    backgroundColor: theme.surface,
     marginTop: 6,
   },
   primaryButton: {
-    backgroundColor: '#0369a1',
+    backgroundColor: theme.accent,
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
@@ -374,8 +359,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.backgroundAlt,
   },
   pillActive: {
-    backgroundColor: '#0369a1',
-    borderColor: '#0369a1',
+    backgroundColor: theme.accent,
+    borderColor: theme.accent,
   },
   pillText: {
     color: theme.accent,
@@ -401,7 +386,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   segmentOptionActive: {
-    backgroundColor: '#0369a1',
+    backgroundColor: theme.accent,
   },
   segmentOptionText: {
     color: theme.text,

@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatCurrency } from '../../formatters';
 import { theme } from '../../theme';
+import FirstRunOnboardingCard from '../onboarding/FirstRunOnboardingCard';
 import { getProgressFillColor, recurringStateAutoContributionLabels } from './constants';
 import { HomeGoalsCardProps } from './types';
 
@@ -11,6 +12,7 @@ export default function HomeGoalsCard({
   visibleGoals,
   getDisplayedGoalProgress,
   onEditActual,
+  onCreateGoal,
 }: HomeGoalsCardProps) {
   const formatBadgeLabel = (value: string) =>
     value
@@ -27,11 +29,18 @@ export default function HomeGoalsCard({
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Goals</Text>
       {visibleGoals.length === 0 ? (
-        <Text style={styles.emptyText}>
-          {selectedView === 'one-time'
-            ? 'No one-time goals for this view.'
-            : `No ${selectedView} goals for this view.`}
-        </Text>
+        <FirstRunOnboardingCard
+          onCreateGoal={onCreateGoal}
+          title={
+            selectedView === 'one-time' ? 'No one-time goals yet' : `No ${selectedView} goals yet`
+          }
+          body={
+            selectedView === 'one-time'
+              ? 'Add a one-time goal to track a single finish line alongside your recurring accounts.'
+              : `Add a ${selectedView} goal to start tracking progress, targets, and automatic contributions in this view.`
+          }
+          buttonLabel="Add goal"
+        />
       ) : (
         visibleGoals.map((goal) => {
           const progress = getDisplayedGoalProgress(goal);
@@ -127,12 +136,13 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: '700',
-    color: '#0f172a',
+    color: theme.text,
     fontSize: 16,
     letterSpacing: 0.2,
+    fontFamily: 'Georgia',
   },
   emptyText: {
-    color: '#475569',
+    color: theme.textMuted,
   },
   goalRow: {
     borderRadius: 14,
@@ -158,7 +168,7 @@ const styles = StyleSheet.create({
   },
   goalName: {
     fontWeight: '700',
-    color: '#0f172a',
+    color: theme.text,
     fontSize: 15,
     lineHeight: 20,
   },
@@ -176,7 +186,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#475569',
+    color: theme.textMuted,
   },
   goalAmountRow: {
     flexDirection: 'row',
@@ -190,7 +200,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   goalTarget: {
-    color: '#475569',
+    color: theme.textMuted,
     fontWeight: '600',
     fontSize: 13,
   },

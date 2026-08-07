@@ -14,9 +14,7 @@ describe('shouldShowOnboarding', () => {
       yearlySavingsGoalAmount: 0,
       incomeAmount: 0,
       incomeFrequency: 'monthly',
-      incomeIsGross: true,
       hasCompletedOnboarding: false,
-      useSeededDemoData: false,
     },
   };
 

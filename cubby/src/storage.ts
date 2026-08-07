@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppData, Goal, ProgressEvent } from './types';
 
 const STORAGE_KEY = 'cubby.app-data.v1';
-const DEMO_BACKUP_KEY = 'cubby.app-data.demo-backup.v1';
 
 export const defaultData: AppData = {
   goals: [],
@@ -15,9 +14,7 @@ export const defaultData: AppData = {
     yearlySavingsGoalAmount: 0,
     incomeAmount: 0,
     incomeFrequency: 'monthly',
-    incomeIsGross: true,
     hasCompletedOnboarding: false,
-    useSeededDemoData: false,
   },
 };
 
@@ -33,9 +30,7 @@ function normalizeAppData(parsed: Partial<AppData>): AppData {
       yearlySavingsGoalAmount: parsed.settings?.yearlySavingsGoalAmount ?? 0,
       incomeAmount: parsed.settings?.incomeAmount ?? 0,
       incomeFrequency: parsed.settings?.incomeFrequency ?? 'monthly',
-      incomeIsGross: parsed.settings?.incomeIsGross ?? true,
       hasCompletedOnboarding: parsed.settings?.hasCompletedOnboarding ?? false,
-      useSeededDemoData: parsed.settings?.useSeededDemoData ?? false,
     },
   };
 }
@@ -94,25 +89,4 @@ export async function loadAppData(): Promise<AppData> {
 
 export async function saveAppData(data: AppData): Promise<void> {
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-export async function saveAppDataBackup(data: AppData): Promise<void> {
-  await AsyncStorage.setItem(DEMO_BACKUP_KEY, JSON.stringify(data));
-}
-
-export async function loadAppDataBackup(): Promise<AppData | null> {
-  const raw = await AsyncStorage.getItem(DEMO_BACKUP_KEY);
-  if (!raw) {
-    return null;
-  }
-
-  try {
-    return normalizeAppData(JSON.parse(raw) as Partial<AppData>);
-  } catch {
-    return null;
-  }
-}
-
-export async function clearAppDataBackup(): Promise<void> {
-  await AsyncStorage.removeItem(DEMO_BACKUP_KEY);
 }

@@ -6,15 +6,12 @@ import * as Sharing from 'expo-sharing';
 import { syncAutomaticContributionEvents } from './automatic-contributions';
 import { getEntryDateForView, isInView } from './calculations';
 import { deleteGoalState } from './deleteGoalState';
-import { createSeededDemoData } from './seeded-demo-data';
 import {
-  clearAppDataBackup,
-  defaultData,
-  loadAppData,
-  loadAppDataBackup,
-  saveAppData,
-  saveAppDataBackup,
-} from './storage';
+  getCadenceForRecurringState,
+  sanitizeAutoContributionAmount,
+  sanitizeAutoContributionAnchor,
+} from './goal-input';
+import { defaultData, loadAppData, saveAppData } from './storage';
 import {
   AccountType,
   AppData,
@@ -63,9 +60,8 @@ interface AppDataContextValue {
   ) => void;
   saveTargetRate: (ratio: number) => void;
   saveSavingsTargetSettings: (mode: SavingsTargetMode, yearlyGoalAmount: number) => void;
-  saveIncomeSettings: (amount: number, frequency: IncomeFrequency, isGross: boolean) => void;
+  saveIncomeSettings: (amount: number, frequency: IncomeFrequency) => void;
   setDefaultView: (view: ViewPeriod) => void;
-  setSeededDemoDataEnabled: (enabled: boolean) => Promise<void>;
   exportJson: () => Promise<void>;
 }
 
@@ -73,43 +69,6 @@ const AppDataContext = createContext<AppDataContextValue | null>(null);
 
 function createId(): string {
   return `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
-}
-
-function getCadenceForRecurringState(recurringState: RecurringState) {
-  if (recurringState === 'week') {
-    return 'weekly' as const;
-  }
-
-  if (recurringState === 'year') {
-    return 'yearly' as const;
-  }
-
-  return 'monthly' as const;
-}
-
-function sanitizeAutoContributionAmount(input: AddGoalInput) {
-  if (!input.isRecurring) {
-    return undefined;
-  }
-
-  if (
-    typeof input.autoContributionAmount !== 'number' ||
-    Number.isNaN(input.autoContributionAmount) ||
-    input.autoContributionAmount <= 0
-  ) {
-    return undefined;
-  }
-
-  return input.autoContributionAmount;
-}
-
-function sanitizeAutoContributionAnchor(input: AddGoalInput) {
-  if (!input.isRecurring || !input.autoContributionAnchor) {
-    return undefined;
-  }
-
-  const trimmedAnchor = input.autoContributionAnchor.trim();
-  return trimmedAnchor || undefined;
 }
 
 function createManualProgressEvent(
@@ -173,46 +132,16 @@ export function AppDataProvider({ children }: PropsWithChildren) {
     }));
   };
 
-  const setSeededDemoDataEnabled = async (enabled: boolean) => {
-    if (enabled === data.settings.useSeededDemoData) {
-      return;
-    }
-
-    if (enabled) {
-      await saveAppDataBackup(data);
-      setData(syncAutomaticContributionEvents(createSeededDemoData()));
-      return;
-    }
-
-    const backup = await loadAppDataBackup();
-    await clearAppDataBackup();
-
-    if (backup) {
-      setData(
-        syncAutomaticContributionEvents({
-          ...backup,
-          settings: {
-            ...backup.settings,
-            useSeededDemoData: false,
-          },
-        })
-      );
-      return;
-    }
-
-    setData({
-      ...defaultData,
-      settings: {
-        ...defaultData.settings,
-        useSeededDemoData: false,
-      },
-    });
-  };
-
   const addGoal = (input: AddGoalInput) => {
     const now = new Date().toISOString();
-    const autoContributionAmount = sanitizeAutoContributionAmount(input);
-    const autoContributionAnchor = sanitizeAutoContributionAnchor(input);
+    const autoContributionAmount = sanitizeAutoContributionAmount(
+      input.isRecurring,
+      input.autoContributionAmount
+    );
+    const autoContributionAnchor = sanitizeAutoContributionAnchor(
+      input.isRecurring,
+      input.autoContributionAnchor
+    );
 
     setData((current) =>
       syncAutomaticContributionEvents({
@@ -248,8 +177,14 @@ export function AppDataProvider({ children }: PropsWithChildren) {
 
   const updateGoal = (goalId: string, input: UpdateGoalInput) => {
     const now = new Date().toISOString();
-    const autoContributionAmount = sanitizeAutoContributionAmount(input);
-    const autoContributionAnchor = sanitizeAutoContributionAnchor(input);
+    const autoContributionAmount = sanitizeAutoContributionAmount(
+      input.isRecurring,
+      input.autoContributionAmount
+    );
+    const autoContributionAnchor = sanitizeAutoContributionAnchor(
+      input.isRecurring,
+      input.autoContributionAnchor
+    );
 
     setData((current) =>
       syncAutomaticContributionEvents({
@@ -377,14 +312,13 @@ export function AppDataProvider({ children }: PropsWithChildren) {
     }));
   };
 
-  const saveIncomeSettings = (amount: number, frequency: IncomeFrequency, isGross: boolean) => {
+  const saveIncomeSettings = (amount: number, frequency: IncomeFrequency) => {
     setData((current) => ({
       ...current,
       settings: {
         ...current.settings,
         incomeAmount: amount,
         incomeFrequency: frequency,
-        incomeIsGross: isGross,
       },
     }));
   };
@@ -425,7 +359,6 @@ export function AppDataProvider({ children }: PropsWithChildren) {
         saveSavingsTargetSettings,
         saveIncomeSettings,
         setDefaultView,
-        setSeededDemoDataEnabled,
         exportJson,
       }}
     >

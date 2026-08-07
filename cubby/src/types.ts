@@ -61,9 +61,7 @@ export interface UserSettings {
   yearlySavingsGoalAmount: number;
   incomeAmount: number;
   incomeFrequency: IncomeFrequency;
-  incomeIsGross: boolean;
   hasCompletedOnboarding: boolean;
-  useSeededDemoData: boolean;
 }
 
 export interface AppData {

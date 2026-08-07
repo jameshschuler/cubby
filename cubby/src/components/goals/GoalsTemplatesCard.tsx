@@ -4,6 +4,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { formatCurrency } from '../../formatters';
 import { theme } from '../../theme';
 import { Goal } from '../../types';
+import FirstRunOnboardingCard from '../onboarding/FirstRunOnboardingCard';
 import { recurringStateAutoContributionLabels } from './constants';
 import { GoalsTemplatesCardProps } from './types';
 
@@ -12,6 +13,7 @@ export default function GoalsTemplatesCard({
   progressEvents,
   onEditGoal,
   onDeleteGoal,
+  onCreateGoal,
 }: GoalsTemplatesCardProps) {
   const handleDelete = (goal: Goal) => {
     Alert.alert(
@@ -59,7 +61,12 @@ export default function GoalsTemplatesCard({
   return (
     <View style={styles.card}>
       {goals.length === 0 ? (
-        <Text style={styles.emptyText}>No goals yet. Add one from the goal modal.</Text>
+        <FirstRunOnboardingCard
+          onCreateGoal={onCreateGoal}
+          title="No goals yet"
+          body="Create your first account goal to start tracking progress, targets, and contribution history in one place."
+          buttonLabel="Add goal"
+        />
       ) : (
         goals.map((goal) => {
           const account = goal.accountType ? formatBadgeLabel(goal.accountType) : null;
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   emptyText: {
-    color: '#475569',
+    color: theme.textMuted,
   },
   goalRow: {
     borderRadius: 14,
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.backgroundAlt,
   },
   goalPillText: {
-    color: '#475569',
+    color: theme.textMuted,
     fontSize: 10,
     fontWeight: '600',
   },
@@ -195,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   goalTarget: {
-    color: '#475569',
+    color: theme.textMuted,
     fontWeight: '600',
     fontSize: 13,
   },
@@ -218,7 +225,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   autoContributionText: {
-    color: '#475569',
+    color: theme.textMuted,
     fontSize: 12,
     fontWeight: '600',
   },

@@ -122,9 +122,8 @@ def draw_icon(size: int, *, include_background: bool = True) -> Image.Image:
         rounded_rect(draw, [lx, lt, lx + leg_w, lt + leg_h], leg_r, fill=BODY)
 
     # --- Coin: a small gold circle "going in" (below the slot, decorative) ---
-    cc_cx, cc_cy, cc_r = p(505), p(400), p(55)
-    draw.ellipse([cc_cx - cc_r, cc_cy - cc_r, cc_cx + cc_r, cc_cy + cc_r],
-                 fill=COIN)
+    cc_cx, cc_cy, cc_r = p(505), p(480), p(55)
+    draw.ellipse([cc_cx - cc_r, cc_cy - cc_r, cc_cx + cc_r, cc_cy + cc_r], fill=COIN)
     # Draw an actual '$' glyph so the symbol is unambiguous at all sizes.
     symbol_font = load_font(p(74), bold=True)
 

@@ -62,6 +62,7 @@ export interface UserSettings {
   incomeAmount: number;
   incomeFrequency: IncomeFrequency;
   hasCompletedOnboarding: boolean;
+  logoTapCount: number;
 }
 
 export interface AppData {

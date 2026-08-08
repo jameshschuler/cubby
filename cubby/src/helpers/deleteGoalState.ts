@@ -1,4 +1,4 @@
-import { AppData, Goal, ProgressEvent } from './types';
+import { AppData, Goal, ProgressEvent } from '../core/types';
 
 export function deleteGoalState(
   data: AppData,

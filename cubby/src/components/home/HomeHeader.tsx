@@ -1,17 +1,37 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { theme } from '../../theme';
+import { Settings2 } from 'lucide-react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../../core/theme';
 import { HomeHeaderProps } from './types';
 
-export default function HomeHeader({ subtitle }: HomeHeaderProps) {
+export default function HomeHeader({ subtitle, onLogoPress, onSettingsPress }: HomeHeaderProps) {
   return (
     <View style={styles.headerRow}>
       <View>
         <View style={styles.titleRow}>
-          <Image source={require('../../../assets/icon.png')} style={styles.logo} />
+          <Pressable
+            onPress={onLogoPress}
+            accessibilityRole="button"
+            accessibilityLabel="App logo"
+            hitSlop={8}
+          >
+            <Image source={require('../../../assets/icon.png')} style={styles.logo} />
+          </Pressable>
           <Text style={styles.title}>Cubby</Text>
         </View>
         <Text style={styles.subtitle}>{subtitle}</Text>
       </View>
+
+      {onSettingsPress ? (
+        <Pressable
+          onPress={onSettingsPress}
+          accessibilityRole="button"
+          accessibilityLabel="Open settings"
+          hitSlop={8}
+          style={styles.settingsButton}
+        >
+          <Settings2 color={theme.accentDeep} size={20} strokeWidth={2.2} />
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -42,5 +62,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: theme.accent,
     fontSize: 14,
+  },
+  settingsButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: theme.border,
+    backgroundColor: theme.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

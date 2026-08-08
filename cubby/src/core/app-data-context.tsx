@@ -3,14 +3,14 @@ import { AppState } from 'react-native';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
-import { syncAutomaticContributionEvents } from './automatic-contributions';
-import { getEntryDateForView, isInView } from './calculations';
-import { deleteGoalState } from './deleteGoalState';
+import { syncAutomaticContributionEvents } from '../helpers/automatic-contributions';
+import { getEntryDateForView, isInView } from '../helpers/calculations';
+import { deleteGoalState } from '../helpers/deleteGoalState';
 import {
   getCadenceForRecurringState,
   sanitizeAutoContributionAmount,
   sanitizeAutoContributionAnchor,
-} from './goal-input';
+} from '../helpers/goal-input';
 import { defaultData, loadAppData, saveAppData } from './storage';
 import {
   AccountType,
@@ -62,6 +62,7 @@ interface AppDataContextValue {
   saveSavingsTargetSettings: (mode: SavingsTargetMode, yearlyGoalAmount: number) => void;
   saveIncomeSettings: (amount: number, frequency: IncomeFrequency) => void;
   setDefaultView: (view: ViewPeriod) => void;
+  registerLogoTap: () => void;
   exportJson: () => Promise<void>;
 }
 
@@ -333,6 +334,16 @@ export function AppDataProvider({ children }: PropsWithChildren) {
     }));
   };
 
+  const registerLogoTap = () => {
+    setData((current) => ({
+      ...current,
+      settings: {
+        ...current.settings,
+        logoTapCount: current.settings.logoTapCount + 1,
+      },
+    }));
+  };
+
   const exportJson = async () => {
     const fileUri = `${FileSystem.documentDirectory}cubby-export-${new Date().toISOString().slice(0, 10)}.json`;
     await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(data, null, 2), {
@@ -359,6 +370,7 @@ export function AppDataProvider({ children }: PropsWithChildren) {
         saveSavingsTargetSettings,
         saveIncomeSettings,
         setDefaultView,
+        registerLogoTap,
         exportJson,
       }}
     >

@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
-import { ChartColumn, House, Settings2, Target } from 'lucide-react-native';
+import { Award, ChartColumn, House, Target } from 'lucide-react-native';
 
-import { theme } from '../../src/theme';
+import { theme } from '../../src/core/theme';
 
 export default function TabsLayout() {
   return (
@@ -32,17 +32,17 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="achievements"
+        options={{
+          title: 'Achievements',
+          tabBarIcon: ({ color, size }) => <Award color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
         name="stats"
         options={{
           title: 'Stats',
           tabBarIcon: ({ color, size }) => <ChartColumn color={color} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ color, size }) => <Settings2 color={color} size={size} />,
         }}
       />
     </Tabs>

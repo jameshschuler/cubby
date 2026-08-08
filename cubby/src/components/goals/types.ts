@@ -1,4 +1,4 @@
-import { AccountType, Goal, GoalCategory, ProgressEvent, RecurringState } from '../../types';
+import { AccountType, Goal, GoalCategory, ProgressEvent, RecurringState } from '../../core/types';
 
 export type ValidationErrors = {
   name?: string;

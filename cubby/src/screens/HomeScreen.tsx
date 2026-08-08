@@ -9,10 +9,10 @@ import {
   getTargetSavedAmountForView,
   getViewLabel,
   shiftAnchorDate,
-} from '../calculations';
-import { formatCurrency, formatPercent } from '../formatters';
-import { useAppData } from '../app-data-context';
-import { Goal, GoalDisplayFilter } from '../types';
+} from '../helpers/calculations';
+import { formatCurrency, formatPercent } from '../helpers/formatters';
+import { useAppData } from '../core/app-data-context';
+import { Goal, GoalDisplayFilter } from '../core/types';
 import ActualAmountModal from '../components/home/ActualAmountModal';
 import HomeGoalsCard from '../components/home/HomeGoalsCard';
 import HomeHeader from '../components/home/HomeHeader';
@@ -20,11 +20,11 @@ import HomeSummaryCard from '../components/home/HomeSummaryCard';
 import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingCard';
 import PeriodNavigator from '../components/home/PeriodNavigator';
 import ViewFilterTabs from '../components/home/ViewFilterTabs';
-import { shouldShowOnboarding } from '../onboarding';
-import { theme } from '../theme';
+import { shouldShowOnboarding } from '../helpers/onboarding';
+import { theme } from '../core/theme';
 
 export default function HomeScreen() {
-  const { data, replaceGoalProgress, setDefaultView } = useAppData();
+  const { data, replaceGoalProgress, setDefaultView, registerLogoTap } = useAppData();
 
   const [selectedViewOverride, setSelectedViewOverride] = useState<GoalDisplayFilter | null>(null);
   const [anchorDate, setAnchorDate] = useState(new Date());
@@ -136,14 +136,22 @@ export default function HomeScreen() {
     router.push('/add-goal');
   };
 
+  const handleOpenSettings = () => {
+    router.push('/settings');
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.content}>
         <HomeHeader
           subtitle={
-            selectedView === 'one-time' ? 'One-time goals' : getViewLabel(selectedView, anchorDate)
+            selectedView === 'one-time'
+              ? 'One-time goal balances'
+              : getViewLabel(selectedView, anchorDate)
           }
+          onLogoPress={registerLogoTap}
+          onSettingsPress={handleOpenSettings}
         />
 
         <ViewFilterTabs selectedView={selectedView} onSelect={handleSelectView} />

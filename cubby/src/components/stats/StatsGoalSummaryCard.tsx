@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
 
-import { formatCurrency } from '../../formatters';
+import { formatCurrency } from '../../helpers/formatters';
 import { styles } from './styles';
 import { StatsGoalSummaryCardProps } from './types';
-import { formatAccountTypeLabel } from './utils';
+import { formatAccountTypeLabel } from './helpers/utils';
 
 export default function StatsGoalDetailsCard({
   showAllGoals,

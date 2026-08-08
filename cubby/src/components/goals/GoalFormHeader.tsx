@@ -1,7 +1,7 @@
 import { X } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 
 interface GoalFormHeaderProps {
   title: string;

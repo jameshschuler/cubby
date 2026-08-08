@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { theme } from '../../theme';
-import { goalFormStepNames, totalGoalFormSteps } from './constants';
+import { theme } from '../../core/theme';
+import { goalFormStepNames, totalGoalFormSteps } from './constants/constants';
 
 interface GoalFormStepperProps {
   currentStep: number;

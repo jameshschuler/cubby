@@ -1,4 +1,4 @@
-import { AppData, Goal, ProgressEvent, ViewPeriod } from './types';
+import { AppData, Goal, ProgressEvent, ViewPeriod } from '../core/types';
 
 const AUTOMATIC_CONTRIBUTION_NOTES: Record<ViewPeriod, string> = {
   week: 'Automatic weekly contribution',

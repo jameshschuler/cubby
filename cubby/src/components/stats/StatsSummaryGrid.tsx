@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { formatCurrency, formatPercent } from '../../formatters';
+import { formatCurrency, formatPercent } from '../../helpers/formatters';
 import { styles } from './styles';
 import { StatsSummaryGridProps } from './types';
 

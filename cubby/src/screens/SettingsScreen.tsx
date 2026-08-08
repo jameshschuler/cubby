@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Download, Goal } from 'lucide-react-native';
+import { Download, Goal, X } from 'lucide-react-native';
 import {
   Alert,
   Pressable,
@@ -12,13 +13,13 @@ import {
   View,
 } from 'react-native';
 
-import { getIncomeAmountForView } from '../calculations';
-import { formatCurrency, formatPercent } from '../formatters';
-import { useAppData } from '../app-data-context';
-import { IncomeFrequency, SavingsTargetMode } from '../types';
+import { getIncomeAmountForView } from '../helpers/calculations';
+import { formatCurrency, formatPercent } from '../helpers/formatters';
+import { useAppData } from '../core/app-data-context';
+import { IncomeFrequency, SavingsTargetMode } from '../core/types';
 import SettingsCard from '../components/settings/SettingsCard';
 import SettingsModalShell from '../components/settings/SettingsModalShell';
-import { theme } from '../theme';
+import { theme } from '../core/theme';
 
 type SegmentedOption<T extends string> = {
   label: string;
@@ -158,7 +159,19 @@ function SettingsContent({
       <StatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.heroCard}>
-          <Text style={styles.title}>Settings</Text>
+          <View style={styles.heroHeaderRow}>
+            <Text style={styles.title}>Settings</Text>
+            <Pressable
+              onPress={() => router.back()}
+              accessibilityRole="button"
+              accessibilityLabel="Close settings"
+              hitSlop={10}
+              style={styles.closeButton}
+            >
+              <X color={theme.textOnAccent} size={18} />
+            </Pressable>
+          </View>
+          <Text style={styles.subtitle}>Manage income, savings targets, and data export.</Text>
         </View>
 
         <SettingsCard
@@ -299,9 +312,25 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: theme.textOnAccent,
   },
+  heroHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
   subtitle: {
     color: theme.accentSoft,
     fontSize: 14,
+  },
+  closeButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
   card: {
     backgroundColor: theme.surface,

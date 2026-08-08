@@ -7,8 +7,8 @@ import {
   getIncomeAmountForSelectedYear,
   getSavingsRateForSelectedYear,
   getTargetSavedAmountForView,
-} from '../calculations';
-import { useAppData } from '../app-data-context';
+} from '../helpers/calculations';
+import { useAppData } from '../core/app-data-context';
 import StatsGoalSummaryCard from '../components/stats/StatsGoalSummaryCard';
 import StatsSelectionCard from '../components/stats/StatsSelectionCard';
 import StatsHeroCard from '../components/stats/StatsHeroCard';
@@ -19,7 +19,7 @@ import StatsSummaryGrid from '../components/stats/StatsSummaryGrid';
 import useStatsData from '../components/stats/useStatsData';
 import StatsYearListCard from '../components/stats/StatsYearListCard';
 import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingCard';
-import { shouldShowOnboarding } from '../onboarding';
+import { shouldShowOnboarding } from '../helpers/onboarding';
 
 export default function StatsScreen() {
   const { goals, selection, totals, history } = useStatsData();

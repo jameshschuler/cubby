@@ -1,11 +1,11 @@
 import { Pencil, Trash2 } from 'lucide-react-native';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { formatCurrency } from '../../formatters';
-import { theme } from '../../theme';
-import { Goal } from '../../types';
+import { formatCurrency } from '../../helpers/formatters';
+import { theme } from '../../core/theme';
+import { Goal } from '../../core/types';
 import FirstRunOnboardingCard from '../onboarding/FirstRunOnboardingCard';
-import { recurringStateAutoContributionLabels } from './constants';
+import { recurringStateAutoContributionLabels } from './constants/constants';
 import { GoalsTemplatesCardProps } from './types';
 
 export default function GoalsTemplatesCard({

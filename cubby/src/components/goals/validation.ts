@@ -1,6 +1,6 @@
-import { parseAutoContributionAnchor } from '../../automatic-contributions';
-import { RecurringState } from '../../types';
-import { recurringStateContributionErrorLabels } from './constants';
+import { parseAutoContributionAnchor } from '../../helpers/automatic-contributions';
+import { RecurringState } from '../../core/types';
+import { recurringStateContributionErrorLabels } from './constants/constants';
 import { ValidationErrors } from './types';
 
 type GoalTargetInput = number | string;

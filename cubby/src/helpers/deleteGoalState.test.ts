@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createGoal, createProgressEvent, deleteGoalState } from './deleteGoalState';
-import { AppData } from './types';
+import { AppData } from '../core/types';
 
 describe('deleteGoalState', () => {
   function buildData(): AppData {
@@ -21,6 +21,7 @@ describe('deleteGoalState', () => {
         incomeAmount: 5000,
         incomeFrequency: 'monthly',
         hasCompletedOnboarding: false,
+        logoTapCount: 0,
       },
     };
   }

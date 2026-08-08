@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { shouldShowOnboarding } from './onboarding';
-import { AppData } from './types';
+import { AppData } from '../core/types';
 
 describe('shouldShowOnboarding', () => {
   const baseData: AppData = {
@@ -15,6 +15,7 @@ describe('shouldShowOnboarding', () => {
       incomeAmount: 0,
       incomeFrequency: 'monthly',
       hasCompletedOnboarding: false,
+      logoTapCount: 0,
     },
   };
 

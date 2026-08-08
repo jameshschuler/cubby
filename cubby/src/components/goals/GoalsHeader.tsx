@@ -1,6 +1,6 @@
 import { Plus } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 import { GoalsHeaderProps } from './types';
 
 export default function GoalsHeader({ onAddGoal }: GoalsHeaderProps) {
@@ -17,7 +17,9 @@ export default function GoalsHeader({ onAddGoal }: GoalsHeaderProps) {
           <Plus color={theme.accent} size={18} />
         </Pressable>
       </View>
-      <Text style={styles.subtitle}>Track every goal and edit contributions from one place.</Text>
+      <Text style={styles.subtitle}>
+        Create, organize, and update every savings goal in one place.
+      </Text>
     </View>
   );
 }

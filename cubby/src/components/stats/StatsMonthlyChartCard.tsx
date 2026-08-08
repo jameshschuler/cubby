@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react';
 import { Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
-import { formatCurrency } from '../../formatters';
-import { theme } from '../../theme';
+import { formatCurrency } from '../../helpers/formatters';
+import { theme } from '../../core/theme';
 import { getChartWidth } from './chartLayout';
 import { styles } from './styles';
 import { StatsMonthlyChartCardProps } from './types';
-import { formatMonthKeyLabel, getMonthName } from './utils';
+import { formatMonthKeyLabel, getMonthName } from './helpers/utils';
 
 export default function StatsMonthlyStatsCard({
   effectiveSelectedYear,

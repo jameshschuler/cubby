@@ -6,7 +6,7 @@ import {
   getSavingsRateForView,
   getTargetSavedAmountForView,
 } from './calculations';
-import { Goal, IncomeFrequency, SavingsTargetMode } from './types';
+import { Goal, IncomeFrequency, SavingsTargetMode } from '../core/types';
 
 function createGoal(overrides: Partial<Goal> = {}): Goal {
   return {

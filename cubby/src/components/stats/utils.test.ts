@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatAccountTypeLabel } from './utils';
+import { formatAccountTypeLabel } from './helpers/utils';
 
 describe('formatAccountTypeLabel', () => {
   it('returns an empty string when no account type is provided', () => {

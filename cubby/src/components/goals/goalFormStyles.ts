@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 
 export const goalFormStyles = StyleSheet.create({
   safeArea: {

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Modal, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
-import { parseAutoContributionAnchor } from '../../automatic-contributions';
+import { parseAutoContributionAnchor } from '../../helpers/automatic-contributions';
 import GoalFormHeader from './GoalFormHeader';
 import GoalFormFields from './GoalFormFields';
 import GoalFormStepper from './GoalFormStepper';
 import { goalFormStyles } from './goalFormStyles';
-import { Goal } from '../../types';
-import { totalGoalFormSteps } from './constants';
+import { Goal } from '../../core/types';
+import { totalGoalFormSteps } from './constants/constants';
 import { GoalDetailsInput, GoalDetailsModalProps, ValidationErrors } from './types';
 import { getGoalFormNavigationConfig } from './goalFormNavigation';
 import {

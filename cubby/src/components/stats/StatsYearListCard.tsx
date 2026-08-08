@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 
-import { formatCurrency } from '../../formatters';
+import { formatCurrency } from '../../helpers/formatters';
 import { styles } from './styles';
 import { StatsYearListCardProps } from './types';
 

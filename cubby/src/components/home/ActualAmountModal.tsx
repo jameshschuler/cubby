@@ -1,5 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 import { ActualAmountModalProps } from './types';
 
 export default function ActualAmountModal({

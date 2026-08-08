@@ -1,4 +1,4 @@
-import { Goal, IncomeFrequency, ProgressEvent, SavingsTargetMode, ViewPeriod } from './types';
+import { Goal, IncomeFrequency, ProgressEvent, SavingsTargetMode, ViewPeriod } from '../core/types';
 
 function startOfWeek(date: Date): Date {
   const d = new Date(date);

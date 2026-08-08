@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { Keyboard, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { useAppData } from '../app-data-context';
+import { useAppData } from '../core/app-data-context';
 import GoalFormHeader from '../components/goals/GoalFormHeader';
 import GoalFormStepper from '../components/goals/GoalFormStepper';
 import OptionPicker from '../components/ui/OptionPicker';
@@ -10,8 +10,8 @@ import { goalFormStyles } from '../components/goals/goalFormStyles';
 import {
   getDefaultAutoContributionAnchor,
   parseAutoContributionAnchor,
-} from '../automatic-contributions';
-import { AccountType, GoalCategory, RecurringState } from '../types';
+} from '../helpers/automatic-contributions';
+import { AccountType, GoalCategory, RecurringState } from '../core/types';
 import {
   accountTypeLabels,
   accountTypes,
@@ -24,7 +24,7 @@ import {
   weekDayLabels,
   yearDayOptions,
   yearMonthOptions,
-} from '../components/goals/constants';
+} from '../components/goals/constants/constants';
 import { ValidationErrors } from '../components/goals/types';
 import {
   validateAutomaticContribution as validateGoalAutomaticContribution,

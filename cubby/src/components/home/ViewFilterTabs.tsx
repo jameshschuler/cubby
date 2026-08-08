@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { theme } from '../../theme';
-import { filterLabel, goalFilters } from './constants';
+import { theme } from '../../core/theme';
+import { filterLabel, goalFilters } from './constants/constants';
 import { ViewFilterTabsProps } from './types';
 
 export default function ViewFilterTabs({ selectedView, onSelect }: ViewFilterTabsProps) {

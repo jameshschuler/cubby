@@ -53,6 +53,7 @@ describe('loadAppData', () => {
           incomeAmount: 120000,
           incomeFrequency: 'yearly',
           hasCompletedOnboarding: true,
+          logoTapCount: 4,
         },
       })
     );
@@ -80,6 +81,7 @@ describe('loadAppData', () => {
       incomeAmount: 120000,
       incomeFrequency: 'yearly',
       hasCompletedOnboarding: true,
+      logoTapCount: 4,
     });
   });
 

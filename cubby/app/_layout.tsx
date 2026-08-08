@@ -4,7 +4,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View } from 'react-native';
 
-import { AppDataProvider, useAppData } from '../src/app-data-context';
+import { AppDataProvider, useAppData } from '../src/core/app-data-context';
+import AchievementNotifier from '../src/components/ui/AchievementNotifier';
 
 type DefaultPropsTextComponent = typeof Text & {
   defaultProps?: {
@@ -71,7 +72,9 @@ function RootNavigator() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="add-goal" options={{ presentation: 'modal', headerShown: false }} />
+        <Stack.Screen name="settings" options={{ presentation: 'modal', headerShown: false }} />
       </Stack>
+      <AchievementNotifier />
     </View>
   );
 }

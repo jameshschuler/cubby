@@ -1,6 +1,6 @@
 import { ArrowRight, Goal } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 import { FirstRunOnboardingCardProps } from './types';
 
 export default function FirstRunOnboardingCard({

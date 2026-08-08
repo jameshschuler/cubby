@@ -1,4 +1,4 @@
-import { RecurringState } from './types';
+import { RecurringState } from '../core/types';
 
 export function getCadenceForRecurringState(recurringState: RecurringState) {
   if (recurringState === 'week') {

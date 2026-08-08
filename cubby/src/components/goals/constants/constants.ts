@@ -1,4 +1,4 @@
-import { AccountType, GoalCategory, RecurringState } from '../../types';
+import { AccountType, GoalCategory, RecurringState } from '../../../core/types';
 
 export const categories: GoalCategory[] = [
   'short-term savings',

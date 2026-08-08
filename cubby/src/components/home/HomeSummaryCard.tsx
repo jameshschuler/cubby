@@ -1,8 +1,8 @@
 import { TrendingUp } from 'lucide-react-native';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { formatCurrency, formatPercent } from '../../formatters';
-import { theme } from '../../theme';
+import { formatCurrency, formatPercent } from '../../helpers/formatters';
+import { theme } from '../../core/theme';
 import { HomeSummaryCardProps } from './types';
 
 export default function HomeSummaryCard({

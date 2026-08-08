@@ -3,15 +3,15 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { useAppData } from '../app-data-context';
+import { useAppData } from '../core/app-data-context';
 import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingCard';
-import { Goal } from '../types';
+import { Goal } from '../core/types';
 import GoalDetailsModal from '../components/goals/GoalDetailsModal';
 import GoalsHeader from '../components/goals/GoalsHeader';
 import GoalsTemplatesCard from '../components/goals/GoalsTemplatesCard';
 import { GoalDetailsInput } from '../components/goals/types';
-import { shouldShowOnboarding } from '../onboarding';
-import { theme } from '../theme';
+import { shouldShowOnboarding } from '../helpers/onboarding';
+import { theme } from '../core/theme';
 
 export default function GoalsScreen() {
   const { data, updateGoal, deleteGoal } = useAppData();

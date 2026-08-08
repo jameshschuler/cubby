@@ -1,4 +1,4 @@
-import { AppData } from './types';
+import { AppData } from '../core/types';
 
 export function shouldShowOnboarding(data: AppData): boolean {
   if (data.settings.hasCompletedOnboarding) {

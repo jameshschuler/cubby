@@ -1,4 +1,4 @@
-import { Goal, GoalDisplayFilter } from '../../types';
+import { Goal, GoalDisplayFilter } from '../../core/types';
 
 export interface ActualAmountModalProps {
   visible: boolean;
@@ -10,6 +10,8 @@ export interface ActualAmountModalProps {
 
 export interface HomeHeaderProps {
   subtitle: string;
+  onLogoPress?: () => void;
+  onSettingsPress?: () => void;
 }
 
 export interface PeriodNavigatorProps {

@@ -1,6 +1,6 @@
 import { ScrollView, Text, View } from 'react-native';
 
-import { formatCurrency } from '../../formatters';
+import { formatCurrency } from '../../helpers/formatters';
 import { styles } from './styles';
 import { StatsHistoryListCardProps } from './types';
 

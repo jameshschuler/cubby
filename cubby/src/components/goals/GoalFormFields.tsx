@@ -1,8 +1,8 @@
 import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 import OptionPicker from '../ui/OptionPicker';
-import { getDefaultAutoContributionAnchor } from '../../automatic-contributions';
+import { getDefaultAutoContributionAnchor } from '../../helpers/automatic-contributions';
 import {
   accountTypeLabels,
   accountTypes,
@@ -14,9 +14,9 @@ import {
   weekDayLabels,
   yearDayOptions,
   yearMonthOptions,
-} from './constants';
+} from './constants/constants';
 import { GoalDetailsInput, ValidationErrors } from './types';
-import { RecurringState } from '../../types';
+import { RecurringState } from '../../core/types';
 
 interface GoalFormFieldsProps {
   input: GoalDetailsInput;

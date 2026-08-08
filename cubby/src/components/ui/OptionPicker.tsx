@@ -1,7 +1,7 @@
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 import { OptionPickerProps } from './types';
 
 export default function OptionPicker({

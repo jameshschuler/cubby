@@ -5,7 +5,7 @@ import {
   syncAutomaticContributionEvents,
 } from './automatic-contributions';
 import { createGoal, createProgressEvent } from './deleteGoalState';
-import { AppData } from './types';
+import { AppData } from '../core/types';
 
 const baseSettings: AppData['settings'] = {
   defaultView: 'month',
@@ -15,6 +15,7 @@ const baseSettings: AppData['settings'] = {
   incomeAmount: 0,
   incomeFrequency: 'monthly',
   hasCompletedOnboarding: false,
+  logoTapCount: 0,
 };
 
 describe('syncAutomaticContributionEvents', () => {

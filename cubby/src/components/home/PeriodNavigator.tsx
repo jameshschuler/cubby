@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { theme } from '../../theme';
+import { theme } from '../../core/theme';
 import { PeriodNavigatorProps } from './types';
 
 export default function PeriodNavigator({ label, onPrevious, onNext }: PeriodNavigatorProps) {

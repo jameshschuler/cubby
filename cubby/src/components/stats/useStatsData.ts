@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { useAppData } from '../../app-data-context';
-import { Goal, ProgressEvent } from '../../types';
+import { useAppData } from '../../core/app-data-context';
+import { Goal, ProgressEvent } from '../../core/types';
 import { MonthlyStats, YearTotal } from './types';
 
 interface UseStatsDataResult {

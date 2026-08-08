@@ -1,10 +1,10 @@
 import { Pencil } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { formatCurrency } from '../../formatters';
-import { theme } from '../../theme';
+import { formatCurrency } from '../../helpers/formatters';
+import { theme } from '../../core/theme';
 import FirstRunOnboardingCard from '../onboarding/FirstRunOnboardingCard';
-import { getProgressFillColor, recurringStateAutoContributionLabels } from './constants';
+import { getProgressFillColor, recurringStateAutoContributionLabels } from './constants/constants';
 import { HomeGoalsCardProps } from './types';
 
 export default function HomeGoalsCard({

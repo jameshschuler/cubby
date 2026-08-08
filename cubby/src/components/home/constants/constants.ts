@@ -1,4 +1,4 @@
-import { GoalDisplayFilter } from '../../types';
+import { GoalDisplayFilter } from '../../../core/types';
 
 export const recurringStateAutoContributionLabels = {
   week: '/ week',

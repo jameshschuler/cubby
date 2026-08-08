@@ -1,4 +1,4 @@
-import { Goal, ProgressEvent, SavingsTargetMode } from '../../types';
+import { Goal, ProgressEvent, SavingsTargetMode } from '../../core/types';
 
 export interface MonthTotal {
   month: string;

@@ -15,6 +15,7 @@ export const defaultData: AppData = {
     incomeAmount: 0,
     incomeFrequency: 'monthly',
     hasCompletedOnboarding: false,
+    logoTapCount: 0,
   },
 };
 
@@ -31,6 +32,7 @@ function normalizeAppData(parsed: Partial<AppData>): AppData {
       incomeAmount: parsed.settings?.incomeAmount ?? 0,
       incomeFrequency: parsed.settings?.incomeFrequency ?? 'monthly',
       hasCompletedOnboarding: parsed.settings?.hasCompletedOnboarding ?? false,
+      logoTapCount: parsed.settings?.logoTapCount ?? 0,
     },
   };
 }

@@ -2,47 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { Text, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppDataProvider, useAppData } from '../src/core/app-data-context';
 import AchievementNotifier from '../src/components/ui/AchievementNotifier';
-
-type TextLikeWithDefaultProps = {
-  defaultProps?: {
-    style?: unknown;
-  };
-};
-
-function applyGlobalTypographySafely() {
-  const textLike = Text as unknown as TextLikeWithDefaultProps;
-  const inputLike = TextInput as unknown as TextLikeWithDefaultProps;
-
-  try {
-    const current = textLike.defaultProps ?? {};
-    textLike.defaultProps = {
-      ...current,
-      style: [{ fontFamily: 'Georgia' }, current.style],
-    };
-  } catch {
-    // Some RN/React runtimes disallow defaultProps mutation on host components.
-  }
-
-  try {
-    const current = inputLike.defaultProps ?? {};
-    inputLike.defaultProps = {
-      ...current,
-      style: [{ fontFamily: 'Georgia' }, current.style],
-    };
-  } catch {
-    // Keep launch resilient if the runtime blocks defaultProps writes.
-  }
-}
-
-applyGlobalTypographySafely();
-
-void SplashScreen.preventAutoHideAsync().catch(() => {
-  // Ignore repeated calls when the native splash is already being managed.
-});
 
 const NATIVE_SPLASH_MIN_MS = 700;
 
@@ -56,6 +19,12 @@ function RootNavigator() {
     if (mountedAtMs.current === null) {
       mountedAtMs.current = Date.now();
     }
+  }, []);
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync().catch(() => {
+      // Ignore repeated calls when the native splash is already being managed.
+    });
   }, []);
 
   useEffect(() => {

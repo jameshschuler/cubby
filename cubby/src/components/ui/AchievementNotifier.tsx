@@ -66,8 +66,8 @@ export default function AchievementNotifier() {
   const [notifiedIds, setNotifiedIds] = useState<Set<AchievementId>>(new Set());
   const [pendingQueue, setPendingQueue] = useState<AchievementId[]>([]);
   const [activeAchievementId, setActiveAchievementId] = useState<AchievementId | null>(null);
-  const toastOpacity = useRef(new Animated.Value(0)).current;
-  const toastTranslateY = useRef(new Animated.Value(-12)).current;
+  const toastOpacity = useMemo(() => new Animated.Value(0), []);
+  const toastTranslateY = useMemo(() => new Animated.Value(-12), []);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearHideTimer = () => {
@@ -169,6 +169,7 @@ export default function AchievementNotifier() {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveAchievementId(pendingQueue[0]);
     setPendingQueue((current) => current.slice(1));
   }, [activeAchievementId, pendingQueue]);

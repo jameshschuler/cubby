@@ -17,6 +17,7 @@
     "expo-status-bar": "~57.0.1",
     "lucide-react-native": "^1.28.0",
     "react": "19.2.3",
+    "react-dom": "^19.2.3",
     "react-native": "0.86.2",
     "react-native-gifted-charts": "^1.4.77",
     "react-native-safe-area-context": "~5.7.0",
@@ -45,12 +46,17 @@
     "dev": "expo start --dev-client",
     "dev:ios": "expo start --dev-client",
     "build:ios:device": "expo run:ios --device",
+    "prebuild:clean": "npx expo prebuild --clean",
     "web": "expo start --web",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eas:whoami": "npx eas-cli whoami",
+    "eas:build:ios": "npx eas-cli build --platform ios --profile production",
+    "eas:submit:ios": "npx eas-cli submit --platform ios --latest",
+    "release:ios": "npm run eas:build:ios && npm run eas:submit:ios"
   },
   "private": true
 }

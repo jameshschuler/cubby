@@ -7,32 +7,38 @@ import { Text, TextInput, View } from 'react-native';
 import { AppDataProvider, useAppData } from '../src/core/app-data-context';
 import AchievementNotifier from '../src/components/ui/AchievementNotifier';
 
-type DefaultPropsTextComponent = typeof Text & {
+type TextLikeWithDefaultProps = {
   defaultProps?: {
     style?: unknown;
   };
 };
 
-type DefaultPropsTextInputComponent = typeof TextInput & {
-  defaultProps?: {
-    style?: unknown;
-  };
-};
+function applyGlobalTypographySafely() {
+  const textLike = Text as unknown as TextLikeWithDefaultProps;
+  const inputLike = TextInput as unknown as TextLikeWithDefaultProps;
 
-const textComponent = Text as DefaultPropsTextComponent;
-const textInputComponent = TextInput as DefaultPropsTextInputComponent;
+  try {
+    const current = textLike.defaultProps ?? {};
+    textLike.defaultProps = {
+      ...current,
+      style: [{ fontFamily: 'Georgia' }, current.style],
+    };
+  } catch {
+    // Some RN/React runtimes disallow defaultProps mutation on host components.
+  }
 
-const textDefaultProps = textComponent.defaultProps ?? {};
-textComponent.defaultProps = {
-  ...textDefaultProps,
-  style: [{ fontFamily: 'Georgia' }, textDefaultProps.style],
-};
+  try {
+    const current = inputLike.defaultProps ?? {};
+    inputLike.defaultProps = {
+      ...current,
+      style: [{ fontFamily: 'Georgia' }, current.style],
+    };
+  } catch {
+    // Keep launch resilient if the runtime blocks defaultProps writes.
+  }
+}
 
-const textInputDefaultProps = textInputComponent.defaultProps ?? {};
-textInputComponent.defaultProps = {
-  ...textInputDefaultProps,
-  style: [{ fontFamily: 'Georgia' }, textInputDefaultProps.style],
-};
+applyGlobalTypographySafely();
 
 void SplashScreen.preventAutoHideAsync().catch(() => {
   // Ignore repeated calls when the native splash is already being managed.
@@ -43,8 +49,14 @@ const NATIVE_SPLASH_MIN_MS = 700;
 function RootNavigator() {
   const { isReady } = useAppData();
   const [hasLaidOut, setHasLaidOut] = useState(false);
-  const mountedAtMs = useRef(Date.now());
+  const mountedAtMs = useRef<number | null>(null);
   const hasHiddenSplash = useRef(false);
+
+  useEffect(() => {
+    if (mountedAtMs.current === null) {
+      mountedAtMs.current = Date.now();
+    }
+  }, []);
 
   useEffect(() => {
     if (!isReady || !hasLaidOut || hasHiddenSplash.current) {
@@ -54,7 +66,7 @@ function RootNavigator() {
     hasHiddenSplash.current = true;
 
     // Keep the splash visible for a minimum duration so launch branding is perceivable.
-    const elapsed = Date.now() - mountedAtMs.current;
+    const elapsed = Date.now() - (mountedAtMs.current ?? Date.now());
     const delay = Math.max(0, NATIVE_SPLASH_MIN_MS - elapsed);
 
     const hideTimer = setTimeout(() => {

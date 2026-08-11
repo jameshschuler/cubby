@@ -68,6 +68,71 @@ Use this checklist when validating the app in the simulator or on device:
 - [ ] Delete a goal and confirm the goal disappears from the list and related progress is removed or preserved as expected.
 - [ ] Confirm onboarding, stats, and achievements still behave normally after the changes above.
 
+## App Store Release (Path A: EAS)
+
+This project is configured for EAS cloud builds.
+
+### 1) Verify EAS login
+
+```bash
+npm run eas:whoami
+```
+
+### 2) Build iOS production binary
+
+```bash
+npm run eas:build:ios
+```
+
+### 3) Submit latest iOS build to App Store Connect
+
+```bash
+npm run eas:submit:ios
+```
+
+### Optional: run build + submit together
+
+```bash
+npm run release:ios
+```
+
+### Notes
+
+- Increment `expo.version` for each public release.
+- EAS is configured with `autoIncrement` for production builds.
+- Keep `expo.ios.bundleIdentifier` aligned with the App Store Connect app record.
+- Complete App Store Connect metadata, screenshots, and privacy details before review.
+
+### Pre-release checklist (iOS)
+
+- [ ] Confirm release version in `app.json` (`expo.version`) is correct for this release.
+- [ ] Confirm `npm run eas:whoami` shows the expected Expo account.
+- [ ] Run quality checks: `npm test` and `npx tsc --noEmit`.
+- [ ] Verify icon and splash look correct on simulator and one physical device.
+- [ ] Build production binary with `npm run eas:build:ios`.
+- [ ] Submit the latest build with `npm run eas:submit:ios`.
+- [ ] In App Store Connect, attach the processed build and complete release notes.
+- [ ] Complete App Privacy fields and submit for review.
+
+### Optional CI automation for dev builds
+
+This project is connected to Expo dashboard workflows, so you can configure dev builds directly in EAS Workflows without maintaining a separate GitHub Actions build file.
+
+Recommended setup:
+
+- Trigger on pushes to `main`.
+- Use the `development` profile for iOS dev client builds.
+- Keep production submissions manual (or separately gated) for safer releases.
+
+### GitHub quality checks on push
+
+This repo includes [quality checks workflow](.github/workflows/quality-checks.yml) that runs on pushes to `main` and pull requests to `main`:
+
+- `npm test`
+- `npx tsc --noEmit`
+- `npm run lint`
+- `npm run format:check`
+
 ## Current structure
 
 - App.tsx: starter MVP screen and flows

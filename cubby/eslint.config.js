@@ -6,4 +6,11 @@ module.exports = defineConfig([
   {
     ignores: ['node_modules/*', '.expo/*', 'dist/*'],
   },
+  {
+    files: ['**/*.test.ts', '**/*.test.tsx'],
+    rules: {
+      'react/display-name': 'off',
+      'import/first': 'off',
+    },
+  },
 ]);

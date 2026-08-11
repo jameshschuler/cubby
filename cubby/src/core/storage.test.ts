@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { defaultData, loadAppData } from './storage';
+import { defaultData, loadAppData, saveAppData } from './storage';
 
 vi.mock('@react-native-async-storage/async-storage', () => ({
   default: {
@@ -89,5 +89,15 @@ describe('loadAppData', () => {
     asyncStorageMock.getItem.mockResolvedValueOnce('{bad json');
 
     await expect(loadAppData()).resolves.toEqual(defaultData);
+  });
+
+  it('serializes app data when saving', async () => {
+    await saveAppData(defaultData);
+
+    expect(asyncStorageMock.setItem).toHaveBeenCalledTimes(1);
+    expect(asyncStorageMock.setItem).toHaveBeenCalledWith(
+      'cubby.app-data.v1',
+      JSON.stringify(defaultData)
+    );
   });
 });

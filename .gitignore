@@ -4,3 +4,4 @@
 # Local repair/backups
 git-backups/
 cubby-inner-history*.bundle
+coverage/

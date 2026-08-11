@@ -14,17 +14,16 @@ import {
   TrendingUp,
   Trophy,
   UserCheck,
-  type LucideIcon,
 } from 'lucide-react-native';
 
-import { type AchievementId } from '../helpers/achievements';
+import type { AchievementId } from '../helpers/achievements';
 
 export type AchievementDefinition = {
   id: AchievementId;
   title: string;
   description: string;
   tier?: 1;
-  icon: LucideIcon;
+  icon: any;
   hidden?: boolean;
 };
 

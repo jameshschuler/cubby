@@ -1,3 +1,4 @@
+import appIcon from '../../../assets/icon.png';
 import { Settings2 } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../core/theme';
@@ -14,7 +15,7 @@ export default function HomeHeader({ subtitle, onLogoPress, onSettingsPress }: H
             accessibilityLabel="App logo"
             hitSlop={8}
           >
-            <Image source={require('../../../assets/icon.png')} style={styles.logo} />
+            <Image source={appIcon} style={styles.logo} />
           </Pressable>
           <Text style={styles.title}>Cubby</Text>
         </View>

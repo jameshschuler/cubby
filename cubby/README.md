@@ -46,6 +46,28 @@ cd cubby
 npm run start
 ```
 
+## Testing and QA
+
+### Automated tests
+
+Run the unit and component suites locally:
+
+```bash
+npm test
+npx tsc --noEmit
+```
+
+### Manual testing checklist for real users
+
+Use this checklist when validating the app in the simulator or on device:
+
+- [ ] Create a new goal with a name, target amount, and recurring or one-time settings.
+- [ ] Edit the goal name, target, and contribution settings and confirm the updates persist.
+- [ ] Add a manual contribution to a goal and confirm the new balance updates immediately.
+- [ ] Update an existing contribution to a different amount and confirm the previous value is replaced.
+- [ ] Delete a goal and confirm the goal disappears from the list and related progress is removed or preserved as expected.
+- [ ] Confirm onboarding, stats, and achievements still behave normally after the changes above.
+
 ## Current structure
 
 - App.tsx: starter MVP screen and flows

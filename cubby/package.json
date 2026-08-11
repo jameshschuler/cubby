@@ -57,6 +57,7 @@
     "test": "vitest run",
     "eas:whoami": "npx eas-cli whoami",
     "eas:build:ios": "npx eas-cli build --platform ios --profile production",
+    "eas:build:ios:local": "npx eas-cli build --platform ios --profile production --local",
     "eas:submit:ios": "npx eas-cli submit --platform ios --latest",
     "release:ios": "npm run eas:build:ios && npm run eas:submit:ios"
   },

@@ -1,147 +1,51 @@
-# Cubby (MVP Starter)
+# Cubby
 
-Expo + React Native + TypeScript starter for the Cubby savings tracker app.
+Cubby is an Expo + React Native + TypeScript app for tracking savings goals locally.
 
-## What is implemented
-
-- Expo project scaffolded with TypeScript
-- Minimal single-screen dashboard UI
-- Goal creation fields:
-  - Name
-  - Nickname
-  - Origin
-  - Category
-  - Target amount
-  - Cadence defaults to monthly
-- Period selector:
-  - Weekly
-  - Monthly (default)
-  - Yearly
-- Per-goal progress logging
-- History-ready event model (progress + income events)
-- Savings rate summary (actual vs target)
-- Local persistence with AsyncStorage
-- JSON export using expo-file-system + expo-sharing
-- Lucide icons in UI
-
-## Stack
-
-- React Native (Expo)
-- TypeScript
-- Stylesheets (StyleSheet API)
-- Lucide icons
-- AsyncStorage for local data
-
-## Run
+## Setup
 
 ```bash
 npm install
-npm run ios
 ```
 
-From project directory:
+## Common Workflows
 
-```bash
-cd cubby
-npm run start
-```
+Use `npm run dev` for daily app development.
+Use `npm run ios`, `npm run android`, or `npm run web` when you want to open the app on a specific platform.
+Use `npm run device:ios` when you want to install and run the iOS app on a physical device.
+Use `npm run eas:build:ios:local` when you want a production-style iOS build on your Mac before TestFlight.
 
-## Testing and QA
+## Scripts
 
-### Automated tests
+- `start`: Start the Expo dev server for general app work.
+- `start:lan`: Start the Expo dev server on the local network.
+- `android`: Build and run the native Android app.
+- `ios`: Build and run the native iOS app in the simulator.
+- `dev`: Start the dev client server for day-to-day development.
+- `dev:ios`: Same as `dev`, kept as a dedicated iOS-focused entry point.
+- `device:ios`: Build and install the iOS app on a connected device.
+- `build:ios:device`: Same as `device:ios`, kept for clarity in release workflows.
+- `prebuild:clean`: Regenerate native projects from scratch.
+- `web`: Run the app in a browser.
+- `lint`: Check the codebase for lint issues.
+- `lint:fix`: Auto-fix lint issues where possible.
+- `format`: Format the codebase with Prettier.
+- `format:check`: Check formatting without changing files.
+- `test`: Run the Vitest suite once.
+- `eas:whoami`: Check which Expo account is signed in.
+- `eas:build:ios`: Start the production iOS cloud build for release.
+- `eas:build:ios:local`: Run the production iOS build locally before TestFlight.
+- `eas:submit:ios`: Submit the latest iOS build to App Store Connect.
+- `release:ios`: Run the cloud production build and submit flow together.
 
-Run the unit and component suites locally:
+## Testing
 
 ```bash
 npm test
 npx tsc --noEmit
 ```
 
-### Manual testing checklist for real users
+## Release Notes
 
-Use this checklist when validating the app in the simulator or on device:
-
-- [ ] Create a new goal with a name, target amount, and recurring or one-time settings.
-- [ ] Edit the goal name, target, and contribution settings and confirm the updates persist.
-- [ ] Add a manual contribution to a goal and confirm the new balance updates immediately.
-- [ ] Update an existing contribution to a different amount and confirm the previous value is replaced.
-- [ ] Delete a goal and confirm the goal disappears from the list and related progress is removed or preserved as expected.
-- [ ] Confirm onboarding, stats, and achievements still behave normally after the changes above.
-
-## App Store Release (Path A: EAS)
-
-This project is configured for EAS cloud builds.
-
-### 1) Verify EAS login
-
-```bash
-npm run eas:whoami
-```
-
-### 2) Build iOS production binary
-
-```bash
-npm run eas:build:ios
-```
-
-### 3) Submit latest iOS build to App Store Connect
-
-```bash
-npm run eas:submit:ios
-```
-
-### Optional: run build + submit together
-
-```bash
-npm run release:ios
-```
-
-### Notes
-
-- Increment `expo.version` for each public release.
-- EAS is configured with `autoIncrement` for production builds.
-- Keep `expo.ios.bundleIdentifier` aligned with the App Store Connect app record.
-- Complete App Store Connect metadata, screenshots, and privacy details before review.
-
-### Pre-release checklist (iOS)
-
-- [ ] Confirm release version in `app.json` (`expo.version`) is correct for this release.
-- [ ] Confirm `npm run eas:whoami` shows the expected Expo account.
-- [ ] Run quality checks: `npm test` and `npx tsc --noEmit`.
-- [ ] Verify icon and splash look correct on simulator and one physical device.
-- [ ] Build production binary with `npm run eas:build:ios`.
-- [ ] Submit the latest build with `npm run eas:submit:ios`.
-- [ ] In App Store Connect, attach the processed build and complete release notes.
-- [ ] Complete App Privacy fields and submit for review.
-
-### Optional CI automation for dev builds
-
-This project is connected to Expo dashboard workflows, so you can configure dev builds directly in EAS Workflows without maintaining a separate GitHub Actions build file.
-
-Recommended setup:
-
-- Trigger on pushes to `main`.
-- Use the `development` profile for iOS dev client builds.
-- Keep production submissions manual (or separately gated) for safer releases.
-
-### GitHub quality checks on push
-
-This repo includes [quality checks workflow](.github/workflows/quality-checks.yml) that runs on pushes to `main` and pull requests to `main`:
-
-- `npm test`
-- `npx tsc --noEmit`
-- `npm run lint`
-- `npm run format:check`
-
-## Current structure
-
-- App.tsx: starter MVP screen and flows
-- src/types.ts: app data models
-- src/storage.ts: local persistence
-- src/calculations.ts: period/date and progress calculations
-- src/formatters.ts: currency and percent formatters
-
-## Notes
-
-- Data is local-only in this version.
-- V2 backend/auth/collaboration from project plan is not started yet.
+Use the EAS production build scripts for TestFlight and App Store releases.
+Keep versioning and release metadata in `app.json` in sync with each submission.

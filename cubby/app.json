@@ -14,7 +14,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.jschulerdev.cubby",
-      "buildNumber": "2",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

@@ -21,7 +21,7 @@ vi.mock('react-native', async () => {
 });
 
 vi.mock('lucide-react-native', () => ({
-  Settings2: () => null,
+  SlidersHorizontal: () => null,
 }));
 
 vi.mock('../../../assets/icon.png', () => ({ default: 1 }));

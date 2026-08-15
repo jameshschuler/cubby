@@ -18,7 +18,7 @@ export default function ViewFilterTabs({ selectedView, onSelect }: ViewFilterTab
               selectedView === view && styles.periodButtonTextActive,
             ]}
           >
-            {filterLabel[view as 'week' | 'month' | 'year']}
+            {filterLabel[view]}
           </Text>
         </Pressable>
       ))}

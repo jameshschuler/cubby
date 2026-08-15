@@ -1,4 +1,4 @@
-import { Pencil } from 'lucide-react-native';
+import { Plus } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatCurrency } from '../../helpers/formatters';
@@ -14,6 +14,15 @@ export default function HomeGoalsCard({
   onEditActual,
   onCreateGoal,
 }: HomeGoalsCardProps) {
+  const viewLabel =
+    selectedView === 'week'
+      ? 'weekly'
+      : selectedView === 'month'
+        ? 'monthly'
+        : selectedView === 'year'
+          ? 'yearly'
+          : selectedView;
+
   const formatBadgeLabel = (value: string) =>
     value
       .split(' ')
@@ -32,12 +41,12 @@ export default function HomeGoalsCard({
         <FirstRunOnboardingCard
           onCreateGoal={onCreateGoal}
           title={
-            selectedView === 'one-time' ? 'No one-time goals yet' : `No ${selectedView} goals yet`
+            selectedView === 'one-time' ? 'No one-time goals yet' : `No ${viewLabel} goals yet`
           }
           body={
             selectedView === 'one-time'
               ? 'Add a one-time goal to track a single finish line alongside your recurring accounts.'
-              : `Add a ${selectedView} goal to start tracking progress, targets, and automatic contributions in this view.`
+              : `Add a ${viewLabel} goal to start tracking progress, targets, and automatic contributions in this view.`
           }
           buttonLabel="Add goal"
         />
@@ -118,7 +127,7 @@ export default function HomeGoalsCard({
                   accessibilityRole="button"
                   accessibilityLabel={`Edit actual amount for ${displayName}`}
                 >
-                  <Pencil color={theme.textMuted} size={14} />
+                  <Plus color={theme.textMuted} size={14} />
                 </Pressable>
               </View>
             </View>

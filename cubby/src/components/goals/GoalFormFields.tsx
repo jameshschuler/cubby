@@ -218,7 +218,7 @@ export default function GoalFormFields({
                   style={styles.input}
                 />
 
-                {renderFieldLabel('Contribution Timing', 'Required')}
+                {renderFieldLabel('Contribution Schedule', 'Required')}
                 {input.recurringState === 'week' ? (
                   <OptionPicker
                     value={input.autoContributionAnchor ?? '0'}

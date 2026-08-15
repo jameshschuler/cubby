@@ -214,7 +214,6 @@ describe('AddGoalModal', () => {
 
     act(() => {
       findPressableByText(root, 'Next').props.onPress();
-      findPressableByText(root, 'Next').props.onPress();
     });
 
     expect(getCurrentStep(root)).toBe(3);

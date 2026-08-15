@@ -323,4 +323,82 @@ describe('StatsScreen', () => {
     expect(setSelectedGoalIdSpy).toHaveBeenCalledWith('all');
     expect(setSelectedYearSpy).toHaveBeenCalledWith(2025);
   });
+
+  it('hides monthly stats when a one-time goal is selected', () => {
+    const oneTimeGoal = {
+      id: 'goal-ot-1',
+      name: 'Vacation Fund',
+      nickname: '',
+      origin: '',
+      cadence: 'monthly',
+      isRecurring: false,
+      recurringState: 'month',
+      targetAmount: 1500,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    fixture.shouldShowOnboarding = false;
+    fixture.appData = {
+      goals: [oneTimeGoal],
+      progressEvents: [
+        {
+          id: 'event-1',
+          goalId: 'goal-ot-1',
+          amount: 300,
+          eventDate: '2026-03-10T00:00:00.000Z',
+          source: 'manual',
+          createdAt: '2026-03-10T00:00:00.000Z',
+        },
+      ],
+      settings: {
+        defaultView: 'month',
+        targetSavingsRate: 0.2,
+        savingsTargetMode: 'rate',
+        yearlySavingsGoalAmount: 0,
+        incomeAmount: 10000,
+        incomeFrequency: 'monthly',
+        hasCompletedOnboarding: true,
+        logoTapCount: 0,
+      },
+    };
+
+    fixture.statsData = {
+      goals: fixture.appData.goals,
+      selection: {
+        selectedGoalId: 'goal-ot-1',
+        setSelectedGoalId: setSelectedGoalIdSpy,
+        selectedYear: 2026,
+        setSelectedYear: setSelectedYearSpy,
+        effectiveSelectedGoalId: 'goal-ot-1',
+        showAllGoals: false,
+        selectedGoal: oneTimeGoal,
+      },
+      totals: {
+        totalSavedAllTime: 300,
+        totalsByYear: [{ year: 2026, total: 300 }],
+        effectiveSelectedYear: 2026,
+        selectedYearTotal: 300,
+      },
+      history: {
+        filteredEvents: fixture.appData.progressEvents,
+        goalNameById: new Map([['goal-ot-1', 'Vacation Fund']]),
+        monthlyStats: {
+          averageSavedPerMonth: 300,
+          medianSavedPerMonth: 300,
+          bestMonth: { month: '2026-03', total: 300 },
+          weakestMonth: { month: '2026-03', total: 300 },
+        },
+      },
+    };
+
+    let renderer: ReturnType<typeof create>;
+
+    act(() => {
+      renderer = create(<StatsScreen />);
+    });
+
+    const root = renderer!.root;
+    expect(root.findAllByProps({ componentName: 'StatsMonthlyChartCard' })).toHaveLength(0);
+  });
 });

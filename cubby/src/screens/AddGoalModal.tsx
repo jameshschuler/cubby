@@ -95,6 +95,11 @@ export default function AddGoalModal() {
       return;
     }
 
+    if (currentStep === 1 && !isRecurring) {
+      setCurrentStep(3);
+      return;
+    }
+
     if (currentStep === 2 && !validateAutomaticContribution()) {
       return;
     }
@@ -103,6 +108,11 @@ export default function AddGoalModal() {
   };
 
   const handleBack = () => {
+    if (!isRecurring && currentStep === 3) {
+      setCurrentStep(1);
+      return;
+    }
+
     setCurrentStep((current) => Math.max(current - 1, 1));
   };
 
@@ -169,7 +179,7 @@ export default function AddGoalModal() {
           accessibilityLabel="Close add goal modal"
         />
 
-        <GoalFormStepper currentStep={currentStep} />
+        <GoalFormStepper currentStep={currentStep} isRecurring={isRecurring} />
 
         {currentStep === 1 ? (
           <>
@@ -312,7 +322,7 @@ export default function AddGoalModal() {
                       style={styles.input}
                     />
 
-                    {renderFieldLabel('Contribution Timing', 'Required')}
+                    {renderFieldLabel('Contribution Schedule', 'Required')}
                     {recurringState === 'week' ? (
                       <OptionPicker
                         value={autoContributionAnchor}

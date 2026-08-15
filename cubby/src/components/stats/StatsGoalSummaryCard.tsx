@@ -5,10 +5,22 @@ import { styles } from './styles';
 import { StatsGoalSummaryCardProps } from './types';
 import { formatAccountTypeLabel } from './helpers/utils';
 
+const recurringStateLabel: Record<'week' | 'month' | 'year', string> = {
+  week: 'Weekly',
+  month: 'Monthly',
+  year: 'Yearly',
+};
+
 export default function StatsGoalDetailsCard({
   showAllGoals,
   selectedGoal,
 }: StatsGoalSummaryCardProps) {
+  const goalTypeLabel = selectedGoal
+    ? selectedGoal.isRecurring
+      ? recurringStateLabel[selectedGoal.recurringState]
+      : 'One time'
+    : null;
+
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>
@@ -16,6 +28,7 @@ export default function StatsGoalDetailsCard({
       </Text>
       {!showAllGoals && selectedGoal ? (
         <>
+          {goalTypeLabel ? <Text style={styles.helperText}>Goal Type: {goalTypeLabel}</Text> : null}
           {selectedGoal.origin ? (
             <Text style={styles.helperText}>Institution: {selectedGoal.origin}</Text>
           ) : null}

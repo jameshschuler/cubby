@@ -26,7 +26,7 @@ export default function HomeSummaryCard({
           {selectedView === 'one-time' ? 'One-time Summary' : 'Summary'}
         </Text>
       </View>
-      {targetLabel ? <Text style={styles.subtitle}>Tracking {targetLabel}</Text> : null}
+      {targetLabel ? <Text style={styles.subtitle}>{targetLabel}</Text> : null}
       <Text style={styles.summaryValue}>{formatCurrency(totalSaved)}</Text>
       <View style={styles.badgeRow}>
         {showTargetBadge ? (

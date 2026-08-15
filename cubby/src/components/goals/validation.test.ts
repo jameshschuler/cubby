@@ -60,7 +60,7 @@ describe('validateAutomaticContribution', () => {
         autoContributionAnchor: 'abc',
       })
     ).toEqual({
-      autoContributionAnchor: 'Choose a valid contribution timing for this frequency.',
+      autoContributionAnchor: 'Choose a valid contribution schedule for this frequency.',
     });
   });
 

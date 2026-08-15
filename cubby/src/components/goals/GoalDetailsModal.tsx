@@ -106,6 +106,11 @@ export default function GoalDetailsModal({
       return;
     }
 
+    if (currentStep === 1 && !input.isRecurring) {
+      setCurrentStep(3);
+      return;
+    }
+
     if (currentStep === 2 && !validateAutomaticContribution()) {
       return;
     }
@@ -114,6 +119,11 @@ export default function GoalDetailsModal({
   };
 
   const handleBack = () => {
+    if (!input.isRecurring && currentStep === 3) {
+      setCurrentStep(1);
+      return;
+    }
+
     setCurrentStep((current) => Math.max(current - 1, 1));
   };
 
@@ -162,7 +172,7 @@ export default function GoalDetailsModal({
         <ScrollView contentContainerStyle={styles.content}>
           <GoalFormHeader title="Edit Account Goal" onDismiss={onClose} />
 
-          <GoalFormStepper currentStep={currentStep} />
+          <GoalFormStepper currentStep={currentStep} isRecurring={input.isRecurring} />
 
           <GoalFormFields
             input={input}

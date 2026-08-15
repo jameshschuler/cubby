@@ -82,7 +82,7 @@ export function validateAutomaticContribution({
   }
 
   if (!parsedAutoContributionAnchor.isValid || !parsedAutoContributionAnchor.normalizedValue) {
-    errors.autoContributionAnchor = 'Choose a valid contribution timing for this frequency.';
+    errors.autoContributionAnchor = 'Choose a valid contribution schedule for this frequency.';
   }
 
   return errors;

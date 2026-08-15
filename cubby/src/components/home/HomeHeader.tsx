@@ -1,5 +1,5 @@
 import appIcon from '../../../assets/icon.png';
-import { Settings2 } from 'lucide-react-native';
+import { SlidersHorizontal } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../core/theme';
 import { HomeHeaderProps } from './types';
@@ -30,7 +30,7 @@ export default function HomeHeader({ subtitle, onLogoPress, onSettingsPress }: H
           hitSlop={8}
           style={styles.settingsButton}
         >
-          <Settings2 color={theme.accentDeep} size={20} strokeWidth={2.2} />
+          <SlidersHorizontal color={theme.accentDeep} size={20} strokeWidth={2.25} />
         </Pressable>
       ) : null}
     </View>

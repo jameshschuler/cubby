@@ -6,12 +6,13 @@ export const recurringStateAutoContributionLabels = {
   year: '/ year',
 } as const;
 
-export const goalFilters: GoalDisplayFilter[] = ['week', 'month', 'year'];
+export const goalFilters: GoalDisplayFilter[] = ['week', 'month', 'year', 'one-time'];
 
-export const filterLabel: Record<'week' | 'month' | 'year', string> = {
+export const filterLabel: Record<GoalDisplayFilter, string> = {
   week: 'Weekly',
   month: 'Monthly',
   year: 'Yearly',
+  'one-time': 'One-time',
 };
 
 export const getProgressFillColor = (ratio: number) => {

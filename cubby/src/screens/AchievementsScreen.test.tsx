@@ -60,6 +60,19 @@ vi.mock('lucide-react-native', () => ({
   Lock: (props: MockComponentProps) => <mock-node componentName="LockIcon" {...props} />,
 }));
 
+vi.mock('react-native-svg', () => ({
+  default: ({ children, ...props }: MockComponentProps) => (
+    <mock-node componentName="Svg" {...props}>
+      {children}
+    </mock-node>
+  ),
+  Circle: ({ children, ...props }: MockComponentProps) => (
+    <mock-node componentName="SvgCircle" {...props}>
+      {children}
+    </mock-node>
+  ),
+}));
+
 vi.mock('../constants/achievement-constants', () => ({
   achievements: [
     {
@@ -137,7 +150,7 @@ describe('AchievementsScreen', () => {
     };
   });
 
-  it('shows earned counts and keeps hidden achievements masked while locked', () => {
+  it('shows completion counts and keeps hidden achievements masked while locked', () => {
     fixture.statuses = {
       'first-goal': true,
       planner: true,
@@ -153,7 +166,7 @@ describe('AchievementsScreen', () => {
     const root = renderer!.root;
     const text = collectText(renderer!.toJSON());
 
-    expect(text).toContain('2 of 3 earned');
+    expect(text).toContain('2 of 3 complete');
     expect(text).toContain('First Goal');
     expect(text).toContain('Tier 1');
     expect(text).toContain('Hidden Achievement');
@@ -163,7 +176,7 @@ describe('AchievementsScreen', () => {
     expect(root.findAllByProps({ componentName: 'BoopIcon' })).toHaveLength(0);
   });
 
-  it('reveals hidden achievement details once earned', () => {
+  it('reveals hidden achievement details once completed', () => {
     fixture.statuses = {
       'first-goal': false,
       planner: false,
@@ -179,7 +192,7 @@ describe('AchievementsScreen', () => {
     const root = renderer!.root;
     const text = collectText(renderer!.toJSON());
 
-    expect(text).toContain('1 of 3 earned');
+    expect(text).toContain('1 of 3 complete');
     expect(text).toContain('Boop');
     expect(text).toContain('Tap the Cubby logo.');
     expect(text).not.toContain('Hidden Achievement');

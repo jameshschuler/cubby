@@ -172,10 +172,10 @@ export default function HomeScreen() {
           targetLabel={
             data.settings.savingsTargetMode === 'rate'
               ? data.settings.targetSavingsRate > 0
-                ? `${formatPercent(data.settings.targetSavingsRate)} of income`
+                ? `Suggested savings rate: ${formatPercent(data.settings.targetSavingsRate)} of income`
                 : null
               : data.settings.yearlySavingsGoalAmount > 0
-                ? `${formatCurrency(data.settings.yearlySavingsGoalAmount)} per year`
+                ? `Yearly savings goal: ${formatCurrency(data.settings.yearlySavingsGoalAmount)} per year`
                 : null
           }
         />

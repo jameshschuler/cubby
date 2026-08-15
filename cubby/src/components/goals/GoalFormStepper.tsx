@@ -1,21 +1,24 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { theme } from '../../core/theme';
-import { goalFormStepNames, totalGoalFormSteps } from './constants/constants';
+import { goalFormStepNames } from './constants/constants';
 
 interface GoalFormStepperProps {
   currentStep: number;
+  isRecurring?: boolean;
 }
 
-export default function GoalFormStepper({ currentStep }: GoalFormStepperProps) {
-  const totalSteps = totalGoalFormSteps;
-  const stepNames = goalFormStepNames;
+export default function GoalFormStepper({ currentStep, isRecurring = true }: GoalFormStepperProps) {
+  const stepNames = isRecurring ? goalFormStepNames : [goalFormStepNames[0], goalFormStepNames[2]];
+  const visibleSteps = isRecurring ? [1, 2, 3] : [1, 3];
+  const displayCurrentStep = isRecurring ? currentStep : currentStep > 1 ? 2 : 1;
 
   return (
     <View style={styles.stepperRow}>
-      {[1, 2, 3].map((step) => {
-        const isActive = step === currentStep;
-        const isCompleted = step < currentStep;
+      {visibleSteps.map((step, index) => {
+        const displayStep = index + 1;
+        const isActive = displayStep === displayCurrentStep;
+        const isCompleted = displayStep < displayCurrentStep;
 
         return (
           <View key={step} style={styles.stepperItem}>
@@ -32,14 +35,14 @@ export default function GoalFormStepper({ currentStep }: GoalFormStepperProps) {
                     (isActive || isCompleted) && styles.stepperCircleTextActive,
                   ]}
                 >
-                  {step}
+                  {displayStep}
                 </Text>
               </View>
-              {step < totalSteps ? (
+              {index < visibleSteps.length - 1 ? (
                 <View
                   style={[
                     styles.stepperConnector,
-                    step < currentStep && styles.stepperConnectorActive,
+                    displayStep < displayCurrentStep && styles.stepperConnectorActive,
                   ]}
                 />
               ) : null}
@@ -47,7 +50,7 @@ export default function GoalFormStepper({ currentStep }: GoalFormStepperProps) {
             <Text
               style={[styles.stepperLabel, (isActive || isCompleted) && styles.stepperLabelActive]}
             >
-              {stepNames[step - 1]}
+              {stepNames[index]}
             </Text>
           </View>
         );
@@ -59,24 +62,29 @@ export default function GoalFormStepper({ currentStep }: GoalFormStepperProps) {
 const styles = StyleSheet.create({
   stepperRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginTop: -4,
     marginBottom: 6,
   },
   stepperItem: {
     flex: 1,
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
   stepperTopRow: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
+    minHeight: 26,
   },
   stepperLabel: {
     color: theme.textMuted,
     fontSize: 11,
     fontWeight: '600',
+    textAlign: 'center',
+    minHeight: 30,
   },
   stepperLabelActive: {
     color: theme.text,
@@ -90,6 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.surface,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
   },
   stepperCircleActive: {
     borderColor: theme.accent,
@@ -104,10 +113,13 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   stepperConnector: {
-    flex: 1,
+    position: 'absolute',
+    left: '50%',
+    right: '-50%',
+    top: 12,
     height: 2,
     backgroundColor: theme.border,
-    marginHorizontal: 8,
+    zIndex: 0,
   },
   stepperConnectorActive: {
     backgroundColor: theme.accent,

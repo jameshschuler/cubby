@@ -35,6 +35,7 @@ export default function StatsScreen() {
     selectedGoal,
   } = selection;
   const shouldShowAllGoals = showAllGoals || goals.length === 0;
+  const shouldShowMonthlyStats = shouldShowAllGoals || Boolean(selectedGoal?.isRecurring);
 
   const { totalSavedAllTime, totalsByYear, effectiveSelectedYear, selectedYearTotal } = totals;
 
@@ -137,11 +138,13 @@ export default function StatsScreen() {
               onSelectYear={setSelectedYear}
             />
 
-            <StatsMonthlyChartCard
-              effectiveSelectedYear={effectiveSelectedYear}
-              filteredEvents={filteredEvents}
-              monthlyStats={monthlyStats}
-            />
+            {shouldShowMonthlyStats ? (
+              <StatsMonthlyChartCard
+                effectiveSelectedYear={effectiveSelectedYear}
+                filteredEvents={filteredEvents}
+                monthlyStats={monthlyStats}
+              />
+            ) : null}
 
             <StatsHistoryListCard
               filteredEvents={filteredEvents}

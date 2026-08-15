@@ -98,7 +98,7 @@ export const yearDayOptions = Array.from({ length: 31 }, (_, index) => ({
 
 export const totalGoalFormSteps = 3;
 
-export const goalFormStepNames = ['Basics', 'Scheduling', 'Details'] as const;
+export const goalFormStepNames = ['Basics', 'Scheduling', 'Account Details'] as const;
 
 export const recurringStateAutoContributionLabels = {
   week: 'each week',

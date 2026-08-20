@@ -73,6 +73,19 @@ vi.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
 
+vi.mock('react-native-safe-area-context', async () => {
+  const React = await import('react');
+
+  const createHostComponent = (name: string) =>
+    React.forwardRef(({ children, ...props }: any, ref) =>
+      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
+    );
+
+  return {
+    SafeAreaView: createHostComponent('SafeAreaView'),
+  };
+});
+
 vi.mock('react-native', async () => {
   const React = await import('react');
 
@@ -211,7 +224,7 @@ describe('StatsScreen', () => {
   });
 
   it('shows onboarding when no stats exist and routes to add-goal', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<StatsScreen />);
@@ -300,7 +313,7 @@ describe('StatsScreen', () => {
     getSavingsRateForSelectedYearSpy.mockReturnValue(0.25);
     getTargetSavedAmountForViewSpy.mockReturnValue(24000);
 
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<StatsScreen />);
@@ -392,7 +405,7 @@ describe('StatsScreen', () => {
       },
     };
 
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<StatsScreen />);

@@ -20,6 +20,19 @@ vi.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
 
+vi.mock('react-native-safe-area-context', async () => {
+  const React = await import('react');
+
+  const createHostComponent = (name: string) =>
+    React.forwardRef(({ children, ...props }: any, ref) =>
+      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
+    );
+
+  return {
+    SafeAreaView: createHostComponent('SafeAreaView'),
+  };
+});
+
 vi.mock('lucide-react-native', () => ({
   Download: () => null,
   Goal: () => null,
@@ -107,7 +120,7 @@ function collectTextFromNode(node: any): string {
   return node.children.map(collectTextFromNode).join('');
 }
 
-function findPressableByText(root: ReturnType<typeof create>['root'], text: string) {
+function findPressableByText(root: any, text: string) {
   const pressables = root.findAll(
     (node: any) =>
       node.props?.componentName === 'Pressable' && typeof node.props?.onPress === 'function'
@@ -121,7 +134,7 @@ function findPressableByText(root: ReturnType<typeof create>['root'], text: stri
   return matched;
 }
 
-function findInputByPlaceholder(root: ReturnType<typeof create>['root'], placeholder: string) {
+function findInputByPlaceholder(root: any, placeholder: string) {
   return root.find(
     (node: any) =>
       node.props?.componentName === 'TextInput' && node.props?.placeholder === placeholder
@@ -138,7 +151,7 @@ describe('SettingsScreen', () => {
   });
 
   it('closes the modal screen from the hero close button', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<SettingsScreen />);
@@ -153,7 +166,7 @@ describe('SettingsScreen', () => {
 
   it('alerts when export fails', async () => {
     exportJsonSpy.mockRejectedValueOnce(new Error('no permission'));
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     await act(async () => {
       renderer = create(<SettingsScreen />);
@@ -171,7 +184,7 @@ describe('SettingsScreen', () => {
   });
 
   it('saves income and yearly-goal target from the modal forms', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<SettingsScreen />);

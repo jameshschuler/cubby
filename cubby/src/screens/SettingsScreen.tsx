@@ -8,7 +8,7 @@ import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { getIncomeAmountForView } from '../helpers/calculations';
 import { formatCurrency, formatPercent } from '../helpers/formatters';
 import { useAppData } from '../core/app-data-context';
-import { IncomeFrequency, SavingsTargetMode } from '../core/types';
+import { AppData, IncomeFrequency, SavingsTargetMode } from '../core/types';
 import SettingsCard from '../components/settings/SettingsCard';
 import SettingsModalShell from '../components/settings/SettingsModalShell';
 import { theme } from '../core/theme';
@@ -49,10 +49,10 @@ function SegmentedControl<T extends string>({
 }
 
 interface SettingsContentProps {
-  data: ReturnType<typeof useAppData>['data'];
-  exportJson: ReturnType<typeof useAppData>['exportJson'];
-  saveIncomeSettings: ReturnType<typeof useAppData>['saveIncomeSettings'];
-  saveSavingsTargetSettings: ReturnType<typeof useAppData>['saveSavingsTargetSettings'];
+  data: AppData;
+  exportJson: () => Promise<void>;
+  saveIncomeSettings: (amount: number, frequency: IncomeFrequency) => void;
+  saveSavingsTargetSettings: (mode: SavingsTargetMode, yearlyGoalAmount: number) => void;
 }
 
 function SettingsContent({

@@ -68,7 +68,7 @@ export default function AchievementNotifier() {
   const [activeAchievementId, setActiveAchievementId] = useState<AchievementId | null>(null);
   const toastOpacity = useMemo(() => new Animated.Value(0), []);
   const toastTranslateY = useMemo(() => new Animated.Value(-12), []);
-  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimerRef = useRef<number | null>(null);
 
   const clearHideTimer = () => {
     if (hideTimerRef.current) {

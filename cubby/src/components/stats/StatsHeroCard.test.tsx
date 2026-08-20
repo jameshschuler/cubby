@@ -49,7 +49,7 @@ function collectText(node: any): string[] {
 
 describe('StatsHeroCard', () => {
   it('shows the updated stats subtitle', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<StatsHeroCard />);

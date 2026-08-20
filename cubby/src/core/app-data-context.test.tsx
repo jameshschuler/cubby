@@ -27,7 +27,7 @@ const { mockLoadAppData, mockSaveAppData } = vi.hoisted(() => ({
 }));
 
 vi.mock('./storage', async () => {
-  const actual = await vi.importActual<typeof import('./storage')>('./storage');
+  const actual = await vi.importActual<any>('./storage');
 
   return {
     ...actual,
@@ -36,7 +36,7 @@ vi.mock('./storage', async () => {
   };
 });
 
-function TestProbe({ onReady }: { onReady: (value: ReturnType<typeof useAppData>) => void }) {
+function TestProbe({ onReady }: { onReady: (value: any) => void }) {
   const value = useAppData();
 
   useEffect(() => {
@@ -47,8 +47,8 @@ function TestProbe({ onReady }: { onReady: (value: ReturnType<typeof useAppData>
 }
 
 async function renderWithAppData() {
-  let renderer: ReturnType<typeof create>;
-  const contextRef = { current: null as ReturnType<typeof useAppData> | null };
+  let renderer: any;
+  const contextRef = { current: null as any };
 
   await act(async () => {
     renderer = create(

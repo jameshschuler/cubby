@@ -57,7 +57,7 @@ function collectText(node: any): string[] {
 describe('GoalsHeader', () => {
   it('shows the updated goals subtitle and triggers add goal', () => {
     const onAddGoal = vi.fn();
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<GoalsHeader onAddGoal={onAddGoal} />);

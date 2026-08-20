@@ -59,7 +59,7 @@ describe('HomeHeader', () => {
   it('renders the subtitle and triggers the header actions', () => {
     const onLogoPress = vi.fn();
     const onSettingsPress = vi.fn();
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(

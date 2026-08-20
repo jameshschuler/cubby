@@ -20,7 +20,7 @@ const fixture = vi.hoisted(() => ({
       hasCompletedOnboarding: true,
       logoTapCount: 0,
     },
-  } satisfies AppData,
+  } as AppData,
   statuses: {
     'first-goal': false,
     planner: false,
@@ -36,6 +36,19 @@ type MockComponentProps = {
 vi.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
+
+vi.mock('react-native-safe-area-context', async () => {
+  const React = await import('react');
+
+  const createHostComponent = (name: string) =>
+    React.forwardRef(({ children, ...props }: MockComponentProps, ref: ForwardedRef<unknown>) =>
+      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
+    );
+
+  return {
+    SafeAreaView: createHostComponent('SafeAreaView'),
+  };
+});
 
 vi.mock('react-native', async () => {
   const React = await import('react');
@@ -157,7 +170,7 @@ describe('AchievementsScreen', () => {
       'logo-tap': false,
     };
 
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<AchievementsScreen />);
@@ -183,7 +196,7 @@ describe('AchievementsScreen', () => {
       'logo-tap': true,
     };
 
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<AchievementsScreen />);

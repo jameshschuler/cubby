@@ -34,7 +34,7 @@ const fixture = vi.hoisted(() => ({
       hasCompletedOnboarding: true,
       logoTapCount: 0,
     },
-  } satisfies AppData,
+  } as AppData,
 }));
 
 vi.mock('expo-router', () => ({
@@ -46,6 +46,19 @@ vi.mock('expo-router', () => ({
 vi.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
+
+vi.mock('react-native-safe-area-context', async () => {
+  const React = await import('react');
+
+  const createHostComponent = (name: string) =>
+    React.forwardRef(({ children, ...props }: any, ref) =>
+      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
+    );
+
+  return {
+    SafeAreaView: createHostComponent('SafeAreaView'),
+  };
+});
 
 vi.mock('react-native', async () => {
   const React = await import('react');
@@ -139,7 +152,7 @@ describe('GoalsScreen', () => {
   });
 
   it('routes to add-goal from the header and onboarding card', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<GoalsScreen />);
@@ -189,7 +202,7 @@ describe('GoalsScreen', () => {
       },
     };
 
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<GoalsScreen />);

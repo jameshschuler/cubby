@@ -21,6 +21,19 @@ vi.mock('../core/app-data-context', () => ({
   }),
 }));
 
+vi.mock('react-native-safe-area-context', async () => {
+  const React = await import('react');
+
+  const createHostComponent = (name: string) =>
+    React.forwardRef(({ children, ...props }: any, ref) =>
+      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
+    );
+
+  return {
+    SafeAreaView: createHostComponent('SafeAreaView'),
+  };
+});
+
 vi.mock('react-native', async () => {
   const React = await import('react');
 
@@ -85,7 +98,7 @@ function collectTextFromNode(node: any): string {
   return node.children.map(collectTextFromNode).join('');
 }
 
-function findPressableByText(root: ReturnType<typeof create>['root'], text: string) {
+function findPressableByText(root: any, text: string) {
   const pressables = root.findAll(
     (node: any) =>
       node.props?.componentName === 'Pressable' && typeof node.props?.onPress === 'function'
@@ -99,19 +112,19 @@ function findPressableByText(root: ReturnType<typeof create>['root'], text: stri
   return matched;
 }
 
-function findInputByPlaceholder(root: ReturnType<typeof create>['root'], placeholder: string) {
+function findInputByPlaceholder(root: any, placeholder: string) {
   return root.find(
     (node: any) =>
       node.props?.componentName === 'TextInput' && node.props?.placeholder === placeholder
   );
 }
 
-function hasText(root: ReturnType<typeof create>['root'], text: string) {
+function hasText(root: any, text: string) {
   const textNodes = root.findAll((node: any) => node.props?.componentName === 'Text');
   return textNodes.some((node: any) => collectTextFromNode(node).includes(text));
 }
 
-function getCurrentStep(root: ReturnType<typeof create>['root']) {
+function getCurrentStep(root: any) {
   return root.findByProps({ componentName: 'GoalFormStepper' }).props.currentStep;
 }
 
@@ -122,7 +135,7 @@ describe('AddGoalModal', () => {
   });
 
   it('keeps the wizard on step 1 when required basics are invalid', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<AddGoalModal />);
@@ -142,7 +155,7 @@ describe('AddGoalModal', () => {
   });
 
   it('saves a recurring goal with automatic contribution details', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<AddGoalModal />);
@@ -198,7 +211,7 @@ describe('AddGoalModal', () => {
   });
 
   it('saves a one-time goal without automatic contribution data', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<AddGoalModal />);

@@ -72,9 +72,7 @@ vi.mock('../../core/app-data-context', () => ({
 }));
 
 vi.mock('../../helpers/achievements', async () => {
-  const actual = await vi.importActual<typeof import('../../helpers/achievements')>(
-    '../../helpers/achievements'
-  );
+  const actual = await vi.importActual<any>('../../helpers/achievements');
 
   return {
     ...actual,
@@ -183,7 +181,7 @@ describe('AchievementNotifier', () => {
   });
 
   it('renders a toast when an achievement is newly unlocked', async () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     await act(async () => {
       renderer = create(<AchievementNotifier />);
@@ -205,7 +203,7 @@ describe('AchievementNotifier', () => {
   });
 
   it('navigates to achievements when pressing the view button', async () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     await act(async () => {
       renderer = create(<AchievementNotifier />);
@@ -229,7 +227,7 @@ describe('AchievementNotifier', () => {
 
   it('does not notify again for achievements already saved in AsyncStorage', async () => {
     getItemSpy.mockResolvedValue(JSON.stringify(['first-goal']));
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     await act(async () => {
       renderer = create(<AchievementNotifier />);

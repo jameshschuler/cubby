@@ -40,6 +40,19 @@ vi.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
 
+vi.mock('react-native-safe-area-context', async () => {
+  const React = await import('react');
+
+  const createHostComponent = (name: string) =>
+    React.forwardRef(({ children, ...props }: any, ref) =>
+      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
+    );
+
+  return {
+    SafeAreaView: createHostComponent('SafeAreaView'),
+  };
+});
+
 vi.mock('../helpers/calculations', () => ({
   getGoalProgress: () => 150,
   getSavingsRateForView: () => 0.1,
@@ -155,7 +168,7 @@ describe('HomeScreen', () => {
   });
 
   it('opens settings, handles create-goal actions, and registers logo taps', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<HomeScreen />);
@@ -180,7 +193,7 @@ describe('HomeScreen', () => {
   });
 
   it('validates and saves edited actual contribution amounts', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<HomeScreen />);
@@ -219,7 +232,7 @@ describe('HomeScreen', () => {
   });
 
   it('switches to one-time view without updating the default recurring view setting', () => {
-    let renderer: ReturnType<typeof create>;
+    let renderer: any;
 
     act(() => {
       renderer = create(<HomeScreen />);

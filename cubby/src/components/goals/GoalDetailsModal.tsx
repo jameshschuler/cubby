@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Modal, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { parseAutoContributionAnchor } from '../../helpers/automatic-contributions';
 import GoalFormHeader from './GoalFormHeader';

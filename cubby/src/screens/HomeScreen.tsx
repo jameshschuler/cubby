@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Alert, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import {
   getGoalProgress,

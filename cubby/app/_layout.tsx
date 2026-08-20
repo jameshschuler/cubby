@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { View } from 'react-native';
 
 import { AppDataProvider, useAppData } from '../src/core/app-data-context';
@@ -63,7 +64,9 @@ function RootNavigator() {
 export default function RootLayout() {
   return (
     <AppDataProvider>
-      <RootNavigator />
+      <SafeAreaProvider>
+        <RootNavigator />
+      </SafeAreaProvider>
     </AppDataProvider>
   );
 }

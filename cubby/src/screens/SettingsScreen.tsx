@@ -2,16 +2,8 @@ import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Download, Goal, X } from 'lucide-react-native';
-import {
-  Alert,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { getIncomeAmountForView } from '../helpers/calculations';
 import { formatCurrency, formatPercent } from '../helpers/formatters';

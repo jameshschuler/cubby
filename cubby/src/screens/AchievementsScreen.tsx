@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Lock } from 'lucide-react-native';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { achievements } from '../constants/achievement-constants';

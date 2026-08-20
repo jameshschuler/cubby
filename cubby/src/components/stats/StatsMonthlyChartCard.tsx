@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import { LineChart } from 'react-native-gifted-charts';
+import { ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { BarChart } from 'react-native-gifted-charts';
 
 import { formatCurrency } from '../../helpers/formatters';
 import { theme } from '../../core/theme';
@@ -28,6 +28,7 @@ export default function StatsMonthlyStatsCard({
     return monthValues.map((value, monthIndex) => ({
       value,
       label: getMonthName(monthIndex).slice(0, 3),
+      frontColor: theme.accent,
     }));
   }, [filteredEvents]);
 
@@ -61,7 +62,7 @@ export default function StatsMonthlyStatsCard({
     });
   }, [filteredEvents]);
 
-  const chartWidth = useMemo(() => getChartWidth(width), [width]);
+  const chartWidth = useMemo(() => Math.max(getChartWidth(width), 450), [width]);
 
   return (
     <View style={styles.card}>
@@ -126,31 +127,33 @@ export default function StatsMonthlyStatsCard({
 
         {activeTab === 'trend' ? (
           <View style={styles.chartCanvas}>
-            <LineChart
-              data={monthlyChartData}
-              width={chartWidth}
-              height={180}
-              spacing={24}
-              initialSpacing={12}
-              noOfSections={4}
-              maxValue={chartMaxValue}
-              xAxisLabelTextStyle={{ color: theme.textMuted, fontSize: 10 }}
-              yAxisTextStyle={{ color: theme.textMuted, fontSize: 10 }}
-              yAxisLabelTexts={yAxisLabelTexts}
-              yAxisLabelWidth={56}
-              xAxisColor={theme.border}
-              yAxisColor={theme.border}
-              color={theme.accent}
-              thickness={3}
-              curved
-              areaChart
-              startFillColor={theme.accentHighlight}
-              endFillColor={theme.surfaceMuted}
-              startOpacity={0.18}
-              endOpacity={0.04}
-              dataPointsColor={theme.accent}
-              dataPointsRadius={4}
-            />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingRight: 8 }}
+              style={{ width: '100%' }}
+            >
+              <BarChart
+                data={monthlyChartData}
+                width={chartWidth}
+                height={180}
+                barWidth={18}
+                spacing={16}
+                initialSpacing={12}
+                endSpacing={12}
+                noOfSections={4}
+                maxValue={chartMaxValue}
+                xAxisLabelTextStyle={{ color: theme.textMuted, fontSize: 10 }}
+                yAxisTextStyle={{ color: theme.textMuted, fontSize: 10 }}
+                yAxisLabelTexts={yAxisLabelTexts}
+                yAxisLabelWidth={56}
+                xAxisColor={theme.border}
+                yAxisColor={theme.border}
+                frontColor={theme.accent}
+                isAnimated
+                barBorderRadius={6}
+              />
+            </ScrollView>
           </View>
         ) : (
           <View style={styles.breakdownList}>

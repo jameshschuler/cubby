@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
-import { Keyboard, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { useAppData } from '../core/app-data-context';
 import GoalFormHeader from '../components/goals/GoalFormHeader';

@@ -15,6 +15,7 @@ export default function GoalFormStepper({ currentStep, isRecurring = true }: Goa
 
   return (
     <View style={styles.stepperRow}>
+      <View style={styles.trackLine} />
       {visibleSteps.map((step, index) => {
         const displayStep = index + 1;
         const isActive = displayStep === displayCurrentStep;
@@ -22,30 +23,20 @@ export default function GoalFormStepper({ currentStep, isRecurring = true }: Goa
 
         return (
           <View key={step} style={styles.stepperItem}>
-            <View style={styles.stepperTopRow}>
-              <View
+            <View
+              style={[
+                styles.stepperCircle,
+                (isActive || isCompleted) && styles.stepperCircleActive,
+              ]}
+            >
+              <Text
                 style={[
-                  styles.stepperCircle,
-                  (isActive || isCompleted) && styles.stepperCircleActive,
+                  styles.stepperCircleText,
+                  (isActive || isCompleted) && styles.stepperCircleTextActive,
                 ]}
               >
-                <Text
-                  style={[
-                    styles.stepperCircleText,
-                    (isActive || isCompleted) && styles.stepperCircleTextActive,
-                  ]}
-                >
-                  {displayStep}
-                </Text>
-              </View>
-              {index < visibleSteps.length - 1 ? (
-                <View
-                  style={[
-                    styles.stepperConnector,
-                    displayStep < displayCurrentStep && styles.stepperConnectorActive,
-                  ]}
-                />
-              ) : null}
+                {displayStep}
+              </Text>
             </View>
             <Text
               style={[styles.stepperLabel, (isActive || isCompleted) && styles.stepperLabelActive]}
@@ -61,29 +52,39 @@ export default function GoalFormStepper({ currentStep, isRecurring = true }: Goa
 
 const styles = StyleSheet.create({
   stepperRow: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    alignSelf: 'stretch',
+    width: '100%',
     marginTop: -4,
     marginBottom: 6,
+    paddingHorizontal: 10,
+  },
+  trackLine: {
+    position: 'absolute',
+    left: 10,
+    right: 10,
+    top: 12,
+    height: 2,
+    backgroundColor: theme.border,
+    borderRadius: 999,
   },
   stepperItem: {
     flex: 1,
     alignItems: 'center',
     gap: 8,
-  },
-  stepperTopRow: {
-    position: 'relative',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    minHeight: 26,
+    paddingHorizontal: 4,
+    minWidth: 0,
+    zIndex: 1,
   },
   stepperLabel: {
     color: theme.textMuted,
     fontSize: 11,
     fontWeight: '600',
     textAlign: 'center',
+    width: '100%',
     minHeight: 30,
   },
   stepperLabelActive: {
@@ -111,17 +112,5 @@ const styles = StyleSheet.create({
   },
   stepperCircleTextActive: {
     color: '#fff',
-  },
-  stepperConnector: {
-    position: 'absolute',
-    left: '50%',
-    right: '-50%',
-    top: 12,
-    height: 2,
-    backgroundColor: theme.border,
-    zIndex: 0,
-  },
-  stepperConnectorActive: {
-    backgroundColor: theme.accent,
   },
 });

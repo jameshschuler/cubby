@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { useAppData } from '../core/app-data-context';
 import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingCard';

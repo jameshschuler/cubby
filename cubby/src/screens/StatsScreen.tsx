@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
 import { router } from 'expo-router';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native';
 
 import {
   getIncomeAmountForSelectedYear,

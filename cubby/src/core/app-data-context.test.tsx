@@ -121,7 +121,7 @@ describe('AppDataProvider', () => {
     });
 
     const manualEventsAfterAdd = getContext().data.progressEvents.filter(
-      (event) => event.source === 'manual'
+      (event: { source: string }) => event.source === 'manual'
     );
     expect(manualEventsAfterAdd).toHaveLength(1);
     expect(manualEventsAfterAdd[0].amount).toBe(120);
@@ -131,7 +131,7 @@ describe('AppDataProvider', () => {
     });
 
     const manualEventsAfterReplace = getContext().data.progressEvents.filter(
-      (event) => event.source === 'manual'
+      (event: { source: string }) => event.source === 'manual'
     );
     expect(manualEventsAfterReplace).toHaveLength(1);
     expect(manualEventsAfterReplace[0].amount).toBe(180);

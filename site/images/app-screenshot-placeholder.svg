@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="1334" viewBox="0 0 750 1334" role="img" aria-labelledby="title description">
+  <title id="title">Cubby app screenshot placeholder</title>
+  <desc id="description">Replace this image with a real Cubby app screenshot before launch.</desc>
+  <rect width="750" height="1334" fill="#fffaf5"/>
+  <rect x="25" y="25" width="700" height="1284" rx="52" fill="#f8efe8" stroke="#4f2e20" stroke-width="16"/>
+  <text x="375" y="570" fill="#4f2e20" font-family="Georgia, serif" font-size="42" text-anchor="middle">App Screenshot</text>
+  <text x="375" y="630" fill="#745847" font-family="Arial, sans-serif" font-size="25" text-anchor="middle">Replace this file with your</text>
+  <text x="375" y="670" fill="#745847" font-family="Arial, sans-serif" font-size="25" text-anchor="middle">final Cubby screenshot.</text>
+</svg>

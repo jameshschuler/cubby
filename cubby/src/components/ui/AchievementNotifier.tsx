@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -77,25 +77,28 @@ export default function AchievementNotifier() {
     }
   };
 
-  const hideActiveToast = (onHidden?: () => void) => {
-    Animated.parallel([
-      Animated.timing(toastOpacity, {
-        toValue: 0,
-        duration: TOAST_EXIT_MS,
-        easing: Easing.in(Easing.quad),
-        useNativeDriver: true,
-      }),
-      Animated.timing(toastTranslateY, {
-        toValue: -10,
-        duration: TOAST_EXIT_MS,
-        easing: Easing.in(Easing.quad),
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      setActiveAchievementId(null);
-      onHidden?.();
-    });
-  };
+  const hideActiveToast = useCallback(
+    (onHidden?: () => void) => {
+      Animated.parallel([
+        Animated.timing(toastOpacity, {
+          toValue: 0,
+          duration: TOAST_EXIT_MS,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(toastTranslateY, {
+          toValue: -10,
+          duration: TOAST_EXIT_MS,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setActiveAchievementId(null);
+        onHidden?.();
+      });
+    },
+    [toastOpacity, toastTranslateY]
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -210,7 +213,7 @@ export default function AchievementNotifier() {
     return () => {
       clearHideTimer();
     };
-  }, [activeAchievementId, toastOpacity, toastTranslateY]);
+  }, [activeAchievementId, hideActiveToast, toastOpacity, toastTranslateY]);
 
   useEffect(() => {
     return () => {

@@ -1,40 +1,52 @@
 import { useEffect } from 'react';
-import { act, create } from 'react-test-renderer';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, render as create } from '@testing-library/react-native';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { AppDataProvider, useAppData } from './app-data-context';
-import { defaultData } from './storage';
+import { AppData } from './types';
 
-vi.mock('react-native', () => ({
-  AppState: {
-    addEventListener: vi.fn(() => ({ remove: vi.fn() })),
+const mockDefaultData = {
+  goals: [],
+  progressEvents: [],
+  settings: {
+    defaultView: 'month' as const,
+    targetSavingsRate: 0.15,
+    savingsTargetMode: 'rate' as const,
+    yearlySavingsGoalAmount: 0,
+    incomeAmount: 0,
+    incomeFrequency: 'monthly' as const,
+    hasCompletedOnboarding: false,
+    logoTapCount: 0,
   },
-}));
+};
 
-vi.mock('expo-file-system/legacy', () => ({
+const mockLoadAppData = jest.fn<() => Promise<AppData>>();
+const mockSaveAppData = jest.fn<() => Promise<void>>();
+const mockShareAsync = jest.fn<() => Promise<void>>();
+const mockWriteAsStringAsync = jest.fn<() => Promise<void>>();
+
+jest.mock('expo-file-system/legacy', () => ({
   documentDirectory: '',
   EncodingType: { UTF8: 'utf8' },
-  writeAsStringAsync: vi.fn(),
+  writeAsStringAsync: (...args: Parameters<typeof mockWriteAsStringAsync>) =>
+    mockWriteAsStringAsync(...args),
 }));
 
-vi.mock('expo-sharing', () => ({
-  shareAsync: vi.fn(),
+jest.mock('expo-sharing', () => ({
+  shareAsync: (...args: Parameters<typeof mockShareAsync>) => mockShareAsync(...args),
 }));
 
-const { mockLoadAppData, mockSaveAppData } = vi.hoisted(() => ({
-  mockLoadAppData: vi.fn(),
-  mockSaveAppData: vi.fn(),
+jest.mock('./storage', () => ({
+  get defaultData() {
+    return mockDefaultData;
+  },
+  get loadAppData() {
+    return mockLoadAppData;
+  },
+  get saveAppData() {
+    return mockSaveAppData;
+  },
 }));
-
-vi.mock('./storage', async () => {
-  const actual = await vi.importActual<any>('./storage');
-
-  return {
-    ...actual,
-    loadAppData: mockLoadAppData,
-    saveAppData: mockSaveAppData,
-  };
-});
 
 function TestProbe({ onReady }: { onReady: (value: any) => void }) {
   const value = useAppData();
@@ -47,30 +59,33 @@ function TestProbe({ onReady }: { onReady: (value: any) => void }) {
 }
 
 async function renderWithAppData() {
-  let renderer: any;
   const contextRef = { current: null as any };
 
+  create(
+    <AppDataProvider>
+      <TestProbe
+        onReady={(value) => {
+          contextRef.current = value;
+        }}
+      />
+    </AppDataProvider>
+  );
+
   await act(async () => {
-    renderer = create(
-      <AppDataProvider>
-        <TestProbe
-          onReady={(value) => {
-            contextRef.current = value;
-          }}
-        />
-      </AppDataProvider>
-    );
     await Promise.resolve();
     await Promise.resolve();
   });
 
-  return { renderer: renderer!, contextRef };
+  return { contextRef };
 }
 
 describe('AppDataProvider', () => {
   beforeEach(() => {
-    mockLoadAppData.mockResolvedValue(defaultData);
+    jest.clearAllMocks();
+    mockLoadAppData.mockResolvedValue(mockDefaultData);
     mockSaveAppData.mockResolvedValue(undefined);
+    mockWriteAsStringAsync.mockResolvedValue(undefined);
+    mockShareAsync.mockResolvedValue(undefined);
   });
 
   it('supports creating, editing, deleting a goal, and updating a contribution', async () => {
@@ -142,5 +157,30 @@ describe('AppDataProvider', () => {
 
     expect(getContext().data.goals).toHaveLength(0);
     expect(getContext().data.progressEvents).toHaveLength(0);
+  });
+
+  it('exports the complete local dataset as JSON through the system share sheet', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-08-26T12:00:00.000Z'));
+
+    try {
+      const { contextRef } = await renderWithAppData();
+
+      await act(async () => {
+        await contextRef.current!.exportJson();
+      });
+
+      expect(mockWriteAsStringAsync).toHaveBeenCalledWith(
+        'cubby-export-2026-08-26.json',
+        JSON.stringify(mockDefaultData, null, 2),
+        { encoding: 'utf8' }
+      );
+      expect(mockShareAsync).toHaveBeenCalledWith('cubby-export-2026-08-26.json', {
+        mimeType: 'application/json',
+        dialogTitle: 'Export Cubby data',
+      });
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

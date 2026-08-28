@@ -1,20 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { defaultData, loadAppData, saveAppData } from './storage';
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-  },
-}));
-
-const asyncStorageMock = vi.mocked(AsyncStorage);
+const asyncStorageMock = jest.mocked(AsyncStorage);
 
 describe('loadAppData', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('returns default data when storage is empty', async () => {

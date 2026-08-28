@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@jest/globals';
 import { createGoal, createProgressEvent, deleteGoalState } from './deleteGoalState';
 import { AppData } from '../core/types';
 

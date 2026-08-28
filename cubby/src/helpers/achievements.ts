@@ -40,9 +40,10 @@ const BASE_ACHIEVEMENT_IDS: BaseAchievementId[] = [
   'over-target',
 ];
 
-const SECRET_ACHIEVEMENT_IDS_EXCEPT_ALL_SECRET: Array<
-  Exclude<SecretAchievementId, 'all-secret-achievements'>
-> = ['nice', 'logo-tap', 'all-base-achievements'];
+const SECRET_ACHIEVEMENT_IDS_EXCEPT_ALL_SECRET: Exclude<
+  SecretAchievementId,
+  'all-secret-achievements'
+>[] = ['nice', 'logo-tap', 'all-base-achievements'];
 
 function getMonthIndex(isoDate: string): number {
   const date = new Date(isoDate);

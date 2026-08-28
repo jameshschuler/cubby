@@ -1,0 +1,248 @@
+:root {
+  --paper: #f8efe8;
+  --paper-deep: #f1ddc9;
+  --ink: #3e281a;
+  --muted: #745847;
+  --line: #dcc1a5;
+  --rust: #7c4b2f;
+  --deep-rust: #4f2e20;
+  --sage: #6f8f54;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  background: linear-gradient(
+    120deg,
+    var(--paper) 0%,
+    #fffaf5 52%,
+    var(--paper-deep) 100%
+  );
+  font-family: Georgia, "Times New Roman", serif;
+}
+a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+.site-header,
+footer {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.site-header {
+  min-height: 84px;
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--deep-rust);
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+}
+.brand img {
+  width: 35px;
+  height: 35px;
+  border-radius: 9px;
+}
+nav,
+footer div {
+  display: flex;
+  gap: 22px;
+}
+nav a,
+footer a {
+  color: var(--muted);
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  text-decoration: none;
+}
+nav a:hover,
+nav a[aria-current="page"],
+footer a:hover {
+  color: var(--rust);
+  text-decoration: underline;
+}
+.hero {
+  width: min(1120px, calc(100% - 40px));
+  min-height: 590px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 68px;
+}
+.eyebrow,
+.number {
+  margin: 0 0 14px;
+  color: var(--rust);
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+h1 {
+  max-width: 620px;
+  margin-bottom: 22px;
+  font-size: clamp(52px, 7vw, 88px);
+  font-weight: normal;
+  line-height: 0.94;
+}
+h2 {
+  font-size: 25px;
+  font-weight: normal;
+  line-height: 1.15;
+}
+.lede {
+  max-width: 550px;
+  color: var(--muted);
+  font-size: 21px;
+  line-height: 1.5;
+}
+.button {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 14px 18px;
+  color: #fffaf5;
+  background: var(--rust);
+  border: 1px solid var(--rust);
+  border-radius: 3px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+}
+.button:hover {
+  background: var(--deep-rust);
+}
+.app-screenshot {
+  width: min(100%, 315px);
+  margin: 34px auto 0;
+  display: block;
+  border-radius: 28px;
+  box-shadow: 16px 19px 0 rgba(79, 46, 32, 0.12);
+  transform: rotate(5deg);
+}
+.principles {
+  width: min(1120px, calc(100% - 40px));
+  margin: 20px auto 90px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+}
+.principles article {
+  padding: 30px 26px 10px 0;
+  border-right: 1px solid var(--line);
+}
+.principles article + article {
+  padding-left: 26px;
+}
+.principles article:last-child {
+  border-right: 0;
+}
+.principles p:not(.number) {
+  max-width: 260px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.page-content {
+  width: min(760px, calc(100% - 40px));
+  margin: 0 auto;
+  min-height: calc(100vh - 210px);
+  padding: 80px 0;
+}
+.page-content h1 {
+  font-size: clamp(44px, 6vw, 68px);
+}
+.page-content .lede {
+  max-width: 680px;
+}
+.faq {
+  margin-top: 62px;
+  border-top: 1px solid var(--line);
+}
+.faq article,
+.policy section {
+  padding: 25px 0;
+  border-bottom: 1px solid var(--line);
+}
+.faq h2,
+.policy h2 {
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+.faq p,
+.policy p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+.effective-date {
+  margin-bottom: 44px;
+  color: var(--muted);
+}
+.policy section {
+  max-width: 680px;
+}
+footer {
+  min-height: 85px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+@media (max-width: 720px) {
+  .site-header,
+  footer {
+    width: min(100% - 28px, 1120px);
+  }
+  .hero {
+    min-height: 0;
+    padding: 65px 0 50px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .hero-copy {
+    max-width: 560px;
+  }
+  .lede {
+    font-size: 18px;
+  }
+  .app-screenshot {
+    transform: rotate(2deg);
+  }
+  .principles {
+    margin-bottom: 48px;
+    grid-template-columns: 1fr;
+  }
+  .principles article,
+  .principles article + article {
+    padding: 26px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .principles article:last-child {
+    border-bottom: 0;
+  }
+  .page-content {
+    padding: 55px 0;
+  }
+  .page-content h1 {
+    font-size: 48px;
+  }
+}

@@ -1,6 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from '@jest/globals';
 
-vi.mock('lucide-react-native', () => ({
+jest.mock('lucide-react-native', () => ({
   Award: 'Award',
   BadgeCheck: 'BadgeCheck',
   CalendarCheck2: 'CalendarCheck2',

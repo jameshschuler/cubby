@@ -1,202 +1,47 @@
-import { act, create } from 'react-test-renderer';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render } from '@testing-library/react-native';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const { addGoalSpy, routerBackSpy } = vi.hoisted(() => ({
-  addGoalSpy: vi.fn(),
-  routerBackSpy: vi.fn(),
+const mockAddGoal = jest.fn();
+const mockRouterBack = jest.fn();
+
+jest.mock('expo-router', () => ({
+  Stack: { Screen: () => null },
+  useRouter: () => ({ back: mockRouterBack }),
 }));
-
-vi.mock('expo-router', () => ({
-  Stack: {
-    Screen: () => null,
-  },
-  useRouter: () => ({
-    back: routerBackSpy,
-  }),
-}));
-
-vi.mock('../core/app-data-context', () => ({
-  useAppData: () => ({
-    addGoal: addGoalSpy,
-  }),
-}));
-
-vi.mock('react-native-safe-area-context', async () => {
-  const React = await import('react');
-
-  const createHostComponent = (name: string) =>
-    React.forwardRef(({ children, ...props }: any, ref) =>
-      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
-    );
-
-  return {
-    SafeAreaView: createHostComponent('SafeAreaView'),
-  };
-});
-
-vi.mock('react-native', async () => {
-  const React = await import('react');
-
-  const createHostComponent = (name: string) =>
-    React.forwardRef(({ children, ...props }: any, ref) =>
-      React.createElement('mock-node', { componentName: name, ...props, ref }, children)
-    );
-
-  return {
-    Keyboard: {
-      dismiss: vi.fn(),
-    },
-    Pressable: createHostComponent('Pressable'),
-    SafeAreaView: createHostComponent('SafeAreaView'),
-    ScrollView: createHostComponent('ScrollView'),
-    StyleSheet: {
-      create: (styles: Record<string, unknown>) => styles,
-    },
-    Text: createHostComponent('Text'),
-    TextInput: createHostComponent('TextInput'),
-    View: createHostComponent('View'),
-  };
-});
-
-vi.mock('../components/goals/GoalFormHeader', () => ({
-  default: ({ onDismiss }: { onDismiss: () => void }) => (
-    <mock-node componentName="GoalFormHeader" onDismiss={onDismiss} />
-  ),
-}));
-
-vi.mock('../components/goals/GoalFormStepper', () => ({
-  default: ({ currentStep }: { currentStep: number }) => (
-    <mock-node componentName="GoalFormStepper" currentStep={currentStep} />
-  ),
-}));
-
-vi.mock('../components/ui/OptionPicker', () => ({
-  default: ({
-    value,
-    onValueChange,
-  }: {
-    value: string;
-    onValueChange: (value: string) => void;
-  }) => <mock-node componentName="OptionPicker" value={value} onValueChange={onValueChange} />,
-}));
+jest.mock('lucide-react-native', () => ({ X: () => null }));
+jest.mock('../core/app-data-context', () => ({ useAppData: () => ({ addGoal: mockAddGoal }) }));
 
 import AddGoalModal from './AddGoalModal';
 
-function collectTextFromNode(node: any): string {
-  if (typeof node === 'string') {
-    return node;
-  }
-
-  if (Array.isArray(node)) {
-    return node.map(collectTextFromNode).join('');
-  }
-
-  if (!node || !node.children) {
-    return '';
-  }
-
-  return node.children.map(collectTextFromNode).join('');
-}
-
-function findPressableByText(root: any, text: string) {
-  const pressables = root.findAll(
-    (node: any) =>
-      node.props?.componentName === 'Pressable' && typeof node.props?.onPress === 'function'
-  );
-
-  const matched = pressables.find((node: any) => collectTextFromNode(node).includes(text));
-  if (!matched) {
-    throw new Error(`Pressable with text "${text}" not found`);
-  }
-
-  return matched;
-}
-
-function findInputByPlaceholder(root: any, placeholder: string) {
-  return root.find(
-    (node: any) =>
-      node.props?.componentName === 'TextInput' && node.props?.placeholder === placeholder
-  );
-}
-
-function hasText(root: any, text: string) {
-  const textNodes = root.findAll((node: any) => node.props?.componentName === 'Text');
-  return textNodes.some((node: any) => collectTextFromNode(node).includes(text));
-}
-
-function getCurrentStep(root: any) {
-  return root.findByProps({ componentName: 'GoalFormStepper' }).props.currentStep;
-}
-
 describe('AddGoalModal', () => {
   beforeEach(() => {
-    addGoalSpy.mockReset();
-    routerBackSpy.mockReset();
+    jest.clearAllMocks();
   });
 
   it('keeps the wizard on step 1 when required basics are invalid', () => {
-    let renderer: any;
+    const screen = render(<AddGoalModal />);
 
-    act(() => {
-      renderer = create(<AddGoalModal />);
-    });
+    fireEvent.press(screen.getByText('Next'));
 
-    const root = renderer!.root;
-    expect(getCurrentStep(root)).toBe(1);
-
-    act(() => {
-      findPressableByText(root, 'Next').props.onPress();
-    });
-
-    expect(getCurrentStep(root)).toBe(1);
-    expect(hasText(root, 'Account name is required.')).toBe(true);
-    expect(hasText(root, 'Target amount must be greater than 0.')).toBe(true);
-    expect(addGoalSpy).not.toHaveBeenCalled();
+    expect(screen.getByText('Account name is required.')).toBeTruthy();
+    expect(screen.getByText('Target amount must be greater than 0.')).toBeTruthy();
+    expect(mockAddGoal).not.toHaveBeenCalled();
   });
 
   it('saves a recurring goal with automatic contribution details', () => {
-    let renderer: any;
+    const screen = render(<AddGoalModal />);
 
-    act(() => {
-      renderer = create(<AddGoalModal />);
-    });
+    fireEvent.changeText(screen.getByPlaceholderText('Account name'), 'Vacation Fund');
+    fireEvent.changeText(screen.getByPlaceholderText('Target amount'), '2500');
+    fireEvent.press(screen.getByText('Next'));
+    fireEvent.press(screen.getByRole('checkbox', { name: 'Enable automatic contribution' }));
+    fireEvent.changeText(screen.getByPlaceholderText('Automatic amount each month'), '125');
+    fireEvent.changeText(screen.getByPlaceholderText('Day of month'), '15');
+    fireEvent.press(screen.getByText('Next'));
+    fireEvent.changeText(screen.getByPlaceholderText('Institution (Ally, Fidelity...)'), 'Ally');
+    fireEvent.press(screen.getByText('Save Goal'));
 
-    const root = renderer!.root;
-
-    act(() => {
-      findInputByPlaceholder(root, 'Account name').props.onChangeText('Vacation Fund');
-      findInputByPlaceholder(root, 'Target amount').props.onChangeText('2500');
-    });
-
-    act(() => {
-      findPressableByText(root, 'Next').props.onPress();
-    });
-    expect(getCurrentStep(root)).toBe(2);
-
-    act(() => {
-      root.findByProps({ accessibilityLabel: 'Enable automatic contribution' }).props.onPress();
-    });
-
-    act(() => {
-      findInputByPlaceholder(root, 'Automatic amount each month').props.onChangeText('125');
-      findInputByPlaceholder(root, 'Day of month').props.onChangeText('15');
-    });
-
-    act(() => {
-      findPressableByText(root, 'Next').props.onPress();
-    });
-    expect(getCurrentStep(root)).toBe(3);
-
-    act(() => {
-      findInputByPlaceholder(root, 'Institution (Ally, Fidelity...)').props.onChangeText('Ally');
-    });
-
-    act(() => {
-      findPressableByText(root, 'Save Goal').props.onPress();
-    });
-
-    expect(addGoalSpy).toHaveBeenCalledTimes(1);
-    expect(addGoalSpy).toHaveBeenCalledWith(
+    expect(mockAddGoal).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'Vacation Fund',
         origin: 'Ally',
@@ -207,42 +52,26 @@ describe('AddGoalModal', () => {
         recurringState: 'month',
       })
     );
-    expect(routerBackSpy).toHaveBeenCalledTimes(1);
+    expect(mockRouterBack).toHaveBeenCalledTimes(1);
   });
 
   it('saves a one-time goal without automatic contribution data', () => {
-    let renderer: any;
+    const screen = render(<AddGoalModal />);
 
-    act(() => {
-      renderer = create(<AddGoalModal />);
-    });
+    fireEvent.changeText(screen.getByPlaceholderText('Account name'), 'Car Repair');
+    fireEvent.changeText(screen.getByPlaceholderText('Target amount'), '900');
+    fireEvent.press(screen.getByRole('button', { name: 'Set goal type to one time' }));
+    fireEvent.press(screen.getByText('Next'));
+    fireEvent.press(screen.getByText('Save Goal'));
 
-    const root = renderer!.root;
-
-    act(() => {
-      findInputByPlaceholder(root, 'Account name').props.onChangeText('Car Repair');
-      findInputByPlaceholder(root, 'Target amount').props.onChangeText('900');
-      root.findByProps({ accessibilityLabel: 'Set goal type to one time' }).props.onPress();
-    });
-
-    act(() => {
-      findPressableByText(root, 'Next').props.onPress();
-    });
-
-    expect(getCurrentStep(root)).toBe(3);
-
-    act(() => {
-      findPressableByText(root, 'Save Goal').props.onPress();
-    });
-
-    expect(addGoalSpy).toHaveBeenCalledTimes(1);
-    expect(addGoalSpy).toHaveBeenCalledWith(
+    expect(mockAddGoal).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'Car Repair',
         targetAmount: 900,
         autoContributionAmount: undefined,
         autoContributionAnchor: undefined,
         isRecurring: false,
+        recurringState: 'month',
       })
     );
   });

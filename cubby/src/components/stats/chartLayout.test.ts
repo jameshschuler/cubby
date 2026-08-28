@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@jest/globals';
 
 import { getChartWidth, MAX_CHART_WIDTH, MIN_CHART_WIDTH } from './chartLayout';
 

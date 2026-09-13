@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { defaultData, loadAppData, saveAppData } from './storage';
+import { clearAppData, defaultData, loadAppData, saveAppData } from './storage';
 
 const asyncStorageMock = jest.mocked(AsyncStorage);
 
@@ -91,5 +91,11 @@ describe('loadAppData', () => {
       'cubby.app-data.v1',
       JSON.stringify(defaultData)
     );
+  });
+
+  it('clears saved app data', async () => {
+    await clearAppData();
+
+    expect(asyncStorageMock.removeItem).toHaveBeenCalledWith('cubby.app-data.v1');
   });
 });

@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 
 const mockRouterBack = jest.fn();
 const mockExportJson = jest.fn<() => Promise<void>>();
+const mockResetAppData = jest.fn<() => Promise<void>>();
 const mockSaveIncomeSettings = jest.fn();
 const mockSaveSavingsTargetSettings = jest.fn();
 const mockAlert = jest.fn();
@@ -31,6 +32,7 @@ jest.mock('../core/app-data-context', () => ({
       },
     },
     exportJson: mockExportJson,
+    resetAppData: mockResetAppData,
     saveIncomeSettings: mockSaveIncomeSettings,
     saveSavingsTargetSettings: mockSaveSavingsTargetSettings,
   }),
@@ -42,6 +44,7 @@ describe('SettingsScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockExportJson.mockResolvedValue(undefined);
+    mockResetAppData.mockResolvedValue(undefined);
     jest.spyOn(Alert, 'alert').mockImplementation(mockAlert);
   });
 
@@ -66,6 +69,21 @@ describe('SettingsScreen', () => {
     expect(mockAlert).toHaveBeenCalledWith(
       'Export failed',
       'Could not export JSON data from this device.'
+    );
+  });
+
+  it('confirms before resetting the account', () => {
+    const screen = render(<SettingsScreen />);
+
+    fireEvent.press(screen.getByRole('button', { name: 'Reset account' }));
+
+    expect(mockAlert).toHaveBeenCalledWith(
+      'Reset account?',
+      'This permanently deletes all goals, progress, and settings from this device.',
+      expect.arrayContaining([
+        expect.objectContaining({ text: 'Cancel' }),
+        expect.objectContaining({ text: 'Reset', style: 'destructive' }),
+      ])
     );
   });
 

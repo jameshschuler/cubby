@@ -171,11 +171,11 @@ export default function AddGoalModal() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: 'Add Goal' }} />
       <ScrollView contentContainerStyle={styles.content}>
         <GoalFormHeader
-          title="New Account Goal"
+          title="New Goal"
           onDismiss={() => router.back()}
           accessibilityLabel="Close add goal modal"
         />

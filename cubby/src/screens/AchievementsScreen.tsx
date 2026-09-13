@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Lock } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { achievements } from '../constants/achievement-constants';
@@ -11,6 +11,8 @@ import { theme } from '../core/theme';
 
 export default function AchievementsScreen() {
   const { data } = useAppData();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const statuses = getAchievementStatuses(data);
   const earnedCount = achievements.filter((achievement) => statuses[achievement.id]).length;
   const progressRatio = achievements.length > 0 ? earnedCount / achievements.length : 0;
@@ -24,7 +26,7 @@ export default function AchievementsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, isTablet && styles.contentTablet]}>
         <View style={styles.heroCard}>
           <Text style={styles.title}>Achievements</Text>
           <Text style={styles.subtitle}>Track milestones, streaks, and hidden unlocks.</Text>
@@ -67,7 +69,7 @@ export default function AchievementsScreen() {
           </View>
         </View>
 
-        <View style={styles.grid}>
+        <View style={[styles.grid, isTablet && styles.gridTablet]}>
           {achievements.map((achievement) => {
             const isEarned = statuses[achievement.id];
             const isHiddenLocked = Boolean(achievement.hidden && !isEarned);
@@ -80,7 +82,11 @@ export default function AchievementsScreen() {
             return (
               <View
                 key={achievement.id}
-                style={[styles.card, isEarned ? styles.cardEarned : styles.cardLocked]}
+                style={[
+                  styles.card,
+                  isTablet && styles.cardTablet,
+                  isEarned ? styles.cardEarned : styles.cardLocked,
+                ]}
               >
                 <View style={[styles.iconWrap, !isEarned && styles.iconWrapLocked]}>
                   <Icon
@@ -114,6 +120,11 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
     gap: 16,
+  },
+  contentTablet: {
+    width: '100%',
+    maxWidth: 1120,
+    alignSelf: 'center',
   },
   heroCard: {
     backgroundColor: theme.accentDeep,
@@ -175,6 +186,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
   },
+  gridTablet: {
+    columnGap: 16,
+    rowGap: 16,
+  },
   card: {
     width: '48%',
     minHeight: 198,
@@ -184,6 +199,13 @@ const styles = StyleSheet.create({
     borderColor: theme.border,
     padding: 12,
     gap: 8,
+  },
+  cardTablet: {
+    width: '31.5%',
+    flexGrow: 1,
+    flexBasis: '30%',
+    minHeight: 210,
+    padding: 16,
   },
   cardEarned: {
     borderColor: theme.accent,

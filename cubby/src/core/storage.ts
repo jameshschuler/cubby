@@ -92,3 +92,7 @@ export async function loadAppData(): Promise<AppData> {
 export async function saveAppData(data: AppData): Promise<void> {
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
+
+export async function clearAppData(): Promise<void> {
+  await AsyncStorage.removeItem(STORAGE_KEY);
+}

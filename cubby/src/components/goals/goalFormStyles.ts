@@ -9,93 +9,13 @@ export const goalFormStyles = StyleSheet.create({
   },
   content: {
     padding: 16,
-    paddingTop: 24,
+    paddingTop: 44,
     paddingBottom: 40,
-    gap: 20,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  headerTextWrap: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: theme.accentDeep,
+    gap: 26,
   },
   checkboxControlRow: {
     marginTop: 8,
     marginBottom: 4,
-  },
-  stepperRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: -4,
-    marginBottom: 6,
-  },
-  stepperItem: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 6,
-  },
-  stepperTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  stepperLabel: {
-    color: theme.textMuted,
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  stepperLabelActive: {
-    color: theme.text,
-  },
-  stepperCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 1,
-    borderColor: theme.borderStrong,
-    backgroundColor: theme.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepperCircleActive: {
-    borderColor: theme.accent,
-    backgroundColor: theme.accent,
-  },
-  stepperCircleText: {
-    color: theme.textMuted,
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  stepperCircleTextActive: {
-    color: '#fff',
-  },
-  stepperConnector: {
-    flex: 1,
-    height: 2,
-    backgroundColor: theme.border,
-    marginHorizontal: 8,
-  },
-  stepperConnectorActive: {
-    backgroundColor: theme.accent,
-  },
-  dismissButton: {
-    borderRadius: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
-    alignSelf: 'flex-start',
-  },
-  dismissButtonText: {
-    color: theme.text,
-    fontWeight: '700',
   },
   input: {
     borderWidth: 1,
@@ -265,17 +185,6 @@ export const goalFormStyles = StyleSheet.create({
     fontSize: 14,
     paddingVertical: 8,
     paddingHorizontal: 10,
-  },
-  editHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  modalTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: theme.accentDeep,
   },
   pickerRow: {
     flexDirection: 'row',

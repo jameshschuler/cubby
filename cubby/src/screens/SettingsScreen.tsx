@@ -3,7 +3,16 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Download, Goal, X } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import { getIncomeAmountForView } from '../helpers/calculations';
 import { formatCurrency, formatPercent } from '../helpers/formatters';
@@ -51,6 +60,7 @@ function SegmentedControl<T extends string>({
 interface SettingsContentProps {
   data: AppData;
   exportJson: () => Promise<void>;
+  resetAppData: () => Promise<void>;
   saveIncomeSettings: (amount: number, frequency: IncomeFrequency) => void;
   saveSavingsTargetSettings: (mode: SavingsTargetMode, yearlyGoalAmount: number) => void;
 }
@@ -58,9 +68,12 @@ interface SettingsContentProps {
 function SettingsContent({
   data,
   exportJson,
+  resetAppData,
   saveIncomeSettings,
   saveSavingsTargetSettings,
 }: SettingsContentProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const [incomeModalVisible, setIncomeModalVisible] = useState(false);
   const [savingsTargetModalVisible, setSavingsTargetModalVisible] = useState(false);
 
@@ -128,6 +141,25 @@ function SettingsContent({
     }
   };
 
+  const handleReset = () => {
+    Alert.alert(
+      'Reset account?',
+      'This permanently deletes all goals, progress, and settings from this device.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: () => {
+            resetAppData().catch(() => {
+              Alert.alert('Reset failed', 'Could not reset data on this device.');
+            });
+          },
+        },
+      ]
+    );
+  };
+
   const incomeSummary =
     data.settings.incomeAmount > 0
       ? `${formatCurrency(data.settings.incomeAmount)} · ${data.settings.incomeFrequency === 'monthly' ? 'Monthly' : 'Yearly'}`
@@ -149,7 +181,7 @@ function SettingsContent({
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, isTablet && styles.contentTablet]}>
         <View style={styles.heroCard}>
           <View style={styles.heroHeaderRow}>
             <Text style={styles.title}>Settings</Text>
@@ -166,29 +198,49 @@ function SettingsContent({
           <Text style={styles.subtitle}>Manage income, savings targets, and data export.</Text>
         </View>
 
-        <SettingsCard
-          title="Income"
-          subtitle={incomeSummary}
-          icon={<Goal color={theme.accent} size={18} />}
-          onPress={() => setIncomeModalVisible(true)}
-        />
+        <View style={[styles.settingsGrid, isTablet && styles.settingsGridTablet]}>
+          <View style={styles.settingsColumn}>
+            <SettingsCard
+              title="Income"
+              subtitle={incomeSummary}
+              icon={<Goal color={theme.accent} size={18} />}
+              onPress={() => setIncomeModalVisible(true)}
+            />
 
-        <SettingsCard
-          title="Savings Target"
-          subtitle={targetSummary}
-          icon={<Goal color={theme.accent} size={18} />}
-          onPress={() => setSavingsTargetModalVisible(true)}
-        />
+            <SettingsCard
+              title="Savings Target"
+              subtitle={targetSummary}
+              icon={<Goal color={theme.accent} size={18} />}
+              onPress={() => setSavingsTargetModalVisible(true)}
+            />
+          </View>
 
-        <SettingsCard
-          title="Export Data"
-          subtitle="Export goals, progress events, and settings as JSON."
-          icon={<Download color={theme.accent} size={18} />}
-        >
-          <Pressable style={styles.secondaryButton} onPress={handleExport}>
-            <Text style={styles.secondaryButtonText}>Export JSON</Text>
-          </Pressable>
-        </SettingsCard>
+          <View style={styles.settingsColumn}>
+            <SettingsCard
+              title="Export Data"
+              subtitle="Export goals, progress events, and settings as JSON."
+              icon={<Download color={theme.accent} size={18} />}
+            >
+              <Pressable style={styles.secondaryButton} onPress={handleExport}>
+                <Text style={styles.secondaryButtonText}>Export JSON</Text>
+              </Pressable>
+            </SettingsCard>
+
+            <SettingsCard
+              title="Reset Account"
+              subtitle="Delete all goals, progress, and settings from this device."
+            >
+              <Pressable
+                style={styles.destructiveButton}
+                onPress={handleReset}
+                accessibilityRole="button"
+                accessibilityLabel="Reset account"
+              >
+                <Text style={styles.destructiveButtonText}>Reset Account</Text>
+              </Pressable>
+            </SettingsCard>
+          </View>
+        </View>
       </ScrollView>
 
       <SettingsModalShell
@@ -271,12 +323,14 @@ function SettingsContent({
 }
 
 export default function SettingsScreen() {
-  const { data, exportJson, saveIncomeSettings, saveSavingsTargetSettings } = useAppData();
+  const { data, exportJson, resetAppData, saveIncomeSettings, saveSavingsTargetSettings } =
+    useAppData();
 
   return (
     <SettingsContent
       data={data}
       exportJson={exportJson}
+      resetAppData={resetAppData}
       saveIncomeSettings={saveIncomeSettings}
       saveSavingsTargetSettings={saveSavingsTargetSettings}
     />
@@ -292,6 +346,23 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
     gap: 20,
+  },
+  contentTablet: {
+    width: '100%',
+    maxWidth: 960,
+    alignSelf: 'center',
+  },
+  settingsGrid: {
+    gap: 14,
+  },
+  settingsGridTablet: {
+    flexDirection: 'row',
+    gap: 18,
+    alignItems: 'flex-start',
+  },
+  settingsColumn: {
+    flex: 1,
+    gap: 14,
   },
   heroCard: {
     backgroundColor: theme.accentDeep,
@@ -426,6 +497,19 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     color: theme.text,
+    fontWeight: '700',
+  },
+  destructiveButton: {
+    backgroundColor: theme.backgroundAlt,
+    borderColor: '#B54A3A',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  destructiveButtonText: {
+    color: '#B54A3A',
     fontWeight: '700',
   },
   previewBox: {

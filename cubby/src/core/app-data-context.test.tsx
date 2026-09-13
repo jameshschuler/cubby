@@ -22,6 +22,7 @@ const mockDefaultData = {
 
 const mockLoadAppData = jest.fn<() => Promise<AppData>>();
 const mockSaveAppData = jest.fn<() => Promise<void>>();
+const mockClearAppData = jest.fn<() => Promise<void>>();
 const mockShareAsync = jest.fn<() => Promise<void>>();
 const mockWriteAsStringAsync = jest.fn<() => Promise<void>>();
 
@@ -45,6 +46,9 @@ jest.mock('./storage', () => ({
   },
   get saveAppData() {
     return mockSaveAppData;
+  },
+  get clearAppData() {
+    return mockClearAppData;
   },
 }));
 
@@ -84,6 +88,7 @@ describe('AppDataProvider', () => {
     jest.clearAllMocks();
     mockLoadAppData.mockResolvedValue(mockDefaultData);
     mockSaveAppData.mockResolvedValue(undefined);
+    mockClearAppData.mockResolvedValue(undefined);
     mockWriteAsStringAsync.mockResolvedValue(undefined);
     mockShareAsync.mockResolvedValue(undefined);
   });
@@ -182,5 +187,28 @@ describe('AppDataProvider', () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+  it('resets the local dataset and clears persisted data', async () => {
+    const { contextRef } = await renderWithAppData();
+
+    act(() => {
+      contextRef.current!.addGoal({
+        name: 'Emergency fund',
+        nickname: '',
+        origin: 'Salary',
+        targetAmount: 2500,
+        isRecurring: false,
+        recurringState: 'none',
+      });
+    });
+    expect(contextRef.current!.data.goals).toHaveLength(1);
+
+    await act(async () => {
+      await contextRef.current!.resetAppData();
+    });
+
+    expect(mockClearAppData).toHaveBeenCalledTimes(1);
+    expect(contextRef.current!.data).toEqual(mockDefaultData);
   });
 });

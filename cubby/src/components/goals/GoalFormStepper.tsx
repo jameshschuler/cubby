@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignSelf: 'stretch',
     width: '100%',
-    marginTop: -4,
+    marginTop: 2,
     marginBottom: 6,
     paddingHorizontal: 10,
   },

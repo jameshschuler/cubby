@@ -11,7 +11,7 @@ import {
   sanitizeAutoContributionAmount,
   sanitizeAutoContributionAnchor,
 } from '../helpers/goal-input';
-import { defaultData, loadAppData, saveAppData } from './storage';
+import { clearAppData, defaultData, loadAppData, saveAppData } from './storage';
 import {
   AccountType,
   AppData,
@@ -64,6 +64,7 @@ interface AppDataContextValue {
   setDefaultView: (view: ViewPeriod) => void;
   registerLogoTap: () => void;
   exportJson: () => Promise<void>;
+  resetAppData: () => Promise<void>;
 }
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -355,6 +356,11 @@ export function AppDataProvider({ children }: PropsWithChildren) {
     });
   };
 
+  const resetAppData = async () => {
+    await clearAppData();
+    setData(defaultData);
+  };
+
   return (
     <AppDataContext.Provider
       value={{
@@ -372,6 +378,7 @@ export function AppDataProvider({ children }: PropsWithChildren) {
         setDefaultView,
         registerLogoTap,
         exportJson,
+        resetAppData,
       }}
     >
       {children}

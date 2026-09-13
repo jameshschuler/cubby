@@ -169,9 +169,9 @@ export default function GoalDetailsModal({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
         <ScrollView contentContainerStyle={styles.content}>
-          <GoalFormHeader title="Edit Account Goal" onDismiss={onClose} />
+          <GoalFormHeader title="Edit Goal" onDismiss={onClose} />
 
           <GoalFormStepper currentStep={currentStep} isRecurring={input.isRecurring} />
 

@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import {
   getIncomeAmountForSelectedYear,
@@ -15,14 +15,16 @@ import StatsSelectionCard from '../components/stats/StatsSelectionCard';
 import StatsHeroCard from '../components/stats/StatsHeroCard';
 import StatsHistoryListCard from '../components/stats/StatsHistoryListCard';
 import StatsMonthlyChartCard from '../components/stats/StatsMonthlyChartCard';
-import { styles } from '../components/stats/styles';
 import StatsSummaryGrid from '../components/stats/StatsSummaryGrid';
 import useStatsData from '../components/stats/useStatsData';
 import StatsYearListCard from '../components/stats/StatsYearListCard';
 import FirstRunOnboardingCard from '../components/onboarding/FirstRunOnboardingCard';
 import { shouldShowOnboarding } from '../helpers/onboarding';
+import { theme } from '../core/theme';
 
 export default function StatsScreen() {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const { goals, selection, totals, history } = useStatsData();
   const { data } = useAppData();
   const showOnboarding = shouldShowOnboarding(data);
@@ -94,7 +96,7 @@ export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, isTablet && styles.contentTablet]}>
         <StatsHeroCard />
 
         {!hasAnyStats ? (
@@ -112,14 +114,22 @@ export default function StatsScreen() {
 
         {hasAnyStats ? (
           <>
-            <StatsSelectionCard
-              goals={goals}
-              showAllGoals={shouldShowAllGoals}
-              effectiveSelectedGoalId={effectiveSelectedGoalId}
-              onSelectGoal={setSelectedGoalId}
-            />
-
-            <StatsGoalSummaryCard showAllGoals={shouldShowAllGoals} selectedGoal={selectedGoal} />
+            <View style={[styles.dashboardRow, isTablet && styles.dashboardRowTablet]}>
+              <View style={styles.dashboardColumn}>
+                <StatsSelectionCard
+                  goals={goals}
+                  showAllGoals={shouldShowAllGoals}
+                  effectiveSelectedGoalId={effectiveSelectedGoalId}
+                  onSelectGoal={setSelectedGoalId}
+                />
+              </View>
+              <View style={styles.dashboardColumn}>
+                <StatsGoalSummaryCard
+                  showAllGoals={shouldShowAllGoals}
+                  selectedGoal={selectedGoal}
+                />
+              </View>
+            </View>
 
             <StatsSummaryGrid
               totalSavedAllTime={totalSavedAllTime}
@@ -133,19 +143,24 @@ export default function StatsScreen() {
               savingsTargetMode={data.settings.savingsTargetMode}
             />
 
-            <StatsYearListCard
-              totalsByYear={totalsByYear}
-              effectiveSelectedYear={effectiveSelectedYear}
-              onSelectYear={setSelectedYear}
-            />
-
-            {shouldShowMonthlyStats ? (
-              <StatsMonthlyChartCard
-                effectiveSelectedYear={effectiveSelectedYear}
-                filteredEvents={filteredEvents}
-                monthlyStats={monthlyStats}
-              />
-            ) : null}
+            <View style={[styles.dashboardRow, isTablet && styles.dashboardRowTablet]}>
+              <View style={styles.dashboardColumn}>
+                <StatsYearListCard
+                  totalsByYear={totalsByYear}
+                  effectiveSelectedYear={effectiveSelectedYear}
+                  onSelectYear={setSelectedYear}
+                />
+              </View>
+              <View style={styles.dashboardColumn}>
+                {shouldShowMonthlyStats ? (
+                  <StatsMonthlyChartCard
+                    effectiveSelectedYear={effectiveSelectedYear}
+                    filteredEvents={filteredEvents}
+                    monthlyStats={monthlyStats}
+                  />
+                ) : null}
+              </View>
+            </View>
 
             <StatsHistoryListCard
               filteredEvents={filteredEvents}
@@ -158,3 +173,31 @@ export default function StatsScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.background,
+  },
+  content: {
+    padding: 16,
+    paddingBottom: 40,
+    gap: 14,
+  },
+  contentTablet: {
+    width: '100%',
+    maxWidth: 1120,
+    alignSelf: 'center',
+  },
+  dashboardRow: {
+    gap: 14,
+  },
+  dashboardRowTablet: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'flex-start',
+  },
+  dashboardColumn: {
+    flex: 1,
+  },
+});

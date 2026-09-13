@@ -17,7 +17,9 @@ export default function GoalFormHeader({
   return (
     <View style={styles.headerRow}>
       <View style={styles.headerTextWrap}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72}>
+          {title}
+        </Text>
       </View>
       <Pressable
         onPress={onDismiss}
@@ -41,12 +43,14 @@ const styles = StyleSheet.create({
   },
   headerTextWrap: {
     flex: 1,
+    minWidth: 0,
     paddingRight: 8,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: theme.accentDeep,
+    flexShrink: 1,
   },
   dismissButton: {
     borderRadius: 10,

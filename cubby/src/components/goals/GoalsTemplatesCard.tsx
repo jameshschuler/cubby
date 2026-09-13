@@ -1,5 +1,5 @@
 import { Pencil, Trash2 } from 'lucide-react-native';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { formatCurrency } from '../../helpers/formatters';
 import { theme } from '../../core/theme';
@@ -15,6 +15,9 @@ export default function GoalsTemplatesCard({
   onDeleteGoal,
   onCreateGoal,
 }: GoalsTemplatesCardProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+
   const handleDelete = (goal: Goal) => {
     Alert.alert(
       'Delete goal?',
@@ -59,7 +62,7 @@ export default function GoalsTemplatesCard({
       .join(' ');
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isTablet && styles.cardTablet]}>
       {goals.length === 0 ? (
         <FirstRunOnboardingCard
           onCreateGoal={onCreateGoal}
@@ -77,7 +80,7 @@ export default function GoalsTemplatesCard({
           const updatedLabel = formatUpdatedDate(goal.updatedAt);
 
           return (
-            <View key={goal.id} style={styles.goalRow}>
+            <View key={goal.id} style={[styles.goalRow, isTablet && styles.goalRowTablet]}>
               <View style={styles.goalHeader}>
                 <View style={styles.goalHeaderText}>
                   <Text style={styles.goalName}>{goal.name}</Text>
@@ -143,6 +146,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 12,
   },
+  cardTablet: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    columnGap: 16,
+    rowGap: 16,
+  },
   emptyText: {
     color: theme.textMuted,
   },
@@ -157,6 +166,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,
     elevation: 2,
+  },
+  goalRowTablet: {
+    width: '48%',
+    flexGrow: 1,
+    flexBasis: '46%',
   },
   goalHeader: {
     flexDirection: 'row',

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import {
   getGoalProgress,
@@ -26,6 +26,8 @@ import { theme } from '../core/theme';
 
 export default function HomeScreen() {
   const { data, replaceGoalProgress, setDefaultView, registerLogoTap } = useAppData();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
 
   const [selectedViewOverride, setSelectedViewOverride] = useState<GoalDisplayFilter | null>(null);
   const [anchorDate, setAnchorDate] = useState(new Date());
@@ -165,33 +167,43 @@ export default function HomeScreen() {
           />
         )}
 
-        <HomeSummaryCard
-          selectedView={selectedView}
-          totalSaved={totalSaved}
-          targetSavedAmount={targetSavedAmount}
-          actualSavingsRate={actualSavingsRate}
-          targetLabel={
-            data.settings.savingsTargetMode === 'rate'
-              ? data.settings.targetSavingsRate > 0
-                ? `Suggested savings rate: ${formatPercent(data.settings.targetSavingsRate)} of income`
-                : null
-              : data.settings.yearlySavingsGoalAmount > 0
-                ? `Yearly savings goal: ${formatCurrency(data.settings.yearlySavingsGoalAmount)} per year`
-                : null
-          }
-        />
+        <View style={[styles.dashboard, isTablet && styles.dashboardTablet]}>
+          <View style={[styles.dashboardColumn, isTablet && styles.summaryColumn]}>
+            <HomeSummaryCard
+              selectedView={selectedView}
+              totalSaved={totalSaved}
+              targetSavedAmount={targetSavedAmount}
+              actualSavingsRate={actualSavingsRate}
+              targetLabel={
+                data.settings.savingsTargetMode === 'rate'
+                  ? data.settings.targetSavingsRate > 0
+                    ? `Suggested savings rate: ${formatPercent(data.settings.targetSavingsRate)} of income`
+                    : null
+                  : data.settings.yearlySavingsGoalAmount > 0
+                    ? `Yearly savings goal: ${formatCurrency(data.settings.yearlySavingsGoalAmount)} per year`
+                    : null
+              }
+            />
+            {!isTablet && showOnboarding ? (
+              <FirstRunOnboardingCard onCreateGoal={handleCreateGoal} />
+            ) : null}
+          </View>
 
-        {showOnboarding ? (
-          <FirstRunOnboardingCard onCreateGoal={handleCreateGoal} />
-        ) : (
-          <HomeGoalsCard
-            selectedView={selectedView}
-            visibleGoals={visibleGoals}
-            getDisplayedGoalProgress={getDisplayedGoalProgress}
-            onEditActual={openActualAmountDialog}
-            onCreateGoal={handleCreateGoal}
-          />
-        )}
+          <View style={[styles.dashboardColumn, isTablet && styles.goalsColumn]}>
+            {isTablet && showOnboarding ? (
+              <FirstRunOnboardingCard onCreateGoal={handleCreateGoal} />
+            ) : null}
+            {!showOnboarding ? (
+              <HomeGoalsCard
+                selectedView={selectedView}
+                visibleGoals={visibleGoals}
+                getDisplayedGoalProgress={getDisplayedGoalProgress}
+                onEditActual={openActualAmountDialog}
+                onCreateGoal={handleCreateGoal}
+              />
+            ) : null}
+          </View>
+        </View>
       </ScrollView>
 
       <ActualAmountModal
@@ -211,8 +223,28 @@ const styles = StyleSheet.create({
     backgroundColor: theme.background,
   },
   content: {
+    width: '100%',
+    maxWidth: 1120,
+    alignSelf: 'center',
     padding: 16,
     paddingBottom: 40,
+    gap: 16,
+  },
+  dashboard: {
     gap: 14,
+  },
+  dashboardTablet: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 20,
+  },
+  dashboardColumn: {
+    gap: 14,
+  },
+  summaryColumn: {
+    flex: 0.85,
+  },
+  goalsColumn: {
+    flex: 1.15,
   },
 });

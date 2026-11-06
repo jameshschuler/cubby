@@ -49,21 +49,21 @@ export const recurringStateLabels: Record<RecurringState, string> = {
 };
 
 export const recurringStateContributionLabels: Record<RecurringState, string> = {
-  week: 'Automatic Weekly Contribution',
-  month: 'Automatic Monthly Contribution',
-  year: 'Automatic Yearly Contribution',
+  week: 'Scheduled Weekly Contribution',
+  month: 'Scheduled Monthly Contribution',
+  year: 'Scheduled Yearly Contribution',
 };
 
 export const recurringStateContributionErrorLabels: Record<RecurringState, string> = {
-  week: 'Automatic weekly contribution',
-  month: 'Automatic monthly contribution',
-  year: 'Automatic yearly contribution',
+  week: 'Scheduled weekly contribution',
+  month: 'Scheduled monthly contribution',
+  year: 'Scheduled yearly contribution',
 };
 
 export const recurringStateContributionPlaceholders: Record<RecurringState, string> = {
-  week: 'Automatic amount each week',
-  month: 'Automatic amount each month',
-  year: 'Automatic amount each year',
+  week: 'Scheduled amount each week',
+  month: 'Scheduled amount each month',
+  year: 'Scheduled amount each year',
 };
 
 export const weekDayLabels = [

@@ -15,6 +15,8 @@ export default function StatsGoalSelectorCard({
       <View style={styles.pillWrap}>
         <Pressable
           onPress={() => onSelectGoal('all')}
+          accessibilityRole="button"
+          accessibilityState={{ selected: showAllGoals }}
           style={[styles.pill, showAllGoals && styles.pillActive]}
         >
           <Text style={[styles.pillText, showAllGoals && styles.pillTextActive]}>All Goals</Text>
@@ -23,6 +25,8 @@ export default function StatsGoalSelectorCard({
           <Pressable
             key={goal.id}
             onPress={() => onSelectGoal(goal.id)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: effectiveSelectedGoalId === goal.id }}
             style={[styles.pill, effectiveSelectedGoalId === goal.id && styles.pillActive]}
           >
             <Text

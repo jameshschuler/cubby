@@ -1,3 +1,4 @@
+import { parseAmountInput } from '../../helpers/amount-input';
 import { parseAutoContributionAnchor } from '../../helpers/automatic-contributions';
 import { RecurringState } from '../../core/types';
 import { recurringStateContributionErrorLabels } from './constants/constants';
@@ -33,7 +34,7 @@ function parseNumericInput(value: GoalTargetInput | AutoContributionAmountInput)
     return undefined;
   }
 
-  return Number(trimmedValue);
+  return parseAmountInput(trimmedValue);
 }
 
 export function validateGoalBasics({ name, targetAmount }: GoalBasicsValidationInput) {

@@ -40,6 +40,8 @@ export interface Goal {
   targetAmount: number;
   autoContributionAmount?: number;
   autoContributionAnchor?: string;
+  /** When the current contribution schedule took effect; automatic events are only generated from here on. */
+  autoContributionStartAt?: string;
   createdAt: string;
   updatedAt: string;
 }

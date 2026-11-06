@@ -34,8 +34,8 @@ describe('AddGoalModal', () => {
     fireEvent.changeText(screen.getByPlaceholderText('Account name'), 'Vacation Fund');
     fireEvent.changeText(screen.getByPlaceholderText('Target amount'), '2500');
     fireEvent.press(screen.getByText('Next'));
-    fireEvent.press(screen.getByRole('checkbox', { name: 'Enable automatic contribution' }));
-    fireEvent.changeText(screen.getByPlaceholderText('Automatic amount each month'), '125');
+    fireEvent.press(screen.getByRole('checkbox', { name: 'Enable scheduled contribution' }));
+    fireEvent.changeText(screen.getByPlaceholderText('Scheduled amount each month'), '125');
     fireEvent.changeText(screen.getByPlaceholderText('Day of month'), '15');
     fireEvent.press(screen.getByText('Next'));
     fireEvent.changeText(screen.getByPlaceholderText('Institution (Ally, Fidelity...)'), 'Ally');

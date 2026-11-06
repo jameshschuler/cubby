@@ -21,6 +21,9 @@ export default function StatsYearBreakdownCard({
               <Pressable
                 key={entry.year}
                 onPress={() => onSelectYear(entry.year)}
+                accessibilityRole="button"
+                accessibilityLabel={`Show ${entry.year}`}
+                accessibilityState={{ selected: effectiveSelectedYear === entry.year }}
                 style={[styles.pill, effectiveSelectedYear === entry.year && styles.pillActive]}
               >
                 <Text

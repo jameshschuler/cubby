@@ -58,7 +58,13 @@ export default function OptionPicker({
 
   return (
     <>
-      <Pressable style={style} onPress={openModal}>
+      <Pressable
+        style={style}
+        onPress={openModal}
+        accessibilityRole="button"
+        accessibilityLabel={displayValue}
+        accessibilityHint="Opens a picker to change this value"
+      >
         <Text style={textStyle}>{displayValue}</Text>
       </Pressable>
       <Modal
@@ -68,7 +74,12 @@ export default function OptionPicker({
         onRequestClose={() => setVisible(false)}
       >
         <View style={styles.overlay}>
-          <Pressable style={styles.backdrop} onPress={() => setVisible(false)} />
+          <Pressable
+            style={styles.backdrop}
+            onPress={() => setVisible(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Close picker"
+          />
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>
               {mode === 'month-day' ? 'Pick month and day' : 'Select an option'}
@@ -115,11 +126,16 @@ export default function OptionPicker({
               </Picker>
             )}
             <View style={styles.actionsRow}>
-              <Pressable style={styles.cancelButton} onPress={() => setVisible(false)}>
+              <Pressable
+                style={styles.cancelButton}
+                onPress={() => setVisible(false)}
+                accessibilityRole="button"
+              >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </Pressable>
               <Pressable
                 style={styles.doneButton}
+                accessibilityRole="button"
                 onPress={() => {
                   if (mode === 'month-day') {
                     handleSelect(`${draftMonth}-${draftDay}`);

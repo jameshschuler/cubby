@@ -5,11 +5,13 @@ import { ViewFilterTabsProps } from './types';
 
 export default function ViewFilterTabs({ selectedView, onSelect }: ViewFilterTabsProps) {
   return (
-    <View style={styles.periodRow}>
+    <View style={styles.periodRow} accessibilityRole="tablist">
       {goalFilters.map((view) => (
         <Pressable
           key={view}
           onPress={() => onSelect(view)}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: selectedView === view }}
           style={[styles.periodButton, selectedView === view && styles.periodButtonActive]}
         >
           <Text

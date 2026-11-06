@@ -346,44 +346,6 @@ describe('getAchievementStatuses', () => {
     expect(statuses['over-target']).toBe(true);
   });
 
-  it('unlocks nice when a contribution is exactly $69', () => {
-    const data = buildData({
-      progressEvents: [
-        {
-          id: 'e1',
-          goalId: 'g1',
-          amount: 69,
-          eventDate: '2026-06-01T00:00:00.000Z',
-          source: 'manual',
-          createdAt: '2026-06-01T00:00:00.000Z',
-        },
-      ],
-    });
-
-    const statuses = getAchievementStatuses(data);
-
-    expect(statuses.nice).toBe(true);
-  });
-
-  it('keeps nice locked when no contribution is exactly $69', () => {
-    const data = buildData({
-      progressEvents: [
-        {
-          id: 'e1',
-          goalId: 'g1',
-          amount: 68,
-          eventDate: '2026-06-01T00:00:00.000Z',
-          source: 'manual',
-          createdAt: '2026-06-01T00:00:00.000Z',
-        },
-      ],
-    });
-
-    const statuses = getAchievementStatuses(data);
-
-    expect(statuses.nice).toBe(false);
-  });
-
   it('unlocks all-base-achievements when every base achievement is earned', () => {
     const data = buildData({
       goals: [
@@ -438,7 +400,7 @@ describe('getAchievementStatuses', () => {
         {
           id: 'e2',
           goalId: 'g1',
-          amount: 69,
+          amount: 75,
           eventDate: '2026-02-10T00:00:00.000Z',
           source: 'manual',
           createdAt: '2026-02-10T00:00:00.000Z',
@@ -568,7 +530,7 @@ describe('getAchievementStatuses', () => {
         {
           id: 'e2',
           goalId: 'g1',
-          amount: 69,
+          amount: 75,
           eventDate: '2026-02-10T00:00:00.000Z',
           source: 'manual',
           createdAt: '2026-02-10T00:00:00.000Z',
@@ -653,7 +615,7 @@ describe('getAchievementStatuses', () => {
         {
           id: 'e2',
           goalId: 'g1',
-          amount: 69,
+          amount: 75,
           eventDate: '2026-02-10T00:00:00.000Z',
           source: 'manual',
           createdAt: '2026-02-10T00:00:00.000Z',

@@ -56,6 +56,10 @@ function normalizeGoal(goal: Partial<Goal>): Goal {
         ? goal.autoContributionAmount
         : undefined,
     autoContributionAnchor: goal.autoContributionAnchor?.trim() || undefined,
+    autoContributionStartAt:
+      goal.autoContributionStartAt && !Number.isNaN(Date.parse(goal.autoContributionStartAt))
+        ? goal.autoContributionStartAt
+        : undefined,
     createdAt: goal.createdAt ?? now,
     updatedAt: goal.updatedAt ?? now,
   };
@@ -85,6 +89,9 @@ export async function loadAppData(): Promise<AppData> {
     const parsed = JSON.parse(raw) as Partial<AppData>;
     return normalizeAppData(parsed);
   } catch {
+    // Keep the unreadable payload so starting fresh doesn't destroy the only copy. If even that
+    // fails (for example, storage is full), start fresh anyway rather than block saving forever.
+    await AsyncStorage.setItem(`${STORAGE_KEY}.unreadable-${Date.now()}`, raw).catch(() => {});
     return defaultData;
   }
 }

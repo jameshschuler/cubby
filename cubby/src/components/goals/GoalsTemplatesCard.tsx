@@ -110,7 +110,7 @@ export default function GoalsTemplatesCard({
 
               {goal.autoContributionAmount ? (
                 <Text style={styles.autoContributionText}>
-                  Auto contributes {formatCurrency(goal.autoContributionAmount)}{' '}
+                  Schedules {formatCurrency(goal.autoContributionAmount)}{' '}
                   {recurringStateAutoContributionLabels[goal.recurringState]}
                 </Text>
               ) : null}

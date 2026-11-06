@@ -1,6 +1,7 @@
 import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { theme } from '../../core/theme';
+import AmountInput from '../ui/AmountInput';
 import OptionPicker from '../ui/OptionPicker';
 import { getDefaultAutoContributionAnchor } from '../../helpers/automatic-contributions';
 import {
@@ -72,18 +73,13 @@ export default function GoalFormFields({
         {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
 
         {renderFieldLabel('Target Amount', 'Required')}
-        <TextInput
-          value={input.targetAmount > 0 ? String(input.targetAmount) : ''}
-          onChangeText={(value) => {
-            const parsedValue = Number(value);
-            updateInput((current) => ({
-              ...current,
-              targetAmount: Number.isNaN(parsedValue) ? 0 : parsedValue,
-            }));
+        <AmountInput
+          value={input.targetAmount > 0 ? input.targetAmount : undefined}
+          onChangeValue={(value) => {
+            updateInput((current) => ({ ...current, targetAmount: value ?? 0 }));
             onSetErrors((current) => ({ ...current, targetAmount: undefined }));
           }}
           placeholder="Target amount"
-          keyboardType="numeric"
           style={styles.input}
         />
         {errors.targetAmount ? <Text style={styles.errorText}>{errors.targetAmount}</Text> : null}
@@ -174,7 +170,7 @@ export default function GoalFormFields({
                 style={styles.checkboxRow}
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: hasAutomaticContribution }}
-                accessibilityLabel="Enable automatic contribution"
+                accessibilityLabel="Enable scheduled contribution"
               >
                 <View
                   style={[
@@ -184,7 +180,7 @@ export default function GoalFormFields({
                 >
                   {hasAutomaticContribution ? <View style={styles.checkboxIndicator} /> : null}
                 </View>
-                <Text style={styles.checkboxLabel}>Configure Automatic Contributions</Text>
+                <Text style={styles.checkboxLabel}>Set Up Scheduled Contributions</Text>
               </Pressable>
             </View>
 
@@ -194,27 +190,17 @@ export default function GoalFormFields({
                   recurringStateContributionLabels[input.recurringState],
                   'Required'
                 )}
-                <TextInput
+                <AmountInput
                   value={
                     input.autoContributionAmount && input.autoContributionAmount > 0
-                      ? String(input.autoContributionAmount)
-                      : ''
+                      ? input.autoContributionAmount
+                      : undefined
                   }
-                  onChangeText={(value) => {
-                    const trimmedValue = value.trim();
-                    const parsedValue = Number(trimmedValue);
-                    updateInput((current) => ({
-                      ...current,
-                      autoContributionAmount: trimmedValue
-                        ? Number.isNaN(parsedValue)
-                          ? 0
-                          : parsedValue
-                        : undefined,
-                    }));
+                  onChangeValue={(value) => {
+                    updateInput((current) => ({ ...current, autoContributionAmount: value }));
                     onSetErrors((current) => ({ ...current, autoContributionAmount: undefined }));
                   }}
                   placeholder={recurringStateContributionPlaceholders[input.recurringState]}
-                  keyboardType="numeric"
                   style={styles.input}
                 />
 
@@ -262,7 +248,7 @@ export default function GoalFormFields({
                       onSetErrors((current) => ({ ...current, autoContributionAnchor: undefined }));
                     }}
                     placeholder={input.recurringState === 'month' ? 'Day of month' : 'MM-DD'}
-                    keyboardType={input.recurringState === 'month' ? 'numeric' : 'default'}
+                    keyboardType={input.recurringState === 'month' ? 'number-pad' : 'default'}
                     style={styles.input}
                   />
                 )}

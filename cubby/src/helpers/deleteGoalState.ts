@@ -30,6 +30,7 @@ export function createGoal(overrides: Partial<Goal> = {}): Goal {
     targetAmount: overrides.targetAmount ?? 100,
     autoContributionAmount: overrides.autoContributionAmount,
     autoContributionAnchor: overrides.autoContributionAnchor,
+    autoContributionStartAt: overrides.autoContributionStartAt,
     createdAt: overrides.createdAt ?? now,
     updatedAt: overrides.updatedAt ?? now,
   };

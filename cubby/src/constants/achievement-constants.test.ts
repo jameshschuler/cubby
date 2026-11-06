@@ -24,7 +24,6 @@ describe('achievement-constants', () => {
   it('keeps profile-complete and secret achievements tierless', () => {
     const tierlessIds = [
       'profile-complete',
-      'nice',
       'logo-tap',
       'all-base-achievements',
       'all-secret-achievements',

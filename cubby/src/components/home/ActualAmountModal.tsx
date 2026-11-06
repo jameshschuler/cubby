@@ -1,4 +1,13 @@
-import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { theme } from '../../core/theme';
 import { ActualAmountModalProps } from './types';
 
@@ -11,26 +20,41 @@ export default function ActualAmountModal({
 }: ActualAmountModalProps) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
-      <View style={styles.modalBackdrop}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.modalBackdrop}
+      >
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>Update Contribution</Text>
           <TextInput
             value={amount}
             onChangeText={onAmountChange}
             placeholder="Actual amount"
-            keyboardType="numeric"
+            accessibilityLabel="Contribution amount"
+            keyboardType="decimal-pad"
+            autoFocus
+            selectTextOnFocus
             style={styles.modalInput}
           />
           <View style={styles.modalActions}>
-            <Pressable onPress={onCancel} style={styles.modalSecondaryButton}>
+            <Pressable
+              onPress={onCancel}
+              style={styles.modalSecondaryButton}
+              accessibilityRole="button"
+            >
               <Text style={styles.modalSecondaryButtonText}>Cancel</Text>
             </Pressable>
-            <Pressable onPress={onSave} style={styles.modalPrimaryButton}>
+            <Pressable
+              onPress={onSave}
+              style={styles.modalPrimaryButton}
+              accessibilityRole="button"
+              accessibilityLabel="Save contribution"
+            >
               <Text style={styles.modalPrimaryButtonText}>Save</Text>
             </Pressable>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

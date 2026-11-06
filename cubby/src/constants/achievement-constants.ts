@@ -9,7 +9,6 @@ import {
   Pencil,
   Plus,
   Settings2,
-  Star,
   Target,
   TrendingUp,
   Trophy,
@@ -51,7 +50,7 @@ export const achievements: AchievementDefinition[] = [
   {
     id: 'planner',
     title: 'Planner',
-    description: 'Configure automatic contributions on one goal.',
+    description: 'Set up scheduled contributions on one goal.',
     tier: 1,
     icon: Settings2,
   },
@@ -110,13 +109,6 @@ export const achievements: AchievementDefinition[] = [
     description: 'Contribute more than 100% to any goal.',
     tier: 1,
     icon: TrendingUp,
-  },
-  {
-    id: 'nice',
-    title: 'Nice',
-    description: 'Contribute exactly $69 to any goal.',
-    icon: Star,
-    hidden: true,
   },
   {
     id: 'logo-tap',

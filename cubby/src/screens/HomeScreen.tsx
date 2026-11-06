@@ -11,6 +11,7 @@ import {
   getViewLabel,
   shiftAnchorDate,
 } from '../helpers/calculations';
+import { parseAmountInput } from '../helpers/amount-input';
 import { formatCurrency, formatPercent } from '../helpers/formatters';
 import { useAppData } from '../core/app-data-context';
 import { Goal, GoalDisplayFilter } from '../core/types';
@@ -112,7 +113,8 @@ export default function HomeScreen() {
 
   const openActualAmountDialog = (goal: Goal) => {
     setEditingGoalId(goal.id);
-    setEditingAmount(String(getDisplayedGoalProgress(goal)));
+    // Round to cents so floating-point sums like 0.1 + 0.2 don't show up in the field.
+    setEditingAmount(String(Math.round(getDisplayedGoalProgress(goal) * 100) / 100));
   };
 
   const closeActualAmountDialog = () => {
@@ -125,7 +127,7 @@ export default function HomeScreen() {
       return;
     }
 
-    const parsedAmount = Number(editingAmount);
+    const parsedAmount = parseAmountInput(editingAmount);
     if (Number.isNaN(parsedAmount) || parsedAmount < 0) {
       Alert.alert('Invalid amount', 'Please enter a valid amount greater than or equal to zero.');
       return;

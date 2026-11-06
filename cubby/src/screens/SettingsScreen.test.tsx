@@ -75,14 +75,14 @@ describe('SettingsScreen', () => {
   it('confirms before resetting the account', () => {
     const screen = render(<SettingsScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Reset account' }));
+    fireEvent.press(screen.getByRole('button', { name: 'Erase all data' }));
 
     expect(mockAlert).toHaveBeenCalledWith(
-      'Reset account?',
+      'Erase all data?',
       'This permanently deletes all goals, progress, and settings from this device.',
       expect.arrayContaining([
         expect.objectContaining({ text: 'Cancel' }),
-        expect.objectContaining({ text: 'Reset', style: 'destructive' }),
+        expect.objectContaining({ text: 'Erase', style: 'destructive' }),
       ])
     );
   });

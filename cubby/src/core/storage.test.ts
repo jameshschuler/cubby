@@ -77,10 +77,31 @@ describe('loadAppData', () => {
     });
   });
 
-  it('falls back to defaults when stored JSON is invalid', async () => {
+  it('falls back to defaults when stored JSON is invalid and keeps a copy of it', async () => {
     asyncStorageMock.getItem.mockResolvedValueOnce('{bad json');
 
     await expect(loadAppData()).resolves.toEqual(defaultData);
+    expect(asyncStorageMock.setItem).toHaveBeenCalledWith(
+      expect.stringMatching(/^cubby\.app-data\.v1\.unreadable-\d+$/),
+      '{bad json'
+    );
+  });
+
+  it('still starts fresh when the unreadable data cannot be backed up', async () => {
+    asyncStorageMock.getItem.mockResolvedValueOnce('{bad json');
+    asyncStorageMock.setItem.mockRejectedValueOnce(new Error('disk full'));
+
+    await expect(loadAppData()).resolves.toEqual(defaultData);
+  });
+
+  it('drops an invalid contribution schedule start so the goal falls back to createdAt', async () => {
+    asyncStorageMock.getItem.mockResolvedValueOnce(
+      JSON.stringify({ goals: [{ id: 'goal-1', autoContributionStartAt: 'garbage' }] })
+    );
+
+    const data = await loadAppData();
+
+    expect(data.goals[0].autoContributionStartAt).toBeUndefined();
   });
 
   it('serializes app data when saving', async () => {

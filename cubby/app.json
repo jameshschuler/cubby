@@ -16,7 +16,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.jschulerdev.cubby",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "RCTAsyncStorageExcludeFromBackup": false
       }
     },
     "android": {

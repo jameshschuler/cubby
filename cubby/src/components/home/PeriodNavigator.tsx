@@ -6,12 +6,24 @@ import { PeriodNavigatorProps } from './types';
 export default function PeriodNavigator({ label, onPrevious, onNext }: PeriodNavigatorProps) {
   return (
     <View style={styles.navigatorRow}>
-      <Pressable style={styles.navigatorButton} onPress={onPrevious}>
+      <Pressable
+        style={styles.navigatorButton}
+        onPress={onPrevious}
+        accessibilityRole="button"
+        accessibilityLabel="Previous period"
+      >
         <ChevronLeft color={theme.accent} size={18} />
         <Text style={styles.navigatorButtonText}>Previous</Text>
       </Pressable>
-      <Text style={styles.navigatorLabel}>{label}</Text>
-      <Pressable style={styles.navigatorButton} onPress={onNext}>
+      <Text style={styles.navigatorLabel} accessibilityRole="header">
+        {label}
+      </Text>
+      <Pressable
+        style={styles.navigatorButton}
+        onPress={onNext}
+        accessibilityRole="button"
+        accessibilityLabel="Next period"
+      >
         <Text style={styles.navigatorButtonText}>Next</Text>
         <ChevronRight color={theme.accent} size={18} />
       </Pressable>

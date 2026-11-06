@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 
+import { parseAmountInput } from '../helpers/amount-input';
 import { getIncomeAmountForView } from '../helpers/calculations';
 import { formatCurrency, formatPercent } from '../helpers/formatters';
 import { useAppData } from '../core/app-data-context';
@@ -45,6 +46,8 @@ function SegmentedControl<T extends string>({
           <Pressable
             key={option.value}
             onPress={() => onSelect(option.value)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: isActive }}
             style={[styles.segmentOption, isActive && styles.segmentOptionActive]}
           >
             <Text style={[styles.segmentOptionText, isActive && styles.segmentOptionTextActive]}>
@@ -92,7 +95,7 @@ function SettingsContent({
   );
 
   const incomePreview = useMemo(() => {
-    const amount = Number(incomeAmount);
+    const amount = parseAmountInput(incomeAmount);
     if (Number.isNaN(amount) || amount < 0) {
       return { monthly: 0, yearly: 0 };
     }
@@ -104,7 +107,7 @@ function SettingsContent({
 
   const handleSaveSavingsTarget = () => {
     if (savingsTargetMode === 'rate') {
-      const percent = Number(targetRatePercent);
+      const percent = parseAmountInput(targetRatePercent);
       if (Number.isNaN(percent) || percent < 0 || percent > 100) {
         Alert.alert('Invalid target', 'Use a target savings rate between 0 and 100.');
         return;
@@ -114,7 +117,7 @@ function SettingsContent({
       return;
     }
 
-    const amount = Number(yearlySavingsGoalAmount);
+    const amount = parseAmountInput(yearlySavingsGoalAmount);
     if (Number.isNaN(amount) || amount < 0) {
       Alert.alert('Invalid target', 'Enter a yearly savings goal of 0 or greater.');
       return;
@@ -124,7 +127,7 @@ function SettingsContent({
   };
 
   const handleSaveIncome = () => {
-    const amount = Number(incomeAmount);
+    const amount = parseAmountInput(incomeAmount);
     if (Number.isNaN(amount) || amount < 0) {
       Alert.alert('Invalid income', 'Enter a valid income amount.');
       return;
@@ -143,16 +146,16 @@ function SettingsContent({
 
   const handleReset = () => {
     Alert.alert(
-      'Reset account?',
+      'Erase all data?',
       'This permanently deletes all goals, progress, and settings from this device.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Reset',
+          text: 'Erase',
           style: 'destructive',
           onPress: () => {
             resetAppData().catch(() => {
-              Alert.alert('Reset failed', 'Could not reset data on this device.');
+              Alert.alert('Erase failed', 'Could not erase data on this device.');
             });
           },
         },
@@ -195,7 +198,7 @@ function SettingsContent({
               <X color={theme.textOnAccent} size={18} />
             </Pressable>
           </View>
-          <Text style={styles.subtitle}>Manage income, savings targets, and data export.</Text>
+          <Text style={styles.subtitle}>Manage income, savings targets, and your data.</Text>
         </View>
 
         <View style={[styles.settingsGrid, isTablet && styles.settingsGridTablet]}>
@@ -221,22 +224,26 @@ function SettingsContent({
               subtitle="Export goals, progress events, and settings as JSON."
               icon={<Download color={theme.accent} size={18} />}
             >
-              <Pressable style={styles.secondaryButton} onPress={handleExport}>
+              <Pressable
+                style={styles.secondaryButton}
+                onPress={handleExport}
+                accessibilityRole="button"
+              >
                 <Text style={styles.secondaryButtonText}>Export JSON</Text>
               </Pressable>
             </SettingsCard>
 
             <SettingsCard
-              title="Reset Account"
+              title="Erase All Data"
               subtitle="Delete all goals, progress, and settings from this device."
             >
               <Pressable
                 style={styles.destructiveButton}
                 onPress={handleReset}
                 accessibilityRole="button"
-                accessibilityLabel="Reset account"
+                accessibilityLabel="Erase all data"
               >
-                <Text style={styles.destructiveButtonText}>Reset Account</Text>
+                <Text style={styles.destructiveButtonText}>Erase All Data</Text>
               </Pressable>
             </SettingsCard>
           </View>
@@ -255,7 +262,7 @@ function SettingsContent({
           value={incomeAmount}
           onChangeText={setIncomeAmount}
           placeholder="Income amount"
-          keyboardType="numeric"
+          keyboardType="decimal-pad"
           style={styles.input}
         />
         <SegmentedControl
@@ -266,7 +273,7 @@ function SettingsContent({
           selectedValue={incomeFrequency}
           onSelect={(value) => setIncomeFrequency(value)}
         />
-        {Number(incomeAmount) > 0 ? (
+        {parseAmountInput(incomeAmount) > 0 ? (
           <View style={styles.previewBox}>
             <Text style={styles.previewText}>
               Monthly equivalent: {formatCurrency(incomePreview.monthly)}
@@ -276,7 +283,11 @@ function SettingsContent({
             </Text>
           </View>
         ) : null}
-        <Pressable style={styles.primaryButton} onPress={handleSaveIncome}>
+        <Pressable
+          style={styles.primaryButton}
+          onPress={handleSaveIncome}
+          accessibilityRole="button"
+        >
           <Text style={styles.primaryButtonText}>Save Income</Text>
         </Pressable>
       </SettingsModalShell>
@@ -302,7 +313,7 @@ function SettingsContent({
             value={targetRatePercent}
             onChangeText={setTargetRatePercent}
             placeholder="Target rate %"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             style={styles.input}
           />
         ) : (
@@ -310,11 +321,15 @@ function SettingsContent({
             value={yearlySavingsGoalAmount}
             onChangeText={setYearlySavingsGoalAmount}
             placeholder="Yearly savings goal"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             style={styles.input}
           />
         )}
-        <Pressable style={styles.primaryButton} onPress={handleSaveSavingsTarget}>
+        <Pressable
+          style={styles.primaryButton}
+          onPress={handleSaveSavingsTarget}
+          accessibilityRole="button"
+        >
           <Text style={styles.primaryButtonText}>Save Target</Text>
         </Pressable>
       </SettingsModalShell>

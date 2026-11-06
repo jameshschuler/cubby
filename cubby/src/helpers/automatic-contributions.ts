@@ -1,9 +1,9 @@
 import { AppData, Goal, ProgressEvent, ViewPeriod } from '../core/types';
 
 const AUTOMATIC_CONTRIBUTION_NOTES: Record<ViewPeriod, string> = {
-  week: 'Automatic weekly contribution',
-  month: 'Automatic monthly contribution',
-  year: 'Automatic yearly contribution',
+  week: 'Scheduled weekly contribution',
+  month: 'Scheduled monthly contribution',
+  year: 'Scheduled yearly contribution',
 };
 
 function isAutomaticContributionGoal(goal: Goal) {
@@ -28,7 +28,8 @@ function getPeriodStart(view: ViewPeriod, date: Date) {
 
 function formatPeriodKey(view: ViewPeriod, date: Date) {
   if (view === 'week') {
-    return date.toISOString().slice(0, 10);
+    // Local date, so the key (and the event id) doesn't depend on the UTC offset.
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
   if (view === 'year') {
@@ -157,46 +158,79 @@ function buildAutomaticEvent(goal: Goal, periodStart: Date): ProgressEvent {
   };
 }
 
+function getStartOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function getEndOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+}
+
 function buildAutomaticEventsForGoal(goal: Goal, asOf: Date): ProgressEvent[] {
   if (!isAutomaticContributionGoal(goal)) {
     return [];
   }
 
-  const createdAt = new Date(goal.createdAt);
-  if (Number.isNaN(createdAt.getTime())) {
+  const scheduleStart = new Date(goal.autoContributionStartAt ?? goal.createdAt);
+  if (Number.isNaN(scheduleStart.getTime())) {
     return [];
   }
 
   const view = goal.recurringState;
+  const earliestEventTime = getStartOfDay(scheduleStart).getTime();
+  const latestEventTime = getEndOfDay(asOf).getTime();
   const currentPeriod = getPeriodStart(view, asOf);
-  const firstPeriod = getPeriodStart(view, createdAt);
-
-  if (firstPeriod.getTime() > currentPeriod.getTime()) {
-    return [];
-  }
-
   const events: ProgressEvent[] = [];
 
-  for (let cursor = new Date(firstPeriod); cursor.getTime() <= currentPeriod.getTime();) {
-    events.push(buildAutomaticEvent(goal, new Date(cursor)));
-    cursor = getNextPeriodStart(view, cursor);
+  for (
+    let cursor = getPeriodStart(view, scheduleStart);
+    cursor.getTime() <= currentPeriod.getTime();
+    cursor = getNextPeriodStart(view, cursor)
+  ) {
+    const event = buildAutomaticEvent(goal, new Date(cursor));
+    const eventTime = new Date(event.eventDate).getTime();
+
+    // Skip contributions scheduled before the schedule began or later than today.
+    if (eventTime >= earliestEventTime && eventTime <= latestEventTime) {
+      events.push(event);
+    }
   }
 
   return events;
 }
 
+/**
+ * Adds automatic contributions that have come due since the last sync.
+ *
+ * Recorded automatic events are history: they are kept as-is when a goal's schedule changes or
+ * stops, so editing a contribution only affects future periods.
+ */
 export function syncAutomaticContributionEvents(data: AppData, asOf = new Date()): AppData {
-  const activeGoalIds = new Set(data.goals.map((goal) => goal.id));
+  const latestEventTime = getEndOfDay(asOf).getTime();
+  // Older versions recorded the current period's contribution before its date arrived.
   const preservedProgressEvents = data.progressEvents.filter(
-    (event) => event.source !== 'automatic' || !activeGoalIds.has(event.goalId)
+    (event) =>
+      event.source !== 'automatic' || new Date(event.eventDate).getTime() <= latestEventTime
+  );
+  const recordedEventIds = new Set(preservedProgressEvents.map((event) => event.id));
+  // Also match on goal and date: ids from older versions (and after a timezone change) can
+  // differ for the same contribution.
+  const recordedContributionKeys = new Set(
+    preservedProgressEvents
+      .filter((event) => event.source === 'automatic')
+      .map((event) => `${event.goalId}|${event.eventDate}`)
   );
 
-  const automaticProgressEvents = data.goals.flatMap((goal) =>
-    buildAutomaticEventsForGoal(goal, asOf)
-  );
+  const newAutomaticEvents = data.goals
+    .flatMap((goal) => buildAutomaticEventsForGoal(goal, asOf))
+    .filter(
+      (event) =>
+        !recordedEventIds.has(event.id) &&
+        !recordedContributionKeys.has(`${event.goalId}|${event.eventDate}`)
+    );
 
   return {
     ...data,
-    progressEvents: [...automaticProgressEvents, ...preservedProgressEvents],
+    progressEvents: [...newAutomaticEvents, ...preservedProgressEvents],
   };
 }

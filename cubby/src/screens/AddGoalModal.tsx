@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { useAppData } from '../core/app-data-context';
+import { parseAmountInput } from '../helpers/amount-input';
 import GoalFormHeader from '../components/goals/GoalFormHeader';
 import GoalFormStepper from '../components/goals/GoalFormStepper';
 import OptionPicker from '../components/ui/OptionPicker';
@@ -131,11 +132,11 @@ export default function AddGoalModal() {
       return;
     }
 
-    const parsedTarget = Number(targetAmount.trim());
+    const parsedTarget = parseAmountInput(targetAmount);
     const trimmedAutoContributionAmount = autoContributionAmount.trim();
     const parsedAutoContributionAmount =
       isRecurring && hasAutomaticContribution && trimmedAutoContributionAmount
-        ? Number(trimmedAutoContributionAmount)
+        ? parseAmountInput(trimmedAutoContributionAmount)
         : undefined;
     const parsedAutoContributionAnchor =
       isRecurring && hasAutomaticContribution
@@ -173,7 +174,12 @@ export default function AddGoalModal() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: 'Add Goal' }} />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        automaticallyAdjustKeyboardInsets
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+      >
         <GoalFormHeader
           title="New Goal"
           onDismiss={() => router.back()}
@@ -206,7 +212,7 @@ export default function AddGoalModal() {
                 setErrors((current) => ({ ...current, targetAmount: undefined }));
               }}
               placeholder="Target amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               style={styles.input}
             />
             {errors.targetAmount ? (
@@ -295,7 +301,7 @@ export default function AddGoalModal() {
                     style={styles.checkboxRow}
                     accessibilityRole="checkbox"
                     accessibilityState={{ checked: hasAutomaticContribution }}
-                    accessibilityLabel="Enable automatic contribution"
+                    accessibilityLabel="Enable scheduled contribution"
                   >
                     <View
                       style={[
@@ -305,7 +311,7 @@ export default function AddGoalModal() {
                     >
                       {hasAutomaticContribution ? <View style={styles.checkboxIndicator} /> : null}
                     </View>
-                    <Text style={styles.checkboxLabel}>Configure Automatic Contributions</Text>
+                    <Text style={styles.checkboxLabel}>Set Up Scheduled Contributions</Text>
                   </Pressable>
                 </View>
 
@@ -319,7 +325,7 @@ export default function AddGoalModal() {
                         setErrors((current) => ({ ...current, autoContributionAmount: undefined }));
                       }}
                       placeholder={recurringStateContributionPlaceholders[recurringState]}
-                      keyboardType="numeric"
+                      keyboardType="decimal-pad"
                       style={styles.input}
                     />
 
@@ -367,7 +373,7 @@ export default function AddGoalModal() {
                           }));
                         }}
                         placeholder="Day of month"
-                        keyboardType="numeric"
+                        keyboardType="number-pad"
                         style={styles.input}
                       />
                     )}

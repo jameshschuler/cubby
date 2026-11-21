@@ -1,9 +1,12 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { AppState } from 'react-native';
-import * as FileSystem from 'expo-file-system/legacy';
+import { Alert, AppState, Platform } from 'react-native';
+import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
-import { syncAutomaticContributionEvents } from '../helpers/automatic-contributions';
+import {
+  parseAutoContributionAnchor,
+  syncAutomaticContributionEvents,
+} from '../helpers/automatic-contributions';
 import { getEntryDateForView, isInView } from '../helpers/calculations';
 import { deleteGoalState } from '../helpers/deleteGoalState';
 import {
@@ -15,6 +18,7 @@ import { clearAppData, defaultData, loadAppData, saveAppData } from './storage';
 import {
   AccountType,
   AppData,
+  Goal,
   GoalCategory,
   GoalDisplayFilter,
   IncomeFrequency,
@@ -69,6 +73,8 @@ interface AppDataContextValue {
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
 
+const EXPORT_FILE_PREFIX = 'cubby-export-';
+
 function createId(): string {
   return `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
 }
@@ -88,31 +94,71 @@ function createManualProgressEvent(
   };
 }
 
+function hasContributionScheduleChanged(
+  goal: Goal,
+  isRecurring: boolean,
+  recurringState: RecurringState,
+  autoContributionAmount?: number,
+  autoContributionAnchor?: string
+) {
+  return (
+    goal.isRecurring !== isRecurring ||
+    goal.recurringState !== recurringState ||
+    goal.autoContributionAmount !== autoContributionAmount ||
+    // Older goals may have no stored anchor, which means the default for their frequency.
+    parseAutoContributionAnchor(goal.recurringState, goal.autoContributionAnchor)
+      .normalizedValue !==
+      parseAutoContributionAnchor(recurringState, autoContributionAnchor).normalizedValue
+  );
+}
+
+function deleteExportFiles() {
+  // Earlier versions wrote exports to the document directory and never removed them.
+  for (const directory of [Paths.cache, Paths.document]) {
+    if (!directory.exists) {
+      continue;
+    }
+
+    for (const entry of directory.list()) {
+      if (entry instanceof File && entry.name.startsWith(EXPORT_FILE_PREFIX)) {
+        entry.delete();
+      }
+    }
+  }
+}
+
 export function AppDataProvider({ children }: PropsWithChildren) {
   const [data, setData] = useState<AppData>(defaultData);
   const [isReady, setIsReady] = useState(false);
+  // Stays false if loading failed, so the empty in-memory state never overwrites saved data.
+  const [canPersist, setCanPersist] = useState(false);
 
   useEffect(() => {
     const hydrate = async () => {
       const loaded = await loadAppData();
       setData(syncAutomaticContributionEvents(loaded));
+      setCanPersist(true);
       setIsReady(true);
     };
 
     hydrate().catch(() => {
       setIsReady(true);
+      Alert.alert(
+        'Could not load your data',
+        "Cubby couldn't read the data saved on this device, so changes made now won't be saved. Close and reopen Cubby to try again."
+      );
     });
   }, []);
 
   useEffect(() => {
-    if (!isReady) {
+    if (!canPersist) {
       return;
     }
 
     saveAppData(data).catch(() => {
       // Keep the UI usable if a local save fails.
     });
-  }, [data, isReady]);
+  }, [data, canPersist]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
@@ -168,6 +214,7 @@ export function AppDataProvider({ children }: PropsWithChildren) {
             targetAmount: input.targetAmount,
             autoContributionAmount,
             autoContributionAnchor,
+            autoContributionStartAt: now,
             createdAt: now,
             updatedAt: now,
           },
@@ -208,6 +255,15 @@ export function AppDataProvider({ children }: PropsWithChildren) {
                 targetAmount: input.targetAmount,
                 autoContributionAmount,
                 autoContributionAnchor,
+                autoContributionStartAt: hasContributionScheduleChanged(
+                  goal,
+                  input.isRecurring,
+                  input.recurringState,
+                  autoContributionAmount,
+                  autoContributionAnchor
+                )
+                  ? now
+                  : goal.autoContributionStartAt,
                 updatedAt: now,
               }
             : goal
@@ -346,19 +402,36 @@ export function AppDataProvider({ children }: PropsWithChildren) {
   };
 
   const exportJson = async () => {
-    const fileUri = `${FileSystem.documentDirectory}cubby-export-${new Date().toISOString().slice(0, 10)}.json`;
-    await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(data, null, 2), {
-      encoding: FileSystem.EncodingType.UTF8,
-    });
-    await Sharing.shareAsync(fileUri, {
-      mimeType: 'application/json',
-      dialogTitle: 'Export Cubby data',
-    });
+    deleteExportFiles();
+    const file = new File(
+      Paths.cache,
+      `${EXPORT_FILE_PREFIX}${new Date().toISOString().slice(0, 10)}.json`
+    );
+    file.write(JSON.stringify(data, null, 2));
+
+    try {
+      await Sharing.shareAsync(file.uri, {
+        mimeType: 'application/json',
+        dialogTitle: 'Export Cubby data',
+      });
+    } finally {
+      // iOS resolves once the share sheet has finished with the file, so it is safe to remove.
+      // Android may still be reading it; that copy is removed on the next export or erase.
+      if (Platform.OS === 'ios' && file.exists) {
+        file.delete();
+      }
+    }
   };
 
   const resetAppData = async () => {
     await clearAppData();
     setData(defaultData);
+
+    try {
+      deleteExportFiles();
+    } catch {
+      // Leftover export files are best-effort cleanup; the app data itself is already gone.
+    }
   };
 
   return (

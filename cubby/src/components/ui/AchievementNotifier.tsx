@@ -34,7 +34,6 @@ const ACHIEVEMENT_TITLES: Record<AchievementId, string> = {
   'first-1000': 'First 1000',
   'goal-builder': 'Goal Builder',
   'over-target': 'Over Target',
-  nice: 'Nice',
   'logo-tap': 'Boop',
   'all-base-achievements': 'Base Camp',
   'all-secret-achievements': 'Full Set',

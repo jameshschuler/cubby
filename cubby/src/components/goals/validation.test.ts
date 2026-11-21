@@ -46,7 +46,7 @@ describe('validateAutomaticContribution', () => {
         autoContributionAnchor: '12',
       })
     ).toEqual({
-      autoContributionAmount: 'Automatic monthly contribution must be greater than 0.',
+      autoContributionAmount: 'Scheduled monthly contribution must be greater than 0.',
     });
   });
 

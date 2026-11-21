@@ -38,7 +38,14 @@ export default function SettingsModalShell({
             <X color={theme.textMuted} size={20} />
           </Pressable>
         </View>
-        <ScrollView contentContainerStyle={styles.modalContent}>{children}</ScrollView>
+        <ScrollView
+          contentContainerStyle={styles.modalContent}
+          automaticallyAdjustKeyboardInsets
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+        >
+          {children}
+        </ScrollView>
       </SafeAreaView>
     </Modal>
   );

@@ -49,16 +49,16 @@ describe('syncAutomaticContributionEvents', () => {
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-03-20T12:00:00.000Z'));
 
+    // January 1 is before the goal was created on January 15, so the first contribution is February.
     expect(next.progressEvents.map((event) => event.id)).toEqual([
-      'auto-goal-1-month-2024-01',
       'auto-goal-1-month-2024-02',
       'auto-goal-1-month-2024-03',
       'manual-1',
     ]);
-    expect(next.progressEvents.slice(0, 3).every((event) => event.source === 'automatic')).toBe(
+    expect(next.progressEvents.slice(0, 2).every((event) => event.source === 'automatic')).toBe(
       true
     );
-    expect(next.progressEvents.slice(0, 3).every((event) => event.amount === 200)).toBe(true);
+    expect(next.progressEvents.slice(0, 2).every((event) => event.amount === 200)).toBe(true);
   });
 
   it('uses a custom weekly anchor day when generating automatic contributions', () => {
@@ -124,9 +124,11 @@ describe('syncAutomaticContributionEvents', () => {
       settings: baseSettings,
     };
 
-    const next = syncAutomaticContributionEvents(data, new Date('2024-02-20T12:00:00.000Z'));
+    const next = syncAutomaticContributionEvents(data, new Date(2024, 2, 1, 12));
 
-    expect(next.progressEvents[0]?.eventDate).toBe(new Date(2024, 1, 29, 12).toISOString());
+    expect(next.progressEvents.map((event) => event.eventDate)).toEqual([
+      new Date(2024, 1, 29, 12).toISOString(),
+    ]);
   });
 
   it('falls back to the default anchor when an existing weekly anchor is malformed', () => {
@@ -182,18 +184,17 @@ describe('syncAutomaticContributionEvents', () => {
     expect(next.progressEvents.map((event) => event.id)).toEqual([
       'auto-goal-week-week-2024-01-07',
       'auto-goal-week-week-2024-01-14',
-      'auto-goal-year-year-2023',
       'auto-goal-year-year-2024',
     ]);
     expect(
       next.progressEvents.find((event) => event.id === 'auto-goal-week-week-2024-01-07')?.note
-    ).toBe('Automatic weekly contribution');
+    ).toBe('Scheduled weekly contribution');
     expect(
       next.progressEvents.find((event) => event.id === 'auto-goal-year-year-2024')?.amount
     ).toBe(1200);
   });
 
-  it('rebuilds automatic events for active goals and preserves deleted goal history', () => {
+  it('keeps recorded automatic events when a goal stops contributing', () => {
     const data: AppData = {
       goals: [
         createGoal({
@@ -228,7 +229,131 @@ describe('syncAutomaticContributionEvents', () => {
 
     const next = syncAutomaticContributionEvents(data, new Date('2024-01-20T12:00:00.000Z'));
 
-    expect(next.progressEvents.map((event) => event.id)).toEqual(['auto-goal-2-month-2024-01']);
-    expect(next.progressEvents[0]?.goalId).toBe('goal-2');
+    expect(next.progressEvents.map((event) => event.id)).toEqual([
+      'auto-goal-1-month-2024-01',
+      'auto-goal-2-month-2024-01',
+    ]);
+  });
+
+  it('does not rewrite past contributions when the amount changes', () => {
+    const data: AppData = {
+      goals: [
+        createGoal({
+          id: 'goal-1',
+          isRecurring: true,
+          recurringState: 'month',
+          autoContributionAmount: 250,
+          autoContributionAnchor: '1',
+          autoContributionStartAt: new Date(2024, 2, 10, 9).toISOString(),
+          createdAt: new Date(2024, 0, 1, 9).toISOString(),
+          updatedAt: new Date(2024, 2, 10, 9).toISOString(),
+        }),
+      ],
+      progressEvents: ['01', '02', '03'].map((month) =>
+        createProgressEvent({
+          id: `auto-goal-1-month-2024-${month}`,
+          goalId: 'goal-1',
+          amount: 100,
+          eventDate: new Date(2024, Number(month) - 1, 1, 12).toISOString(),
+          source: 'automatic',
+        })
+      ),
+      settings: baseSettings,
+    };
+
+    const next = syncAutomaticContributionEvents(data, new Date(2024, 4, 15, 12));
+
+    expect(next.progressEvents.map((event) => [event.id, event.amount])).toEqual([
+      ['auto-goal-1-month-2024-04', 250],
+      ['auto-goal-1-month-2024-05', 250],
+      ['auto-goal-1-month-2024-01', 100],
+      ['auto-goal-1-month-2024-02', 100],
+      ['auto-goal-1-month-2024-03', 100],
+    ]);
+  });
+
+  it('does not duplicate a recorded contribution whose id format has changed', () => {
+    const eventDate = new Date(2024, 0, 12, 12).toISOString();
+    const data: AppData = {
+      goals: [
+        createGoal({
+          id: 'goal-week',
+          isRecurring: true,
+          recurringState: 'week',
+          autoContributionAmount: 75,
+          createdAt: new Date(2024, 0, 8, 9).toISOString(),
+          updatedAt: new Date(2024, 0, 8, 9).toISOString(),
+        }),
+      ],
+      progressEvents: [
+        createProgressEvent({
+          id: 'auto-goal-week-week-2024-01-06',
+          goalId: 'goal-week',
+          amount: 75,
+          eventDate,
+          source: 'automatic',
+        }),
+      ],
+      settings: baseSettings,
+    };
+
+    const next = syncAutomaticContributionEvents(data, new Date(2024, 0, 13, 12));
+
+    expect(next.progressEvents.map((event) => event.id)).toEqual([
+      'auto-goal-week-week-2024-01-06',
+    ]);
+  });
+
+  it('does not record a contribution before its scheduled date', () => {
+    const data: AppData = {
+      goals: [
+        createGoal({
+          id: 'goal-1',
+          isRecurring: true,
+          recurringState: 'month',
+          autoContributionAmount: 100,
+          autoContributionAnchor: '28',
+          createdAt: new Date(2024, 0, 2, 9).toISOString(),
+          updatedAt: new Date(2024, 0, 2, 9).toISOString(),
+        }),
+      ],
+      progressEvents: [
+        // Written by an older version that counted the month's contribution early.
+        createProgressEvent({
+          id: 'auto-goal-1-month-2024-02',
+          goalId: 'goal-1',
+          amount: 100,
+          eventDate: new Date(2024, 1, 28, 12).toISOString(),
+          source: 'automatic',
+        }),
+      ],
+      settings: baseSettings,
+    };
+
+    const next = syncAutomaticContributionEvents(data, new Date(2024, 1, 5, 12));
+
+    expect(next.progressEvents.map((event) => event.id)).toEqual(['auto-goal-1-month-2024-01']);
+  });
+
+  it('records a contribution on its scheduled day', () => {
+    const data: AppData = {
+      goals: [
+        createGoal({
+          id: 'goal-1',
+          isRecurring: true,
+          recurringState: 'month',
+          autoContributionAmount: 100,
+          autoContributionAnchor: '5',
+          createdAt: new Date(2024, 1, 5, 18).toISOString(),
+          updatedAt: new Date(2024, 1, 5, 18).toISOString(),
+        }),
+      ],
+      progressEvents: [],
+      settings: baseSettings,
+    };
+
+    const next = syncAutomaticContributionEvents(data, new Date(2024, 1, 5, 8));
+
+    expect(next.progressEvents.map((event) => event.id)).toEqual(['auto-goal-1-month-2024-02']);
   });
 });

@@ -13,7 +13,6 @@ export type AchievementId =
   | 'first-1000'
   | 'goal-builder'
   | 'over-target'
-  | 'nice'
   | 'logo-tap'
   | 'all-base-achievements'
   | 'all-secret-achievements';
@@ -21,7 +20,7 @@ export type AchievementId =
 export type AchievementStatusMap = Record<AchievementId, boolean>;
 type BaseAchievementId = Exclude<
   AchievementId,
-  'nice' | 'logo-tap' | 'all-base-achievements' | 'all-secret-achievements'
+  'logo-tap' | 'all-base-achievements' | 'all-secret-achievements'
 >;
 type SecretAchievementId = Exclude<AchievementId, BaseAchievementId>;
 
@@ -43,7 +42,7 @@ const BASE_ACHIEVEMENT_IDS: BaseAchievementId[] = [
 const SECRET_ACHIEVEMENT_IDS_EXCEPT_ALL_SECRET: Exclude<
   SecretAchievementId,
   'all-secret-achievements'
->[] = ['nice', 'logo-tap', 'all-base-achievements'];
+>[] = ['logo-tap', 'all-base-achievements'];
 
 function getMonthIndex(isoDate: string): number {
   const date = new Date(isoDate);
@@ -133,7 +132,6 @@ export function getAchievementStatuses(data: AppData): AchievementStatusMap {
     return (goalTotals.get(goal.id) ?? 0) / goal.targetAmount > 1;
   });
 
-  const hasNiceContribution = progressEvents.some((event) => event.amount === 69);
   const hasLogoTap = settings.logoTapCount > 0;
 
   const profileComplete =
@@ -161,7 +159,6 @@ export function getAchievementStatuses(data: AppData): AchievementStatusMap {
 
   const statusesWithoutAllSecret: Omit<AchievementStatusMap, 'all-secret-achievements'> = {
     ...baseStatuses,
-    nice: hasNiceContribution,
     'logo-tap': hasLogoTap,
     'all-base-achievements': hasAllBaseAchievements,
   };

@@ -170,7 +170,12 @@ export default function GoalDetailsModal({
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          automaticallyAdjustKeyboardInsets
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+        >
           <GoalFormHeader title="Edit Goal" onDismiss={onClose} />
 
           <GoalFormStepper currentStep={currentStep} isRecurring={input.isRecurring} />
@@ -191,6 +196,8 @@ export default function GoalDetailsModal({
               <Pressable
                 style={[styles.navigationButton, styles.secondaryButton]}
                 onPress={handleBack}
+                accessibilityRole="button"
+                accessibilityLabel="Previous step"
               >
                 <Text style={styles.secondaryButtonText}>Back</Text>
               </Pressable>
@@ -202,6 +209,7 @@ export default function GoalDetailsModal({
               <Pressable
                 style={[styles.navigationButton, styles.primaryButton]}
                 onPress={handleSave}
+                accessibilityRole="button"
               >
                 <Text style={styles.primaryButtonText}>{navigationConfig.primaryLabel}</Text>
               </Pressable>
@@ -209,6 +217,7 @@ export default function GoalDetailsModal({
               <Pressable
                 style={[styles.navigationButton, styles.primaryButton]}
                 onPress={handleNext}
+                accessibilityRole="button"
               >
                 <Text style={styles.primaryButtonText}>{navigationConfig.primaryLabel}</Text>
               </Pressable>

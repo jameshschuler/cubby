@@ -35,7 +35,15 @@ export default function SettingsCard({
     return content;
   }
 
-  return <Pressable onPress={onPress}>{content}</Pressable>;
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityHint={`Edit ${title.toLowerCase()}`}
+    >
+      {content}
+    </Pressable>
+  );
 }
 
 const styles = StyleSheet.create({

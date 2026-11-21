@@ -46,7 +46,7 @@ export default function HomeGoalsCard({
           body={
             selectedView === 'one-time'
               ? 'Add a one-time goal to track a single finish line alongside your recurring accounts.'
-              : `Add a ${viewLabel} goal to start tracking progress, targets, and automatic contributions in this view.`
+              : `Add a ${viewLabel} goal to start tracking progress, targets, and scheduled contributions in this view.`
           }
           buttonLabel="Add goal"
         />
@@ -113,7 +113,7 @@ export default function HomeGoalsCard({
                 {goal.autoContributionAmount ? (
                   <Text numberOfLines={1} style={styles.goalMetaText}>
                     {formatCurrency(goal.autoContributionAmount)}{' '}
-                    {recurringStateAutoContributionLabels[goal.recurringState]} auto
+                    {recurringStateAutoContributionLabels[goal.recurringState]} scheduled
                   </Text>
                 ) : (
                   <Text style={styles.goalMetaText}>{cadenceLabel}</Text>
